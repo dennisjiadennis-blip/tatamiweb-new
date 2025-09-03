@@ -2,16 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 导入字体 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Tatami Labs 全局色彩规范 */
+    --color-background: #2D323A;      /* 深蓝灰色 */
+    --color-orange: #D97D54;          /* 桔红色 */
+    --color-blue: #B0C4DE;            /* 淡蓝色 */
+    --color-green: #7A8A6B;           /* 苔绿色 */
+    --color-offwhite: #F5F0E8;        /* 米白色 */
+    --color-text: #1C1C1C;            /* 近黑色 */
+    
+    /* 间距系统 */
+    --gap-sm: 1rem;                   /* 16px */
+    --gap-md: 1.5rem;                 /* 24px */
+    --gap-lg: 2rem;                   /* 32px */
   }
 
   * {
-    @apply border-border;
+    @apply border-0;
   }
+  
   body {
-    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+  
+  /* 全局字体类 */
+  .font-brand-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    color: var(--color-offwhite);
+  }
+  
+  .font-card-headline {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  
+  .font-card-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
   }
 }
