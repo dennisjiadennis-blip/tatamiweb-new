@@ -47,9 +47,6 @@ export function Card({
 
   const cardStyle = {
     backgroundColor: backgroundColors[backgroundColor],
-    backgroundImage: "url('/textures/paper.png')",
-    backgroundBlendMode: 'overlay' as const,
-    backgroundSize: 'cover',
     padding: 'var(--gap-md)',
     borderRadius: '12px',
     border: `1px solid ${borderColors[backgroundColor]}`,
@@ -76,7 +73,7 @@ export function Card({
         transition: { duration: 0.3, ease: 'easeOut' }
       }}
       style={cardStyle}
-      className={clsx('transition-transform duration-300 ease-out', className)}
+      className={clsx('transition-transform duration-300 ease-out relative paper-texture', className)}
       onClick={handleClick}
     >
       {children}

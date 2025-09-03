@@ -15,9 +15,14 @@ export default function HomePage() {
             backgroundColor="offwhite" 
             className="md:col-span-8 md:row-span-2 flex items-center justify-center p-12"
           >
-            <h1 className="font-brand-title text-center">
-              TATAMI LABS
-            </h1>
+            <div className="text-center">
+              <h1 className="font-brand-title mb-4">
+                TATAMI LABS
+              </h1>
+              <div className="font-card-subtitle text-gray-600">
+                匠心传承 · 文化桥梁
+              </div>
+            </div>
           </Card>
 
           {/* 产品介绍卡片 */}
@@ -76,14 +81,19 @@ export default function HomePage() {
             </p>
           </Card>
 
-          {/* Logo/品牌标识卡片 */}
+          {/* 视频体验卡片 */}
           <Card 
-            backgroundColor="offwhite" 
+            backgroundColor="orange" 
+            href="/video-demo"
             className="md:col-span-3 p-6 text-center"
           >
-            <div className="font-card-subtitle font-semibold tracking-wider">
-              匠 · 心 · 传 · 承
-            </div>
+            <div className="text-2xl mb-2">🎬</div>
+            <h2 className="font-card-headline mb-2">
+              视频体验
+            </h2>
+            <p className="font-card-subtitle text-slate-100 text-sm">
+              沉浸式匠人视界
+            </p>
           </Card>
 
         </div>
