@@ -1,0 +1,233 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js 用户认证模型
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // 用于邮箱密码登录
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // 关联
+  accounts       Account[]
+  sessions       Session[]
+  interests      Interest[]
+  referrals      Referral[]
+  referralClicks ReferralClick[]
+  conversions    Conversion[]
+  videoComments  VideoComment[]
+  videoFavorites VideoFavorite[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// 用户角色
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// 大师信息模型
+model Master {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  specialty   String
+  experience  String
+  description String
+  story       String   // JSON格式存储段落数组
+  philosophy  String?
+  avatar      String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 关联
+  interests   Interest[]
+  videos      Video[]
+}
+
+// 用户兴趣表达
+model Interest {
+  id        String        @id @default(cuid())
+  userId    String
+  masterId  String
+  status    InterestStatus @default(EXPRESSED)
+  message   String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // 关联
+  user      User          @relation(fields: [userId], references: [id])
+  master    Master        @relation(fields: [masterId], references: [id])
+
+  @@unique([userId, masterId])
+}
+
+enum InterestStatus {
+  EXPRESSED   // 已表达兴趣
+  CONTACTED   // 已联系
+  SCHEDULED   // 已安排
+  COMPLETED   // 已完成
+}
+
+// 视频模型
+model Video {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  src         String   // 视频文件路径
+  poster      String?  // 封面图
+  duration    String?  // 时长显示
+  masterId    String?  // 关联大师
+  category    String   @default("demo")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 关联
+  master      Master?        @relation(fields: [masterId], references: [id])
+  comments    VideoComment[]
+  favorites   VideoFavorite[]
+}
+
+// 视频评论模型
+model VideoComment {
+  id        String   @id @default(cuid())
+  content   String
+  timestamp Int      @default(0) // 评论对应的视频时间点（秒）
+  
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([videoId])
+  @@index([userId])
+}
+
+// 视频收藏模型
+model VideoFavorite {
+  id      String @id @default(cuid())
+  
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, videoId])
+}
+
+// 推荐分享系统
+model Referral {
+  id          String   @id @default(cuid())
+  code        String   @unique // 推荐码
+  userId      String
+  name        String?  // 推荐链接名称
+  description String?
+  targetUrl   String   @default("/")
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 关联
+  user        User     @relation(fields: [userId], references: [id])
+  clicks      ReferralClick[]
+  conversions Conversion[]
+}
+
+// 推荐链接点击记录
+model ReferralClick {
+  id          String   @id @default(cuid())
+  referralId  String
+  userId      String?  // 可能是匿名用户
+  ipAddress   String
+  userAgent   String
+  country     String?
+  city        String?
+  createdAt   DateTime @default(now())
+
+  // 关联
+  referral    Referral @relation(fields: [referralId], references: [id])
+  user        User?    @relation(fields: [userId], references: [id])
+}
+
+// 转化记录
+model Conversion {
+  id          String   @id @default(cuid())
+  referralId  String
+  userId      String
+  orderId     String?  // 订单ID
+  amount      Float?   // 订单金额
+  commission  Float?   // 佣金
+  status      ConversionStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 关联
+  referral    Referral @relation(fields: [referralId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+enum ConversionStatus {
+  PENDING     // 待确认
+  CONFIRMED   // 已确认
+  PAID        // 已支付佣金
+  CANCELLED   // 已取消
+}

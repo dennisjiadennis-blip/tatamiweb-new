@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 
 const navItems = [
   { href: '/', label: '首页', icon: '🏠' },
@@ -13,9 +14,21 @@ const navItems = [
   { href: '/auth', label: '加入', icon: '🚪' }
 ]
 
+const userNavItems = [
+  { href: '/profile', label: '个人中心', icon: '👤' },
+  { href: '/masters', label: '大师', icon: '👨‍🎨' },
+  { href: '/philosophy', label: '理念', icon: '💭' },
+  { href: '/video-demo', label: '视频体验', icon: '🎬' }
+]
+
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const { data: session, status } = useSession()
+
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/' })
+  }
 
   return (
     <>
@@ -33,8 +46,8 @@ export function Navigation() {
             </button>
 
             {/* 桌面端菜单 */}
-            <div className="hidden md:flex space-x-1">
-              {navItems.map((item) => (
+            <div className="hidden md:flex items-center space-x-1">
+              {(session ? userNavItems : navItems.filter(item => item.href !== '/auth')).map((item) => (
                 <button
                   key={item.href}
                   onClick={() => window.location.href = item.href}
@@ -48,6 +61,28 @@ export function Navigation() {
                   {item.label}
                 </button>
               ))}
+              
+              {/* 用户状态 */}
+              {session ? (
+                <div className="flex items-center space-x-2 ml-4">
+                  <span className="text-gray-300 font-card-subtitle">
+                    欢迎, {session.user?.name || session.user?.email}
+                  </span>
+                  <button
+                    onClick={handleSignOut}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-card-subtitle transition-colors duration-200"
+                  >
+                    退出
+                  </button>
+                </div>
+              ) : status !== 'loading' && (
+                <button
+                  onClick={() => window.location.href = '/auth'}
+                  className="ml-4 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-card-subtitle transition-colors duration-200"
+                >
+                  登录
+                </button>
+              )}
             </div>
 
             {/* 移动端菜单按钮 */}
@@ -107,7 +142,7 @@ export function Navigation() {
 
                 {/* 菜单项 */}
                 <div className="space-y-2">
-                  {navItems.map((item) => (
+                  {(session ? userNavItems : navItems).map((item) => (
                     <button
                       key={item.href}
                       onClick={() => {
@@ -124,6 +159,31 @@ export function Navigation() {
                       {item.label}
                     </button>
                   ))}
+                  
+                  {/* 移动端用户操作 */}
+                  {session ? (
+                    <button
+                      onClick={() => {
+                        handleSignOut()
+                        setIsOpen(false)
+                      }}
+                      className="w-full text-left px-4 py-3 rounded-lg font-card-subtitle transition-all duration-200 flex items-center text-red-400 hover:bg-red-500/10"
+                    >
+                      <span className="mr-3 text-xl">🚪</span>
+                      退出登录
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        window.location.href = '/auth'
+                        setIsOpen(false)
+                      }}
+                      className="w-full text-left px-4 py-3 rounded-lg font-card-subtitle transition-all duration-200 flex items-center text-green-400 hover:bg-green-500/10"
+                    >
+                      <span className="mr-3 text-xl">🚪</span>
+                      登录/注册
+                    </button>
+                  )}
                 </div>
 
                 {/* 底部信息 */}

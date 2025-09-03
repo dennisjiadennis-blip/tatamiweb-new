@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Navigation } from "@/components/layout/navigation";
+import { AuthProvider } from "@/components/providers/session-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,12 +19,16 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&display=swap" rel="preload" as="style" />
+        <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&display=swap" rel="stylesheet" />
       </head>
       <body className="antialiased">
-        <Navigation />
-        <main>
-          {children}
-        </main>
+        <AuthProvider>
+          <Navigation />
+          <main>
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
