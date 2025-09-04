@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Skeleton, SkeletonMasterCard } from '@/components/ui/Skeleton'
+import { mastersData, type Master } from '@/data/websiteData'
 
 // Simple SVG Icons
 const ArrowLeft = ({ className }: { className?: string }) => (
@@ -25,84 +26,9 @@ const Award = ({ className }: { className?: string }) => (
   </svg>
 )
 
-// Mock data for master craftsmen
-const masterCraftsmen = [
-  {
-    id: 1,
-    name: "Hiroshi Tanaka",
-    craft: "Traditional Pottery",
-    location: "Kyoto, Japan",
-    experience: "50+ years",
-    specialty: "Raku Ceramics",
-    profileImage: "/api/placeholder/300/400",
-    description: "Master of traditional pottery techniques passed down through five generations. Specializes in the ancient art of Raku firing.",
-    achievements: ["Living National Treasure", "UNESCO Heritage Artisan", "International Pottery Award 2019"],
-    featured: true
-  },
-  {
-    id: 2,
-    name: "Yuki Sato",
-    craft: "Bamboo Weaving",
-    location: "Oita, Japan", 
-    experience: "35 years",
-    specialty: "Basket Weaving",
-    profileImage: "/api/placeholder/280/380",
-    description: "Keeper of traditional bamboo weaving techniques. Creates functional art pieces using sustainable bamboo cultivation methods.",
-    achievements: ["Master Craftsman Certification", "Eco-Art Innovation Prize", "Cultural Heritage Preservationist"],
-    featured: false
-  },
-  {
-    id: 3,
-    name: "Kenji Yamamoto",
-    craft: "Japanese Knife Making",
-    location: "Sakai, Japan",
-    experience: "45 years", 
-    specialty: "Kitchen Knives",
-    profileImage: "/api/placeholder/320/420",
-    description: "Third generation knife maker specializing in traditional Japanese kitchen knives. Known for perfect balance and exceptional sharpness.",
-    achievements: ["Sakai Traditional Craftsman", "Blade Excellence Award", "International Culinary Tool Recognition"],
-    featured: true
-  },
-  {
-    id: 4,
-    name: "Akiko Nakamura",
-    craft: "Indigo Dyeing",
-    location: "Tokushima, Japan",
-    experience: "30 years",
-    specialty: "Natural Indigo",
-    profileImage: "/api/placeholder/290/390", 
-    description: "Expert in traditional indigo dyeing techniques using naturally grown indigo plants. Preserves ancient color-making methods.",
-    achievements: ["Natural Dye Master", "Sustainable Craft Award", "Traditional Textile Recognition"],
-    featured: false
-  },
-  {
-    id: 5,
-    name: "Taro Suzuki", 
-    craft: "Traditional Carpentry",
-    location: "Nara, Japan",
-    experience: "40 years",
-    specialty: "Joinery without Nails",
-    profileImage: "/api/placeholder/310/410",
-    description: "Master carpenter specializing in traditional Japanese wood joinery. Creates structures using ancient techniques without nails or screws.",
-    achievements: ["Temple Construction Master", "Wood Joinery Excellence", "Cultural Building Preservation"],
-    featured: true
-  },
-  {
-    id: 6,
-    name: "Michiko Watanabe",
-    craft: "Tea Ceremony", 
-    location: "Tokyo, Japan",
-    experience: "25 years",
-    specialty: "Omotesenke Style",
-    profileImage: "/api/placeholder/270/370",
-    description: "Tea ceremony master teaching the spiritual and aesthetic principles of the Japanese tea ceremony in the Omotesenke tradition.",
-    achievements: ["Tea Master Certification", "Cultural Ambassador", "Mindfulness Practice Leader"],
-    featured: false
-  }
-]
 
 interface MasterCardProps {
-  master: typeof masterCraftsmen[0]
+  master: Master
   className?: string
 }
 
@@ -111,15 +37,15 @@ const MasterCard = ({ master, className = "" }: MasterCardProps) => {
 
   return (
     <Link
-      href={`/masters/${master.id}`}
+      href={`/masters/${master.slug}`}
       className={`tatami-block bg-linen group hover:shadow-deep hover:scale-[1.02] transition-all duration-tatami flex-col text-left ${className}`}
     >
       {/* Profile Image */}
       <div className="relative w-full h-48 bg-charcoal/10 rounded-t-tatami overflow-hidden">
         {/* Lazy loaded image */}
         <Image
-          src={master.profileImage}
-          alt={`${master.name} - ${master.craft} Master`}
+          src={master.imageProfile}
+          alt={`${master.nameEn} - ${master.profession} Master`}
           fill
           className={`object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setImageLoaded(true)}
@@ -146,18 +72,18 @@ const MasterCard = ({ master, className = "" }: MasterCardProps) => {
         
         {/* Experience Badge */}
         <div className="absolute top-3 right-3 bg-charcoal/80 text-linen text-xs px-2 py-1 rounded">
-          {master.experience}
+          {master.experience}+ years
         </div>
       </div>
       
       {/* Content */}
       <div className="p-5 flex-1 flex flex-col">
         <h3 className="heading-block text-xl mb-2 text-charcoal group-hover:text-burnt-orange transition-colors duration-300">
-          {master.name}
+          {master.nameEn}
         </h3>
         
         <div className="text-burnt-orange font-primary font-medium text-sm mb-2">
-          {master.craft}
+          {master.profession}
         </div>
         
         <div className="flex items-center gap-1 text-charcoal/70 text-xs mb-3">
@@ -166,7 +92,7 @@ const MasterCard = ({ master, className = "" }: MasterCardProps) => {
         </div>
         
         <p className="text-description text-charcoal/80 text-sm leading-comfortable mb-4 flex-1">
-          {master.description}
+          {master.biographyEn.substring(0, 120)}...
         </p>
         
         <div className="space-y-2">
@@ -174,9 +100,12 @@ const MasterCard = ({ master, className = "" }: MasterCardProps) => {
             Specialty: {master.specialty}
           </div>
           
-          {/* Top Achievement */}
-          <div className="text-xs text-moss-green font-primary font-medium">
-            {master.achievements[0]}
+          {/* Rating */}
+          <div className="flex items-center gap-2">
+            <div className="flex text-burnt-orange">
+              {'★'.repeat(Math.floor(master.rating))}
+            </div>
+            <span className="text-xs text-charcoal/60">{master.rating}</span>
           </div>
         </div>
       </div>
@@ -185,8 +114,8 @@ const MasterCard = ({ master, className = "" }: MasterCardProps) => {
 }
 
 export default function MastersPage() {
-  const featuredMasters = masterCraftsmen.filter(master => master.featured)
-  const otherMasters = masterCraftsmen.filter(master => !master.featured)
+  const featuredMasters = mastersData.filter(master => master.featured)
+  const otherMasters = mastersData.filter(master => !master.featured)
 
   return (
     <main className="min-h-screen bg-background">
@@ -246,7 +175,7 @@ export default function MastersPage() {
           
           {/* All Masters Grid - Compact Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {masterCraftsmen.map((master) => (
+            {mastersData.map((master) => (
               <MasterCard 
                 key={master.id} 
                 master={master} 

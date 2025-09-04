@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import Image from 'next/image'
+import { journeyData } from '@/data/websiteData'
 
 // Simple SVG Icons
 const ArrowLeft = ({ className }: { className?: string }) => (
@@ -31,132 +33,9 @@ const Star = ({ className }: { className?: string }) => (
   </svg>
 )
 
-// Mock data for journey experiences
-const journeyExperiences = [
-  {
-    id: 1,
-    title: "Kyoto Master Potter's Private Workshop",
-    partner: "Cultural Bridges Japan",
-    location: "Kyoto, Japan",
-    duration: "3 days",
-    groupSize: "Maximum 6 people",
-    price: "From $1,200",
-    rating: 4.9,
-    image: "/api/placeholder/400/300",
-    description: "Experience the ancient art of Raku pottery with Master Hiroshi Tanaka in his traditional Kyoto studio. This intimate journey includes hands-on pottery sessions, tea ceremony, and philosophical discussions about craftsmanship.",
-    highlights: [
-      "Private studio access with Master Tanaka",
-      "Create your own Raku pottery piece",
-      "Traditional tea ceremony experience", 
-      "Philosophy of wabi-sabi discussion"
-    ],
-    partnerWebsite: "https://culturalbridgesjapan.com",
-    featured: true
-  },
-  {
-    id: 2,
-    title: "Sakai Blade Forging Intensive",
-    partner: "Artisan Quest Adventures",
-    location: "Sakai, Japan",
-    duration: "5 days",
-    groupSize: "Maximum 4 people", 
-    price: "From $2,800",
-    rating: 4.8,
-    image: "/api/placeholder/450/280",
-    description: "Learn traditional Japanese knife making from third-generation master Kenji Yamamoto. This exclusive experience covers steel forging, blade tempering, and the philosophy behind Japanese cutlery craftsmanship.",
-    highlights: [
-      "Traditional steel folding techniques",
-      "Personal knife creation workshop",
-      "Master blacksmith mentorship",
-      "Take home your custom blade"
-    ],
-    partnerWebsite: "https://artisanquest.com",
-    featured: true
-  },
-  {
-    id: 3,
-    title: "Bamboo Weaving Master Class",
-    partner: "Zen Garden Experiences",
-    location: "Oita, Japan",
-    duration: "2 days",
-    groupSize: "Maximum 8 people",
-    price: "From $680",
-    rating: 4.7,
-    image: "/api/placeholder/350/320",
-    description: "Discover the meditative art of bamboo weaving with master artisan Yuki Sato. Create functional baskets while learning about sustainable craftsmanship and the spiritual aspects of working with natural materials.",
-    highlights: [
-      "Sustainable bamboo harvesting",
-      "Traditional weaving techniques",
-      "Meditation and mindfulness practice",
-      "Eco-friendly craft philosophy"
-    ],
-    partnerWebsite: "https://zengardenexperiences.jp",
-    featured: false
-  },
-  {
-    id: 4,
-    title: "Tea Ceremony Deep Dive",
-    partner: "Mindful Japan Journeys",
-    location: "Tokyo, Japan",
-    duration: "1 day",
-    groupSize: "Maximum 10 people",
-    price: "From $320",
-    rating: 4.6,
-    image: "/api/placeholder/380/300",
-    description: "Immerse yourself in the spiritual world of Japanese tea ceremony with Tea Master Michiko Watanabe. Learn the Omotesenke style while exploring the deeper meanings of harmony, respect, purity, and tranquility.",
-    highlights: [
-      "Omotesenke tea ceremony training",
-      "Traditional utensil appreciation", 
-      "Seasonal tea and sweets",
-      "Philosophy of wa-kei-sei-jaku"
-    ],
-    partnerWebsite: "https://mindfuljapanjourneys.com",
-    featured: false
-  },
-  {
-    id: 5,
-    title: "Traditional Carpentry Workshop",
-    partner: "Heritage Craft Tours",
-    location: "Nara, Japan", 
-    duration: "4 days",
-    groupSize: "Maximum 6 people",
-    price: "From $1,800",
-    rating: 4.9,
-    image: "/api/placeholder/420/290",
-    description: "Master the art of Japanese joinery with wood craftsman Taro Suzuki. Learn to create furniture using traditional techniques without nails or screws, understanding the harmony between wood and craftsmanship.",
-    highlights: [
-      "Nail-free joinery techniques",
-      "Traditional tool mastery",
-      "Wood selection philosophy",
-      "Build a functional piece"
-    ],
-    partnerWebsite: "https://heritagecrafttours.com",
-    featured: true
-  },
-  {
-    id: 6,
-    title: "Indigo Dyeing Experience",
-    partner: "Natural Craft Journeys",
-    location: "Tokushima, Japan",
-    duration: "2 days", 
-    groupSize: "Maximum 12 people",
-    price: "From $520",
-    rating: 4.5,
-    image: "/api/placeholder/360/340",
-    description: "Explore the ancient art of indigo dyeing with master dyer Akiko Nakamura. Learn about natural indigo cultivation, traditional fermentation processes, and create beautiful dyed textiles using time-honored techniques.",
-    highlights: [
-      "Natural indigo cultivation tour",
-      "Traditional fermentation methods",
-      "Hand-dyeing workshops",
-      "Sustainable textile practices"
-    ],
-    partnerWebsite: "https://naturalcraftjourneys.jp",
-    featured: false
-  }
-]
 
 interface JourneyCardProps {
-  experience: typeof journeyExperiences[0]
+  experience: any
   className?: string
 }
 
@@ -164,6 +43,14 @@ const JourneyCard = ({ experience, className = "" }: JourneyCardProps) => (
   <div className={`tatami-block bg-linen group hover:shadow-deep transition-all duration-tatami flex-col text-left ${className}`}>
     {/* Experience Image */}
     <div className="relative w-full h-48 bg-charcoal/10 rounded-t-tatami overflow-hidden">
+      <Image
+        src={experience.image}
+        alt={experience.titleEn}
+        fill
+        className="object-cover"
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+      />
       <div className="absolute inset-0 bg-gradient-to-br from-powder-blue/20 to-moss-green/20" />
       
       {/* Featured Badge */}
@@ -184,11 +71,11 @@ const JourneyCard = ({ experience, className = "" }: JourneyCardProps) => (
     {/* Content */}
     <div className="p-5 flex-1 flex flex-col">
       <h3 className="heading-block text-lg mb-2 text-charcoal group-hover:text-burnt-orange transition-colors duration-300">
-        {experience.title}
+        {experience.titleEn}
       </h3>
       
       <div className="text-burnt-orange font-primary font-medium text-sm mb-3">
-        with {experience.partner}
+        {experience.category}
       </div>
       
       <div className="space-y-2 mb-4">
@@ -206,17 +93,10 @@ const JourneyCard = ({ experience, className = "" }: JourneyCardProps) => (
         {experience.description}
       </p>
       
-      {/* Highlights */}
+      {/* Japanese Title */}
       <div className="mb-4">
-        <h4 className="text-xs text-charcoal/60 font-primary font-medium mb-2">Experience Highlights:</h4>
-        <ul className="space-y-1">
-          {experience.highlights.slice(0, 2).map((highlight, index) => (
-            <li key={index} className="text-xs text-charcoal/70 flex items-start gap-1">
-              <span className="text-moss-green">•</span>
-              {highlight}
-            </li>
-          ))}
-        </ul>
+        <h4 className="text-xs text-charcoal/60 font-primary font-medium mb-1">日本語:</h4>
+        <p className="text-sm text-charcoal/80 font-medium">{experience.titleJa}</p>
       </div>
       
       <div className="flex items-center justify-between">
@@ -225,11 +105,11 @@ const JourneyCard = ({ experience, className = "" }: JourneyCardProps) => (
         </div>
         
         <a
-          href={experience.partnerWebsite}
+          href={experience.partnerUrl}
           target="_blank" 
           rel="noopener noreferrer"
           className="tatami-block bg-burnt-orange text-linen px-4 py-2 text-sm hover:bg-burnt-orange/90 transition-colors duration-300 inline-flex items-center gap-2"
-          title={`Book with ${experience.partner}`}
+          title="Book Experience"
         >
           <span>Book Experience</span>
           <ExternalLink className="w-3 h-3" />
@@ -240,8 +120,8 @@ const JourneyCard = ({ experience, className = "" }: JourneyCardProps) => (
 )
 
 export default function JourneyPage() {
-  const featuredExperiences = journeyExperiences.filter(exp => exp.featured)
-  const otherExperiences = journeyExperiences.filter(exp => !exp.featured)
+  const featuredExperiences = journeyData.filter(exp => exp.featured)
+  const otherExperiences = journeyData.filter(exp => !exp.featured)
 
   return (
     <main className="min-h-screen bg-background">
@@ -325,7 +205,7 @@ export default function JourneyPage() {
           
           {/* All Experiences Grid - Masonry Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {journeyExperiences.map((experience) => (
+            {journeyData.map((experience) => (
               <JourneyCard 
                 key={experience.id} 
                 experience={experience} 
@@ -346,12 +226,12 @@ export default function JourneyPage() {
               and their traditional workshops. Each partner shares our commitment to preserving cultural heritage through meaningful experiences.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-sm text-linen/70">
-              <div>Cultural Bridges Japan</div>
-              <div>Artisan Quest Adventures</div>
-              <div>Zen Garden Experiences</div>
-              <div>Mindful Japan Journeys</div>
-              <div>Heritage Craft Tours</div>
-              <div>Natural Craft Journeys</div>
+              <div>Kyoto Garden Tours</div>
+              <div>Shigaraki Pottery</div>
+              <div>Kyoto Tea Ceremony</div>
+              <div>Arashiyama Experiences</div>
+              <div>Kimono Workshop Tokyo</div>
+              <div>Hakone Traditional Ryokan</div>
             </div>
           </div>
         </section>

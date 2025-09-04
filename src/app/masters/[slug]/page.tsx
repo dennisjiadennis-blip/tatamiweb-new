@@ -1,5 +1,7 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { mastersData, videoStoriesData } from '@/data/websiteData'
 
 // Simple SVG Icons
 const ArrowLeft = ({ className }: { className?: string }) => (
@@ -27,208 +29,112 @@ const Award = ({ className }: { className?: string }) => (
   </svg>
 )
 
-// Master data mapped by both id and slug for compatibility
-const masterData = {
-  // By ID (numeric)
-  1: {
-    id: 1,
-    slug: "hiroshi-tanaka",
-    name: "Hiroshi Tanaka",
-    craft: "Traditional Pottery",
-    location: "Kyoto, Japan",
-    experience: "50+ years",
-    specialty: "Raku Ceramics",
-    profileImage: "/api/placeholder/400/500",
-    shortDescription: "Master of traditional pottery techniques passed down through five generations.",
-    
-    biography: {
-      introduction: "Hiroshi Tanaka represents the epitome of traditional Japanese pottery craftsmanship. Born into a family of ceramicists in Kyoto, he has dedicated over five decades to perfecting the ancient art of Raku firing, a technique that embodies the Japanese aesthetic philosophy of wabi-sabi.",
-      
-      journey: "His journey began at the age of 12, learning at his grandfather's kiln in the historic Gion district. Under the tutelage of master potters who traced their lineage back to the Edo period, Hiroshi developed an intimate understanding of clay, fire, and the delicate balance between control and surrender that defines true artistry.",
-      
-      philosophy: "\"Clay teaches patience,\" Hiroshi often says. \"Fire teaches humility. Together, they teach us about the beauty of imperfection.\" His philosophy centers around the belief that each piece of pottery carries the soul of its creator, the memory of the earth from which it came, and the breath of the fire that transformed it.",
-      
-      recognition: "In 2018, Hiroshi was designated as a Living National Treasure by the Japanese government, recognizing his invaluable contribution to preserving and advancing traditional ceramic arts. His works are held in permanent collections at the Tokyo National Museum, the Victoria and Albert Museum in London, and the Metropolitan Museum of Art in New York."
-    },
-    
-    achievements: [
-      "Living National Treasure (2018)",
-      "UNESCO Heritage Artisan",
-      "International Pottery Award 2019",
-      "Kyoto Cultural Ambassador",
-      "Master of Traditional Crafts"
-    ],
-    
-    works: [
-      {
-        id: 1,
-        title: "Moonlit Vessel",
-        year: "2023",
-        technique: "Raku Firing",
-        image: "/api/placeholder/300/400",
-        description: "A meditation on the interplay of light and shadow"
-      },
-      {
-        id: 2,
-        title: "Autumn Reflection",
-        year: "2022",
-        technique: "Wood-fired Ceramic",
-        image: "/api/placeholder/350/300",
-        description: "Inspired by the changing seasons in Kyoto"
-      },
-      {
-        id: 3,
-        title: "Zen Garden Bowl",
-        year: "2023",
-        technique: "Traditional Glazing",
-        image: "/api/placeholder/320/320",
-        description: "Embodying the essence of Japanese tea ceremony"
-      },
-      {
-        id: 4,
-        title: "Phoenix Rising",
-        year: "2021",
-        technique: "Raku Firing",
-        image: "/api/placeholder/280/450",
-        description: "A symbolic piece representing renewal and transformation"
-      },
-      {
-        id: 5,
-        title: "Morning Dew Vase",
-        year: "2023",
-        technique: "Natural Ash Glaze",
-        image: "/api/placeholder/300/380",
-        description: "Capturing the ephemeral beauty of early morning"
-      },
-      {
-        id: 6,
-        title: "Harmony in Clay",
-        year: "2022",
-        technique: "Multi-firing Technique",
-        image: "/api/placeholder/400/300",
-        description: "A masterpiece of balance and proportion"
-      }
-    ],
-    
-    relatedVideos: [
-      {
-        id: 1,
-        title: "The Sacred Fire: Hiroshi's Raku Ceremony",
-        duration: "18:42",
-        thumbnail: "/api/placeholder/400/300",
-        description: "Watch Master Tanaka perform the ancient Raku firing ceremony"
-      },
-      {
-        id: 2,
-        title: "From Clay to Art: 50 Years of Dedication",
-        duration: "24:15",
-        thumbnail: "/api/placeholder/380/280",
-        description: "A comprehensive documentary about Hiroshi's journey"
-      },
-      {
-        id: 3,
-        title: "Teaching the Next Generation",
-        duration: "12:30",
-        thumbnail: "/api/placeholder/420/300",
-        description: "Hiroshi shares his knowledge with young apprentices"
-      },
-      {
-        id: 4,
-        title: "The Philosophy of Imperfection",
-        duration: "15:22",
-        thumbnail: "/api/placeholder/350/280",
-        description: "Understanding wabi-sabi through pottery"
-      }
-    ]
-  },
-  
-  3: {
-    id: 3,
-    slug: "kenji-yamamoto",
-    name: "Kenji Yamamoto",
-    craft: "Japanese Knife Making",
-    location: "Sakai, Japan",
-    experience: "45 years",
-    specialty: "Kitchen Knives",
-    profileImage: "/api/placeholder/400/500",
-    shortDescription: "Third generation knife maker specializing in traditional Japanese kitchen knives.",
-    
-    biography: {
-      introduction: "Kenji Yamamoto stands as the third generation of master blade smiths in the renowned Sakai tradition. His family workshop has been forging exceptional Japanese knives for over a century, combining ancient techniques with modern precision.",
-      
-      journey: "Beginning his apprenticeship at age 16 under his father's watchful eye, Kenji spent years mastering the intricate process of folding steel, achieving the perfect balance between hardness and flexibility that defines Japanese blade craftsmanship.",
-      
-      philosophy: "\"A knife is not just a tool,\" Kenji explains. \"It is an extension of the chef's soul, a bridge between intention and creation. Every fold in the steel carries our ancestors' wisdom.\"",
-      
-      recognition: "Kenji's blades are sought after by renowned chefs worldwide. His knives grace the kitchens of Michelin-starred restaurants and are treasured by culinary artists who understand the difference that true craftsmanship makes."
-    },
-    
-    achievements: [
-      "Sakai Traditional Craftsman",
-      "Blade Excellence Award",
-      "International Culinary Tool Recognition",
-      "Master Smith Certification",
-      "Export Excellence Award"
-    ],
-    
-    works: [
-      {
-        id: 1,
-        title: "Sakura Santoku",
-        year: "2023",
-        technique: "Damascus Steel",
-        image: "/api/placeholder/400/250",
-        description: "Named for the cherry blossom pattern in the steel"
-      },
-      {
-        id: 2,
-        title: "Master Chef's Gyuto",
-        year: "2023",
-        technique: "High Carbon Steel",
-        image: "/api/placeholder/450/200",
-        description: "The ultimate chef's knife for professional kitchens"
-      },
-      {
-        id: 3,
-        title: "Harmony Deba",
-        year: "2022",
-        technique: "Traditional Forging",
-        image: "/api/placeholder/350/300",
-        description: "Perfect for fish preparation in Japanese cuisine"
-      }
-    ],
-    
-    relatedVideos: [
-      {
-        id: 1,
-        title: "Forging Fire: The Making of a Master Blade",
-        duration: "22:18",
-        thumbnail: "/api/placeholder/400/300",
-        description: "The complete process of creating a traditional Japanese knife"
-      },
-      {
-        id: 2,
-        title: "Three Generations of Steel",
-        duration: "16:45",
-        thumbnail: "/api/placeholder/380/280",
-        description: "The Yamamoto family legacy in blade making"
-      }
-    ]
-  }
-}
-
-// Create slug-based lookup
-const masterBySlug = Object.values(masterData).reduce((acc, master) => {
+// Create slug-based lookup from websiteData
+const masterBySlug = mastersData.reduce((acc, master) => {
   acc[master.slug] = master
   return acc
-}, {} as Record<string, typeof masterData[1]>)
+}, {} as Record<string, any>)
+
+// Create mock works for each master
+const mockWorksData = {
+  "hiroki-sato": [
+    {
+      id: 1,
+      title: "Premium Junmai Daiginjo",
+      year: "2023",
+      technique: "Kimoto Method",
+      image: "/photo/1b.png",
+      description: "A premium sake showcasing traditional Kimoto brewing techniques"
+    },
+    {
+      id: 2,
+      title: "Seasonal Namazake",
+      year: "2023",
+      technique: "Unpasteurized Brewing",
+      image: "/photo/1a.png",
+      description: "Fresh, unpasteurized sake capturing the essence of each season"
+    }
+  ],
+  "kenzo-tanaka": [
+    {
+      id: 1,
+      title: "Fugetsu Iron Kettle",
+      year: "2023",
+      technique: "Traditional Hand Casting",
+      image: "/photo/2b.png",
+      description: "A masterpiece of Nambu ironware featuring wind and moon motifs"
+    },
+    {
+      id: 2,
+      title: "Cherry Blossom Teapot",
+      year: "2022",
+      technique: "Chiseled Ironwork",
+      image: "/photo/2a.png",
+      description: "Delicate cherry blossom patterns carved into durable iron"
+    }
+  ],
+  "yuki-kimura": [
+    {
+      id: 1,
+      title: "An of Light Pavilion",
+      year: "2023",
+      technique: "Sustainable Joinery",
+      image: "/photo/3b.png",
+      description: "A meditation pavilion integrating natural light and traditional construction"
+    },
+    {
+      id: 2,
+      title: "Cloud and Water Garden",
+      year: "2022",
+      technique: "Natural Integration",
+      image: "/photo/3a.png",
+      description: "A private garden design harmonizing architecture with nature"
+    }
+  ],
+  "takeru-honda": [
+    {
+      id: 1,
+      title: "Championship Victory Ceremony",
+      year: "2023",
+      technique: "Sumo Tournament",
+      image: "/photo/4b.png",
+      description: "Celebrating traditional victory rituals in professional sumo"
+    },
+    {
+      id: 2,
+      title: "Training at Dawn",
+      year: "2023",
+      technique: "Traditional Practice",
+      image: "/photo/4a.png",
+      description: "Daily morning training embodying the spirit of sumo discipline"
+    }
+  ],
+  "chiyo": [
+    {
+      id: 1,
+      title: "Gion District Performance",
+      year: "2023",
+      technique: "Traditional Geisha Arts",
+      image: "/photo/5b.png",
+      description: "An elegant performance showcasing classical Japanese dance"
+    },
+    {
+      id: 2,
+      title: "Tea Ceremony Demonstration",
+      year: "2023",
+      technique: "Traditional Tea Arts",
+      image: "/photo/5a.png",
+      description: "Demonstrating the refined movements of Japanese tea ceremony"
+    }
+  ]
+}
 
 interface MasterDetailPageProps {
   params: Promise<{ slug: string }>
 }
 
 interface WorkItemProps {
-  work: typeof masterData[1]['works'][0]
+  work: any
   className?: string
 }
 
@@ -236,6 +142,14 @@ const WorkItem = ({ work, className = "" }: WorkItemProps) => (
   <div className={`tatami-block bg-linen group hover:shadow-deep transition-all duration-tatami flex-col cursor-pointer ${className}`}>
     {/* Artwork Image */}
     <div className="relative w-full h-48 bg-charcoal/10 rounded-t-tatami overflow-hidden">
+      <Image
+        src={work.image}
+        alt={work.title}
+        fill
+        className="object-cover"
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      />
       <div className="absolute inset-0 bg-gradient-to-br from-powder-blue/10 to-moss-green/10" />
       
       {/* Year Badge */}
@@ -262,7 +176,7 @@ const WorkItem = ({ work, className = "" }: WorkItemProps) => (
 )
 
 interface VideoItemProps {
-  video: typeof masterData[1]['relatedVideos'][0]
+  video: any
   className?: string
 }
 
@@ -270,6 +184,14 @@ const VideoItem = ({ video, className = "" }: VideoItemProps) => (
   <div className={`tatami-block bg-linen group hover:shadow-deep transition-all duration-tatami flex-col cursor-pointer ${className}`}>
     {/* Video Thumbnail */}
     <div className="relative w-full h-40 bg-charcoal/10 rounded-t-tatami overflow-hidden">
+      <Image
+        src={video.coverImage}
+        alt={video.title}
+        fill
+        className="object-cover"
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      />
       <div className="absolute inset-0 bg-gradient-to-br from-powder-blue/20 to-moss-green/20" />
       
       {/* Play Button Overlay */}
@@ -306,6 +228,12 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
   if (!master) {
     notFound()
   }
+  
+  // Get related works and videos
+  const masterWorks = mockWorksData[slug] || []
+  const relatedVideos = videoStoriesData.filter(video => 
+    video.masterName === master.nameEn
+  ).slice(0, 4)
 
   return (
     <main className="min-h-screen bg-background">
@@ -339,8 +267,16 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
             {/* Profile Image */}
             <div className="lg:col-span-1">
               <div className="tatami-block bg-linen p-0 overflow-hidden h-96">
-                <div className="w-full h-full bg-gradient-to-br from-powder-blue/20 to-moss-green/20 relative">
-                  <div className="absolute inset-0 bg-charcoal/5" />
+                <div className="w-full h-full relative">
+                  <Image
+                    src={master.imageDetail}
+                    alt={`${master.nameEn} - Master ${master.profession}`}
+                    fill
+                    className="object-cover"
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-powder-blue/10 to-moss-green/10" />
                 </div>
               </div>
             </div>
@@ -348,9 +284,9 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
             {/* Master Information */}
             <div className="lg:col-span-2 space-y-6">
               <div>
-                <h2 className="heading-block-large text-linen mb-2">{master.name}</h2>
+                <h2 className="heading-block-large text-linen mb-2">{master.nameEn}</h2>
                 <div className="text-burnt-orange font-primary font-medium text-lg mb-4">
-                  {master.craft}
+                  {master.profession}
                 </div>
                 
                 <div className="flex flex-wrap gap-4 mb-6">
@@ -359,7 +295,7 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
                     {master.location}
                   </div>
                   <div className="text-linen/80 text-sm">
-                    {master.experience} experience
+                    {master.experience}+ years experience
                   </div>
                   <div className="text-moss-green text-sm font-medium">
                     Specialty: {master.specialty}
@@ -367,7 +303,7 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
                 </div>
                 
                 <p className="text-description text-linen/90 text-base leading-relaxed">
-                  {master.shortDescription}
+                  {master.biographyEn.substring(0, 200)}...
                 </p>
               </div>
               
@@ -378,13 +314,16 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
                   Recognition & Achievements
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {master.achievements.map((achievement, index) => (
-                    <div key={index} className="tatami-block bg-powder-blue/20 py-3 px-4">
-                      <span className="text-description text-charcoal text-sm font-medium">
-                        {achievement}
-                      </span>
-                    </div>
-                  ))}
+                  <div className="tatami-block bg-powder-blue/20 py-3 px-4">
+                    <span className="text-description text-charcoal text-sm font-medium">
+                      {master.achievementsEn.split('.')[0]}.
+                    </span>
+                  </div>
+                  <div className="tatami-block bg-moss-green/20 py-3 px-4">
+                    <span className="text-description text-charcoal text-sm font-medium">
+                      Rating: {master.rating}/5.0 ⭐
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -398,19 +337,22 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
           </h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {Object.entries(master.biography).map(([key, content], index) => (
-              <div key={key} className="tatami-block bg-linen p-8 flex-col text-left h-auto">
-                <h3 className="heading-block text-lg text-charcoal mb-4 capitalize">
-                  {key === 'introduction' ? 'The Beginning' : 
-                   key === 'journey' ? 'The Path' : 
-                   key === 'philosophy' ? 'The Wisdom' : 
-                   'The Legacy'}
-                </h3>
-                <p className="text-description text-charcoal/90 text-sm leading-relaxed">
-                  {content}
-                </p>
-              </div>
-            ))}
+            <div className="tatami-block bg-linen p-8 flex-col text-left h-auto">
+              <h3 className="heading-block text-lg text-charcoal mb-4">
+                Biography (English)
+              </h3>
+              <p className="text-description text-charcoal/90 text-sm leading-relaxed">
+                {master.biographyEn}
+              </p>
+            </div>
+            <div className="tatami-block bg-powder-blue/20 p-8 flex-col text-left h-auto">
+              <h3 className="heading-block text-lg text-charcoal mb-4">
+                Biography (日本語)
+              </h3>
+              <p className="text-description text-charcoal/90 text-sm leading-relaxed">
+                {master.biographyJa}
+              </p>
+            </div>
           </div>
         </section>
 
@@ -427,7 +369,7 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
           
           {/* Works Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {master.works.map((work) => (
+            {masterWorks.map((work) => (
               <WorkItem 
                 key={work.id}
                 work={work}
@@ -450,7 +392,7 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
           
           {/* Videos Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {master.relatedVideos.map((video) => (
+            {relatedVideos.map((video) => (
               <VideoItem 
                 key={video.id}
                 video={video}
@@ -503,7 +445,7 @@ export async function generateMetadata({ params }: MasterDetailPageProps) {
   }
   
   return {
-    title: `${master.name} - ${master.craft} - Tatami Labs`,
-    description: `Discover the story, techniques, and masterpieces of ${master.name}, a renowned ${master.craft} master with ${master.experience} of experience. ${master.shortDescription}`,
+    title: `${master.nameEn} - ${master.profession} - Tatami Labs`,
+    description: `Discover the story, techniques, and masterpieces of ${master.nameEn}, a renowned ${master.profession} master with ${master.experience}+ years of experience.`,
   }
 }

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Skeleton, SkeletonVideoCard } from '@/components/ui/Skeleton'
+import { videoStoriesData } from '@/data/websiteData'
 
 // Simple SVG Icons
 const ArrowLeft = ({ className }: { className?: string }) => (
@@ -18,76 +19,9 @@ const Play = ({ className, fill }: { className?: string, fill?: string }) => (
   </svg>
 )
 
-// Mock data for video stories
-const videoStories = [
-  {
-    id: 1,
-    title: "The Art of Traditional Pottery: A Master Craftsman's 50-Year Journey Through Clay and Fire",
-    coverImage: "/api/placeholder/400/300",
-    duration: "12:34",
-    masterName: "Hiroshi Tanaka",
-    category: "Ceramics"
-  },
-  {
-    id: 2,
-    title: "Bamboo Weaving Techniques Passed Down Through Five Generations",
-    coverImage: "/api/placeholder/300/300", 
-    duration: "8:45",
-    masterName: "Yuki Sato",
-    category: "Bamboo Craft"
-  },
-  {
-    id: 3,
-    title: "The Philosophy of Japanese Knife Making: Balance, Beauty, and Function",
-    coverImage: "/api/placeholder/500/280",
-    duration: "15:22",
-    masterName: "Kenji Yamamoto",
-    category: "Metalwork"
-  },
-  {
-    id: 4,
-    title: "Indigo Dyeing: The Ancient Art of Creating Deep Blue",
-    coverImage: "/api/placeholder/350/400",
-    duration: "9:17",
-    masterName: "Akiko Nakamura",
-    category: "Textile"
-  },
-  {
-    id: 5,
-    title: "Wood Joinery Without Nails: Traditional Japanese Carpentry Secrets",
-    coverImage: "/api/placeholder/400/250",
-    duration: "18:03",
-    masterName: "Taro Suzuki",
-    category: "Woodwork"
-  },
-  {
-    id: 6,
-    title: "The Meditation of Tea Ceremony: Finding Peace in Every Movement",
-    coverImage: "/api/placeholder/320/320",
-    duration: "11:28",
-    masterName: "Michiko Watanabe",
-    category: "Tea Ceremony"
-  },
-  {
-    id: 7,
-    title: "Calligraphy as Soul Expression: Brushstrokes That Tell Stories",
-    coverImage: "/api/placeholder/450/300",
-    duration: "13:56",
-    masterName: "Takeshi Ito",
-    category: "Calligraphy"
-  },
-  {
-    id: 8,
-    title: "Garden Design Philosophy: Creating Harmony Between Nature and Human Spirit",
-    coverImage: "/api/placeholder/380/280",
-    duration: "16:41",
-    masterName: "Yoshiko Kimura",
-    category: "Garden Design"
-  }
-]
 
 interface VideoCardProps {
-  story: typeof videoStories[0]
+  story: any
   className?: string
 }
 
@@ -180,9 +114,9 @@ export default function StoriesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           
           {/* Video Cards with Irregular Sizing */}
-          <VideoCard story={videoStories[0]} className="md:col-span-2 h-80" />
-          <VideoCard story={videoStories[1]} className="h-72" />
-          <VideoCard story={videoStories[2]} className="h-64" />
+          <VideoCard story={videoStoriesData[0]} className="md:col-span-2 h-80" />
+          <VideoCard story={videoStoriesData[1]} className="h-72" />
+          <VideoCard story={videoStoriesData[2]} className="h-64" />
           
           {/* Explore Masters CTA Block */}
           <Link 
@@ -201,11 +135,11 @@ export default function StoriesPage() {
             </div>
           </Link>
           
-          <VideoCard story={videoStories[3]} className="h-80" />
-          <VideoCard story={videoStories[4]} className="h-64" />
-          <VideoCard story={videoStories[5]} className="h-72" />
-          <VideoCard story={videoStories[6]} className="md:col-span-2 h-64" />
-          <VideoCard story={videoStories[7]} className="h-76" />
+          <VideoCard story={videoStoriesData[3]} className="h-80" />
+          <VideoCard story={videoStoriesData[4]} className="h-64" />
+          <VideoCard story={videoStoriesData[5]} className="h-72" />
+          <VideoCard story={videoStoriesData[6]} className="md:col-span-2 h-64" />
+          <VideoCard story={videoStoriesData[7]} className="h-76" />
           
         </div>
         
