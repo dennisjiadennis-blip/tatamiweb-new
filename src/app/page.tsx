@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import {
   TatamiLogo,
   GetaSandal,
@@ -7,7 +8,7 @@ import {
 
 export default function HomePage() {
   return (
-    <div style={{ 
+    <main style={{ 
       backgroundColor: '#2D323A',
       width: '100vw', 
       height: '100vh',
@@ -16,8 +17,8 @@ export default function HomePage() {
       padding: '0',
       margin: '0'
     }}>
-      {/* Title - Top-left corner, floating independently */}
-      <div style={{
+      {/* Floating Brand Title - Independent positioning */}
+      <header style={{
         position: 'absolute',
         top: '5vh',
         left: '5vw',
@@ -35,35 +36,43 @@ export default function HomePage() {
         }}>
           Tatami Labs
         </h1>
-      </div>
+      </header>
 
-      {/* Asymmetrical Collage - Full screen utilization with consistent gaps */}
-      <div style={{
-        position: 'absolute',
-        top: '15vh',
-        left: '5vw',
-        width: '90vw',
-        height: '80vh',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        gridTemplateRows: 'repeat(8, 1fr)',
-        gap: '20px'
-      }}>
+      {/* Main Grid Container - 12x8 Japandi Magazine Layout */}
+      <section 
+        style={{
+          position: 'absolute',
+          top: '15vh',
+          left: '5vw',
+          width: '90vw',
+          height: '80vh',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          gridTemplateRows: 'repeat(8, 1fr)',
+          gap: '20px'
+        }}
+        aria-label="Tatami Labs Navigation Grid"
+      >
         
-        {/* Large landscape block - "A Story Woven with a Master" - Powder Blue */}
-        <div style={{
-          gridColumn: '1 / 5',
-          gridRow: '1 / 3',
-          backgroundColor: '#B0C4DE',
-          borderRadius: '18px',
-          border: '2px solid #8B8B8B',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 12px 40px rgba(176, 196, 222, 0.4)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
-        }}>
+        {/* 1. "A Story Woven with a Master" - Powder Blue - Product Story Entry */}
+        <Link 
+          href="/product" 
+          style={{
+            gridColumn: '1 / 5',
+            gridRow: '1 / 3',
+            backgroundColor: '#B0C4DE',
+            borderRadius: '18px',
+            border: '2px solid #8B8B8B',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+            cursor: 'pointer',
+            transition: 'all 0.4s ease',
+            textDecoration: 'none'
+          }}
+          title="Learn about our product story"
+        >
           <div style={{
             fontFamily: 'var(--font-cormorant-garamond), serif',
             fontSize: 'clamp(1.2rem, 1.6vw, 1.8rem)',
@@ -75,22 +84,27 @@ export default function HomePage() {
           }}>
             A Story Woven with a Master
           </div>
-        </div>
+        </Link>
 
-        {/* Medium block - "Stories" - Off-White */}
-        <div style={{
-          gridColumn: '6 / 9',
-          gridRow: '1 / 2',
-          backgroundColor: '#F5F0E8',
-          borderRadius: '16px',
-          border: '2px solid #8B8B8B',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 12px 40px rgba(245, 240, 232, 0.5)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
-        }}>
+        {/* 2. "Stories" - Off-White - Video Content Navigation */}
+        <Link 
+          href="/stories" 
+          style={{
+            gridColumn: '6 / 9',
+            gridRow: '1 / 2',
+            backgroundColor: '#F5F0E8',
+            borderRadius: '16px',
+            border: '2px solid #8B8B8B',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+            cursor: 'pointer',
+            transition: 'all 0.4s ease',
+            textDecoration: 'none'
+          }}
+          title="Explore video stories"
+        >
           <div style={{
             fontFamily: 'var(--font-cormorant-garamond), serif',
             fontSize: 'clamp(1.8rem, 2.4vw, 2.6rem)',
@@ -101,22 +115,27 @@ export default function HomePage() {
           }}>
             Stories
           </div>
-        </div>
+        </Link>
 
-        {/* Large landscape block - "The Masters Who Shape Your World" - Powder Blue */}
-        <div style={{
-          gridColumn: '9 / 13',
-          gridRow: '2 / 4',
-          backgroundColor: '#B0C4DE',
-          borderRadius: '18px',
-          border: '2px solid #8B8B8B',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 12px 40px rgba(176, 196, 222, 0.4)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
-        }}>
+        {/* 3. "The Masters Who Shape Your World" - Powder Blue - Craftsmen Directory */}
+        <Link 
+          href="/masters" 
+          style={{
+            gridColumn: '9 / 13',
+            gridRow: '2 / 4',
+            backgroundColor: '#B0C4DE',
+            borderRadius: '18px',
+            border: '2px solid #8B8B8B',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+            cursor: 'pointer',
+            transition: 'all 0.4s ease',
+            textDecoration: 'none'
+          }}
+          title="Meet the master craftsmen"
+        >
           <div style={{
             fontFamily: 'var(--font-cormorant-garamond), serif',
             fontSize: 'clamp(1.2rem, 1.6vw, 1.8rem)',
@@ -128,23 +147,28 @@ export default function HomePage() {
           }}>
             The Masters Who Shape Your World
           </div>
-        </div>
+        </Link>
 
-        {/* Portrait block - "My Tatami" + Sneakers - Muted Moss Green */}
-        <div style={{
-          gridColumn: '1 / 3',
-          gridRow: '3 / 6',
-          backgroundColor: '#7A8A6B',
-          borderRadius: '16px',
-          border: '2px solid #8B8B8B',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 16px 50px rgba(122, 138, 107, 0.4)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
-        }}>
+        {/* 4. "My Tatami" + Sneakers - Muted Moss Green - Personal Center */}
+        <Link 
+          href="/auth" 
+          style={{
+            gridColumn: '1 / 3',
+            gridRow: '3 / 6',
+            backgroundColor: '#7A8A6B',
+            borderRadius: '16px',
+            border: '2px solid #8B8B8B',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+            cursor: 'pointer',
+            transition: 'all 0.4s ease',
+            textDecoration: 'none'
+          }}
+          title="Access your personal space"
+        >
           <div style={{
             fontFamily: 'var(--font-cormorant-garamond), serif',
             fontSize: 'clamp(1.3rem, 1.8vw, 2rem)',
@@ -156,10 +180,14 @@ export default function HomePage() {
           }}>
             My Tatami
           </div>
-          <Sneakers style={{ width: 'clamp(60px, 6vw, 80px)', height: 'clamp(60px, 6vw, 80px)', color: '#F5F0E8' }} />
-        </div>
+          <Sneakers style={{ 
+            width: 'clamp(60px, 6vw, 80px)', 
+            height: 'clamp(60px, 6vw, 80px)', 
+            color: '#F5F0E8' 
+          }} />
+        </Link>
 
-        {/* Large central landscape block - "One Journey, a Lifetime of Insight" - Burnt Orange */}
+        {/* 5. "One Journey, a Lifetime of Insight" - Burnt Orange - Core Value Proposition */}
         <div style={{
           gridColumn: '3 / 9',
           gridRow: '4 / 6',
@@ -167,73 +195,108 @@ export default function HomePage() {
           borderRadius: '20px',
           border: '2px solid #8B8B8B',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 20px 60px rgba(217, 125, 84, 0.5)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
+          boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+          cursor: 'default',
+          transition: 'all 0.4s ease',
+          padding: '2vh 2vw'
         }}>
           <div style={{
             fontFamily: 'var(--font-cormorant-garamond), serif',
-            fontSize: 'clamp(1.8rem, 2.8vw, 3.2rem)',
+            fontSize: 'clamp(1.6rem, 2.4vw, 2.8rem)',
             color: '#2D323A',
             textAlign: 'center',
             fontWeight: '500',
-            padding: '0 3vw',
-            lineHeight: '1.1'
+            lineHeight: '1.2',
+            marginBottom: '1vh'
           }}>
             One Journey, a Lifetime of Insight
           </div>
+          <div style={{
+            fontFamily: 'var(--font-cormorant-garamond), serif',
+            fontSize: 'clamp(0.9rem, 1.2vw, 1.4rem)',
+            color: '#2D323A',
+            textAlign: 'center',
+            fontWeight: '300',
+            opacity: 0.8,
+            lineHeight: '1.4'
+          }}>
+            Connect with master craftsmen through immersive dialogues.<br/>
+            Discover wisdom in every conversation, insight in every journey.
+          </div>
         </div>
 
-        {/* Square block - Geta sandal - Burnt Orange */}
-        <div style={{
-          gridColumn: '10 / 12',
-          gridRow: '4 / 6',
-          backgroundColor: '#D97D54',
-          borderRadius: '16px',
-          border: '2px solid #8B8B8B',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 12px 40px rgba(217, 125, 84, 0.4)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
-        }}>
-          <GetaSandal style={{ width: 'clamp(60px, 6vw, 80px)', height: 'clamp(60px, 6vw, 80px)', color: '#2D323A' }} />
+        {/* 6. Geta Sandal - Burnt Orange - Traditional Culture Symbol */}
+        <div 
+          style={{
+            gridColumn: '10 / 12',
+            gridRow: '4 / 6',
+            backgroundColor: '#D97D54',
+            borderRadius: '16px',
+            border: '2px solid #8B8B8B',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+            cursor: 'default',
+            transition: 'all 0.4s ease'
+          }}
+          title="Traditional Japanese Craftsmanship"
+          aria-label="Decorative Geta sandal representing traditional culture"
+        >
+          <GetaSandal style={{ 
+            width: 'clamp(60px, 6vw, 80px)', 
+            height: 'clamp(60px, 6vw, 80px)', 
+            color: '#2D323A' 
+          }} />
         </div>
 
-        {/* Square block - Sleeping fox - Muted Moss Green */}
-        <div style={{
-          gridColumn: '10 / 12',
-          gridRow: '6 / 8',
-          backgroundColor: '#7A8A6B',
-          borderRadius: '16px',
-          border: '2px solid #8B8B8B',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 12px 40px rgba(122, 138, 107, 0.4)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
-        }}>
-          <SleepingFox style={{ width: 'clamp(55px, 5.5vw, 75px)', height: 'clamp(55px, 5.5vw, 75px)', color: '#F5F0E8' }} />
+        {/* 7. Sleeping Fox - Muted Moss Green - Zen Wisdom Symbol */}
+        <div 
+          style={{
+            gridColumn: '10 / 12',
+            gridRow: '6 / 8',
+            backgroundColor: '#7A8A6B',
+            borderRadius: '16px',
+            border: '2px solid #8B8B8B',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+            cursor: 'default',
+            transition: 'all 0.4s ease'
+          }}
+          title="Peaceful Contemplation"
+          aria-label="Decorative sleeping fox representing tranquility and wisdom"
+        >
+          <SleepingFox style={{ 
+            width: 'clamp(55px, 5.5vw, 75px)', 
+            height: 'clamp(55px, 5.5vw, 75px)', 
+            color: '#F5F0E8' 
+          }} />
         </div>
 
-        {/* Medium landscape block - "Join a Journey" - Burnt Orange */}
-        <div style={{
-          gridColumn: '3 / 7',
-          gridRow: '7 / 8',
-          backgroundColor: '#D97D54',
-          borderRadius: '16px',
-          border: '2px solid #8B8B8B',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 12px 40px rgba(217, 125, 84, 0.4)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
-        }}>
+        {/* 8. "Join a Journey" - Burnt Orange - Travel Partnership CTA */}
+        <Link 
+          href="/journey" 
+          style={{
+            gridColumn: '3 / 7',
+            gridRow: '7 / 8',
+            backgroundColor: '#D97D54',
+            borderRadius: '16px',
+            border: '2px solid #8B8B8B',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+            cursor: 'pointer',
+            transition: 'all 0.4s ease',
+            textDecoration: 'none'
+          }}
+          title="Join our travel experiences"
+        >
           <div style={{
             fontFamily: 'var(--font-cormorant-garamond), serif',
             fontSize: 'clamp(1.3rem, 1.8vw, 2rem)',
@@ -244,26 +307,34 @@ export default function HomePage() {
           }}>
             Join a Journey
           </div>
+        </Link>
+
+        {/* 9. Tatami Logo - Off-White - Brand Identity Display */}
+        <div 
+          style={{
+            gridColumn: '6 / 10',
+            gridRow: '6 / 8',
+            backgroundColor: '#F5F0E8',
+            borderRadius: '16px',
+            border: '2px solid #8B8B8B',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)',
+            cursor: 'default',
+            transition: 'all 0.4s ease'
+          }}
+          title="Tatami Labs Brand"
+          aria-label="Tatami Labs logo and brand identity"
+        >
+          <TatamiLogo style={{ 
+            height: 'clamp(60px, 6vh, 80px)', 
+            width: 'auto', 
+            color: '#2D323A' 
+          }} />
         </div>
 
-        {/* Landscape block - Tatami Logo - Off-White */}
-        <div style={{
-          gridColumn: '6 / 10',
-          gridRow: '6 / 8',
-          backgroundColor: '#F5F0E8',
-          borderRadius: '16px',
-          border: '2px solid #8B8B8B',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 12px 40px rgba(245, 240, 232, 0.5)',
-          cursor: 'pointer',
-          transition: 'all 0.4s ease'
-        }}>
-          <TatamiLogo style={{ height: 'clamp(60px, 6vh, 80px)', width: 'auto', color: '#2D323A' }} />
-        </div>
-
-      </div>
-    </div>
+      </section>
+    </main>
   )
 }
