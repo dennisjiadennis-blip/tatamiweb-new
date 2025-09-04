@@ -1,35 +1,38 @@
-import type { Metadata } from "next";
-import { Navigation } from "@/components/layout/navigation";
-import { AuthProvider } from "@/components/providers/session-provider";
-import "./globals.css";
+import { Cormorant_Garamond, Ma_Shan_Zheng } from 'next/font/google'
+import './globals.css'
+import { AuthProvider } from '@/components/providers/session-provider'
 
-export const metadata: Metadata = {
-  title: "Tatami Labs - 匠心传承 · 文化桥梁",
-  description: "通过深度对话体验，连接全球用户与日本传统工艺大师。探索匠人精神，感受文化传承的力量。",
-  keywords: "日本匠人, 传统工艺, 文化交流, 深度体验, 匠人精神",
-};
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-cormorant-garamond',
+})
+
+const maShanZheng = Ma_Shan_Zheng({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-ma-shan-zheng',
+})
+
+export const metadata = {
+  title: 'Tatami Labs',
+  description: 'One Journey, a Lifetime of Insight',
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="zh-CN">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&display=swap" rel="preload" as="style" />
-        <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&display=swap" rel="stylesheet" />
-      </head>
-      <body className="antialiased">
+    <html lang="en">
+      <body
+        className={`${cormorantGaramond.variable} ${maShanZheng.variable} font-serif bg-japandi-background text-japandi-charcoal`}
+      >
         <AuthProvider>
-          <Navigation />
-          <main>
-            {children}
-          </main>
+          <main>{children}</main>
         </AuthProvider>
       </body>
     </html>
-  );
+  )
 }

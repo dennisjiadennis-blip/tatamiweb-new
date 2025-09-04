@@ -14,3 +14,5 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </SessionProvider>
   )
 }
+
+export default AuthProvider

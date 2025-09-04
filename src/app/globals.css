@@ -34,8 +34,8 @@
   
   body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--color-background);
-    color: var(--color-text);
+    background-color: #2D323A; /* japandi-background */
+    color: #1C1C1C; /* japandi-charcoal */
   }
   
   /* 全局字体类 */
