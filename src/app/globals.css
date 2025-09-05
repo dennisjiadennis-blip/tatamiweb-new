@@ -5,12 +5,12 @@
 @layer base {
   :root {
     /* Tatami Labs - Japandi Color System */
-    --color-background: #2D323A;      /* Deep blue-grey background */
-    --color-burnt-orange: #D97D54;    /* Burnt orange - primary accent */
-    --color-powder-blue: #B0C4DE;     /* Powder blue - secondary accent */
-    --color-moss-green: #7A8A6B;      /* Moss green - natural accent */ 
-    --color-linen: #F5F0E8;           /* Off-white/linen - content background */
-    --color-charcoal: #1C1C1C;        /* Near-black charcoal - text color */
+    --color-background: #1A1D23;      /* Deeper background for more contrast */
+    --color-burnt-orange: #E67E22;    /* Brighter burnt orange - primary accent */
+    --color-powder-blue: #A8C4E2;     /* Enhanced powder blue - secondary accent */
+    --color-moss-green: #6B7A5A;      /* Richer moss green - natural accent */ 
+    --color-linen: #FEFCF8;           /* Pure off-white - content background */
+    --color-charcoal: #0F0F0F;        /* Pure charcoal - text color */
     --color-border: #8B8B8B;          /* Unified grey border */
     
     /* Typography Scale - Mobile-First Responsive */
@@ -135,15 +135,17 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    min-height: 60px;
-    padding: 1rem;
+    min-height: 100px;
+    padding: 1.5rem;
     touch-action: manipulation;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
   
   @media (min-width: 768px) {
     .tatami-block {
       border-radius: 16px;
-      min-height: 80px;
+      min-height: 120px;
+      padding: 2rem;
     }
   }
   
@@ -174,26 +176,31 @@
   /* Typography Components */
   .heading-brand {
     font-family: var(--font-cormorant-garamond), serif;
-    font-size: var(--font-size-4xl);
+    font-size: clamp(2.5rem, 5vw, 4rem);
     color: var(--color-linen);
-    font-weight: 400;
-    letter-spacing: 3px;
-    text-shadow: 3px 3px 12px rgba(0,0,0,0.7);
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
     line-height: 1.1;
+    text-transform: uppercase;
   }
   
   .heading-block {
     font-family: var(--font-cormorant-garamond), serif;
     color: var(--color-charcoal);
-    font-weight: 300;
+    font-weight: 500;
     text-align: center;
-    line-height: 1.1;
+    line-height: 1.2;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    letter-spacing: 1px;
   }
   
   .heading-block-large {
     @apply heading-block;
-    font-size: var(--font-size-2xl);
-    font-weight: 500;
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    font-weight: 600;
+    color: var(--color-linen);
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
   }
   
   .heading-block-small {
@@ -203,11 +210,12 @@
   
   .text-description {
     font-family: var(--font-cormorant-garamond), serif;
-    font-size: var(--font-size-sm);
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
     color: var(--color-charcoal);
-    opacity: 0.8;
+    opacity: 0.9;
     text-align: center;
-    line-height: 1.4;
+    line-height: 1.6;
+    font-weight: 400;
   }
 }
 

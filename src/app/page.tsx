@@ -10,15 +10,15 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-background">
       {/* Mobile-First Brand Title */}
-      <header className="px-4 py-6 md:px-6 lg:absolute lg:top-[5vh] lg:left-[5vw] lg:z-50">
-        <h1 className="heading-brand text-center lg:text-left">
+      <header className="px-4 py-8 md:px-8 lg:absolute lg:top-[5vh] lg:left-[5vw] lg:z-50">
+        <h1 className="heading-brand text-center lg:text-left drop-shadow-lg">
           Tatami Labs
         </h1>
       </header>
 
       {/* Responsive Grid Container - Mobile-First Approach */}
       <section 
-        className="px-4 py-8 md:px-6 lg:absolute lg:top-[15vh] lg:left-[5vw] lg:w-[90vw] lg:h-[80vh] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 lg:grid-rows-8 gap-4 lg:gap-5"
+        className="px-4 py-8 md:px-6 lg:absolute lg:top-[15vh] lg:left-[5vw] lg:w-[90vw] lg:h-[80vh] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 lg:grid-rows-8 gap-6 lg:gap-8"
         aria-label="Tatami Labs Navigation Grid"
       >
         
@@ -64,7 +64,7 @@ export default function HomePage() {
           <div className="heading-block text-xl text-linen mb-6">
             My Tatami
           </div>
-          <Sneakers className="w-16 h-16 text-linen" />
+          <Sneakers className="w-20 h-20 text-linen drop-shadow-lg" />
         </Link>
 
         {/* 5. "One Journey, a Lifetime of Insight" - Burnt Orange - Core Value Proposition */}
@@ -84,7 +84,7 @@ export default function HomePage() {
           title="Traditional Japanese Craftsmanship"
           aria-label="Decorative Geta sandal representing traditional culture"
         >
-          <GetaSandal className="w-16 h-16 text-charcoal" />
+          <GetaSandal className="w-20 h-20 text-charcoal drop-shadow-lg" />
         </div>
 
         {/* 7. Sleeping Fox - Muted Moss Green - Zen Wisdom Symbol */}
@@ -93,7 +93,7 @@ export default function HomePage() {
           title="Peaceful Contemplation"
           aria-label="Decorative sleeping fox representing tranquility and wisdom"
         >
-          <SleepingFox className="w-14 h-14 text-linen" />
+          <SleepingFox className="w-18 h-18 text-linen drop-shadow-lg" />
         </div>
 
         {/* 8. "Join a Journey" - Burnt Orange - Travel Partnership CTA */}
@@ -113,7 +113,7 @@ export default function HomePage() {
           title="Tatami Labs Brand"
           aria-label="Tatami Labs logo and brand identity"
         >
-          <TatamiLogo className="h-16 w-auto text-charcoal" />
+          <TatamiLogo className="h-20 w-auto text-charcoal drop-shadow-lg" />
         </div>
 
       </section>
