@@ -167,11 +167,7 @@
     }
     
     .interactive:hover {
-      transform: none; /* Remove hover effects on touch devices */
-    }
-    
-    .hover\\:scale-\\[1\\.02\\]:hover {
-      transform: none;
+      transform: none !important; /* Remove hover effects on touch devices */
     }
   }
   
