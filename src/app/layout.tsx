@@ -1,23 +1,22 @@
-import { Cormorant_Garamond, Ma_Shan_Zheng } from 'next/font/google'
+import { Inter, Lora } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/components/providers/session-provider'
+import Navbar from '@/components/layout/Navbar'
 
-// Primary Serif Font - Cormorant Garamond for elegance and readability
-const cormorantGaramond = Cormorant_Garamond({
+// Primary Sans Serif Font - Inter for body text
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-cormorant-garamond',
-  display: 'swap', // Optimize font loading performance
-  preload: true,
+  weight: ['400', '700'],
+  variable: '--font-inter',
+  display: 'swap',
 })
 
-// Secondary Font - Ma Shan Zheng for Japanese aesthetic (future use)
-const maShanZheng = Ma_Shan_Zheng({
+// Primary Serif Font - Lora for headings
+const lora = Lora({
   subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-ma-shan-zheng',
+  weight: ['400', '700'],
+  variable: '--font-lora',
   display: 'swap',
-  preload: false, // Less critical, load when needed
 })
 
 export const metadata = {
@@ -49,27 +48,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${cormorantGaramond.variable} ${maShanZheng.variable}`}>
+    <html lang="en" className={`${inter.variable} ${lora.variable}`}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="theme-color" content="#2D323A" />
+        <meta name="theme-color" content="#F8F5F2" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body
-        className={`font-serif antialiased`}
-        style={{
-          fontFamily: 'var(--font-cormorant-garamond), serif',
-          backgroundColor: '#2D323A',
-          color: '#1C1C1C',
-          margin: 0,
-          padding: 0,
-          minHeight: '100vh',
-        }}
-      >
+      <body className="font-sans antialiased bg-background text-foreground">
         <AuthProvider>
+          <Navbar />
           {children}
         </AuthProvider>
       </body>

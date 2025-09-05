@@ -278,6 +278,16 @@
     -webkit-backdrop-filter: blur(4px);
   }
   
+  /* Hide scrollbar for horizontal scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Floating Cards Mobile Responsive - Only for very small screens */
   @media (max-width: 480px) {
     .floating-cards-container {
