@@ -91,8 +91,8 @@ const MasterCard = ({ master, className = "" }: MasterCardProps) => {
           {master.location}
         </div>
         
-        <p className="text-description text-charcoal/80 text-sm leading-comfortable mb-4 flex-1">
-          {master.biographyEn.substring(0, 120)}...
+        <p className="text-description text-charcoal/80 text-sm leading-comfortable mb-4 flex-1 line-clamp-3 md:line-clamp-4">
+          {master.biographyEn}
         </p>
         
         <div className="space-y-2">

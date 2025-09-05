@@ -8,24 +8,24 @@ import {
 
 export default function HomePage() {
   return (
-    <main className="screen-full bg-background relative overflow-hidden p-0 m-0">
-      {/* Floating Brand Title - Independent positioning */}
-      <header className="absolute top-[5vh] left-[5vw] z-50">
-        <h1 className="heading-brand">
+    <main className="min-h-screen bg-background">
+      {/* Mobile-First Brand Title */}
+      <header className="px-4 py-6 md:px-6 lg:absolute lg:top-[5vh] lg:left-[5vw] lg:z-50">
+        <h1 className="heading-brand text-center lg:text-left">
           Tatami Labs
         </h1>
       </header>
 
-      {/* Main Grid Container - 12x8 Japandi Magazine Layout */}
+      {/* Responsive Grid Container - Mobile-First Approach */}
       <section 
-        className="absolute top-[15vh] left-[5vw] w-[90vw] h-[80vh] grid grid-cols-12 grid-rows-8 gap-5"
+        className="px-4 py-8 md:px-6 lg:absolute lg:top-[15vh] lg:left-[5vw] lg:w-[90vw] lg:h-[80vh] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 lg:grid-rows-8 gap-4 lg:gap-5"
         aria-label="Tatami Labs Navigation Grid"
       >
         
         {/* 1. "A Story Woven with a Master" - Powder Blue - Product Story Entry */}
         <Link 
           href="/product" 
-          className="tatami-block bg-powder-blue col-span-4 row-span-2 rounded-tatami-lg hover:scale-[1.02] transition-transform duration-tatami"
+          className="tatami-block bg-powder-blue sm:col-span-2 md:col-span-1 lg:col-span-4 lg:row-span-2 rounded-tatami-lg hover:scale-[1.02] transition-transform duration-tatami"
           title="Learn about our product story"
         >
           <div className="heading-block text-lg px-8">
@@ -36,7 +36,7 @@ export default function HomePage() {
         {/* 2. "Stories" - Off-White - Video Content Navigation */}
         <Link 
           href="/stories" 
-          className="tatami-block bg-linen col-start-6 col-end-9 row-span-1 hover:scale-[1.02] transition-transform duration-tatami"
+          className="tatami-block bg-linen sm:col-span-2 md:col-span-2 lg:col-start-6 lg:col-end-9 lg:row-span-1 hover:scale-[1.02] transition-transform duration-tatami"
           title="Explore video stories"
         >
           <div className="heading-block text-2xl">
@@ -47,7 +47,7 @@ export default function HomePage() {
         {/* 3. "The Masters Who Shape Your World" - Powder Blue - Craftsmen Directory */}
         <Link 
           href="/masters" 
-          className="tatami-block bg-powder-blue col-start-9 col-end-13 row-start-2 row-end-4 rounded-tatami-lg hover:scale-[1.02] transition-transform duration-tatami"
+          className="tatami-block bg-powder-blue sm:col-span-2 md:col-span-2 lg:col-start-9 lg:col-end-13 lg:row-start-2 lg:row-end-4 rounded-tatami-lg hover:scale-[1.02] transition-transform duration-tatami"
           title="Meet the master craftsmen"
         >
           <div className="heading-block text-lg px-8">
@@ -58,7 +58,7 @@ export default function HomePage() {
         {/* 4. "My Tatami" + Sneakers - Muted Moss Green - Personal Center */}
         <Link 
           href="/auth" 
-          className="tatami-block bg-moss-green col-start-1 col-end-3 row-start-3 row-end-6 flex-col hover:scale-[1.02] transition-transform duration-tatami"
+          className="tatami-block bg-moss-green md:col-span-1 lg:col-start-1 lg:col-end-3 lg:row-start-3 lg:row-end-6 flex-col hover:scale-[1.02] transition-transform duration-tatami"
           title="Access your personal space"
         >
           <div className="heading-block text-xl text-linen mb-6">
@@ -68,7 +68,7 @@ export default function HomePage() {
         </Link>
 
         {/* 5. "One Journey, a Lifetime of Insight" - Burnt Orange - Core Value Proposition */}
-        <div className="tatami-block-large bg-burnt-orange col-start-3 col-end-9 row-start-4 row-end-6 flex-col hover:scale-[1.02] transition-transform duration-tatami cursor-pointer">
+        <div className="tatami-block-large bg-burnt-orange sm:col-span-2 md:col-span-3 lg:col-start-3 lg:col-end-9 lg:row-start-4 lg:row-end-6 flex-col hover:scale-[1.02] transition-transform duration-tatami cursor-pointer">
           <div className="heading-block-large mb-4">
             One Journey, a Lifetime of Insight
           </div>

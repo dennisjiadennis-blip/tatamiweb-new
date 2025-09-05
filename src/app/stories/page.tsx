@@ -110,18 +110,18 @@ export default function StoriesPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Masonry Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Responsive Grid Layout - Mobile-First */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           
-          {/* Video Cards with Irregular Sizing */}
-          <VideoCard story={videoStoriesData[0]} className="md:col-span-2 h-80" />
-          <VideoCard story={videoStoriesData[1]} className="h-72" />
-          <VideoCard story={videoStoriesData[2]} className="h-64" />
+          {/* Video Cards with Responsive Sizing */}
+          <VideoCard story={videoStoriesData[0]} className="h-64 sm:h-72 lg:col-span-2 lg:h-80" />
+          <VideoCard story={videoStoriesData[1]} className="h-64 sm:h-72" />
+          <VideoCard story={videoStoriesData[2]} className="h-64 sm:h-72" />
           
           {/* Explore Masters CTA Block */}
           <Link 
             href="/masters"
-            className="tatami-block-large bg-moss-green col-span-1 md:col-span-2 lg:col-span-1 h-56 flex-col text-center group hover:bg-moss-green/90"
+            className="tatami-block-large bg-moss-green h-48 sm:h-56 sm:col-span-2 lg:col-span-1 flex-col text-center group hover:bg-moss-green/90"
             title="Discover the master craftsmen"
           >
             <div className="heading-block-large text-linen mb-3 group-hover:scale-105 transition-transform duration-300">
@@ -135,11 +135,11 @@ export default function StoriesPage() {
             </div>
           </Link>
           
-          <VideoCard story={videoStoriesData[3]} className="h-80" />
-          <VideoCard story={videoStoriesData[4]} className="h-64" />
-          <VideoCard story={videoStoriesData[5]} className="h-72" />
-          <VideoCard story={videoStoriesData[6]} className="md:col-span-2 h-64" />
-          <VideoCard story={videoStoriesData[7]} className="h-76" />
+          <VideoCard story={videoStoriesData[3]} className="h-64 sm:h-72 lg:h-80" />
+          <VideoCard story={videoStoriesData[4]} className="h-64 sm:h-72" />
+          <VideoCard story={videoStoriesData[5]} className="h-64 sm:h-72" />
+          <VideoCard story={videoStoriesData[6]} className="h-64 sm:h-72 sm:col-span-2 lg:col-span-1" />
+          <VideoCard story={videoStoriesData[7]} className="h-64 sm:h-72" />
           
         </div>
         
