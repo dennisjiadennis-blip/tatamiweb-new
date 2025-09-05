@@ -277,4 +277,39 @@
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
+  
+  /* Floating Cards Mobile Responsive - Only for very small screens */
+  @media (max-width: 480px) {
+    .floating-cards-container {
+      position: relative !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 1rem !important;
+      padding: 2rem 1rem !important;
+    }
+    
+    .floating-card {
+      position: relative !important;
+      transform: none !important;
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
+    }
+    
+    .floating-card-large {
+      min-height: 150px !important;
+    }
+    
+    .floating-card-small {
+      min-height: 120px !important;
+    }
+    
+    .floating-card h3 {
+      font-size: 1.25rem !important;
+    }
+    
+    .floating-card p {
+      font-size: 0.875rem !important;
+    }
+  }
 }
