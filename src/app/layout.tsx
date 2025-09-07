@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
 import { NextAuthProvider } from "./Providers";
+import { Navigation } from "@/components/layout/navigation";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const notoSerifJP = Noto_Serif_JP({
@@ -20,7 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${inter.variable} ${notoSerifJP.variable} font-sans antialiased bg-background text-foreground`}>
         <NextAuthProvider>
-          {children}
+          <Navigation />
+          <main>{children}</main>
         </NextAuthProvider>
       </body>
     </html>

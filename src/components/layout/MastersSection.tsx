@@ -2,42 +2,10 @@ import MasterCard from '@/components/ui/MasterCard'
 import Container from '@/components/ui/Container'
 import SectionTitle from '@/components/ui/SectionTitle'
 import GridLayout from '@/components/ui/GridLayout'
-import { getMasters } from '@/lib/api'
+import { getMasters } from '@/lib/data'
 
-export default async function MastersSection() {
-  let masters
-  let hasError = false
-  let errorMessage = ''
-
-  try {
-    masters = await getMasters()
-  } catch (error) {
-    console.error('Error loading masters section:', error)
-    hasError = true
-    errorMessage = error instanceof Error ? error.message : 'Failed to load masters data'
-    masters = [] // Fallback to empty array
-  }
-
-  if (hasError) {
-    return (
-      <section className="py-16 bg-background">
-        <Container>
-          <SectionTitle 
-            title="The Masters"
-            subtitle="We're having trouble loading the masters data right now"
-            size="xl"
-          />
-          <div className="mt-12 text-center">
-            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 max-w-md mx-auto">
-              <p className="text-destructive font-medium mb-2">Error Loading Content</p>
-              <p className="text-foreground/70 text-sm">{errorMessage}</p>
-              <p className="text-foreground/60 text-xs mt-2">Please refresh the page to try again</p>
-            </div>
-          </div>
-        </Container>
-      </section>
-    )
-  }
+export default function MastersSection() {
+  const masters = getMasters()
 
   return (
     <section className="py-16 bg-background">

@@ -3,21 +3,14 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Button, buttonVariants } from '@/components/ui/button'
 import Container from '@/components/ui/Container'
-import { getMasterBySlugSSR } from '@/lib/api'
+import { getMasterBySlug } from '@/lib/data'
 import { PageProps } from '@/types'
 
 interface MasterDetailPageProps extends PageProps {}
 
 export default async function MasterDetailPage({ params }: MasterDetailPageProps) {
   const { slug } = await params
-  let master
-  
-  try {
-    master = await getMasterBySlugSSR(slug)
-  } catch (error) {
-    console.error(`Error loading master detail for slug "${slug}":`, error)
-    notFound()
-  }
+  const master = getMasterBySlug(slug)
 
   if (!master) {
     notFound()
@@ -122,17 +115,7 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
 // Generate metadata for SEO
 export async function generateMetadata({ params }: MasterDetailPageProps) {
   const { slug } = await params
-  let master
-  
-  try {
-    master = await getMasterBySlugSSR(slug)
-  } catch (error) {
-    console.error(`Error generating metadata for master "${slug}":`, error)
-    return {
-      title: 'Master Not Found - Tatami Labs',
-      description: 'The requested master craftsman could not be found.',
-    }
-  }
+  const master = getMasterBySlug(slug)
   
   if (!master) {
     return {
