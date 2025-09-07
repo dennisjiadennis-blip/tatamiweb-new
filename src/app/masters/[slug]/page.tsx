@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import { getMasterBySlug } from '@/lib/data';
-import MasterDetailClient from '@/components/layout/MasterDetailClient'; // 导入新的客户端组件
+import MasterDetailClient from '@/components/layout/MasterDetailClient';
 import type { PageProps } from '@/types';
 
-// 这是纯粹的服务器组件，负责获取数据
+// Pure server component for data fetching
 export default async function MasterDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const master = getMasterBySlug(slug);
@@ -12,10 +12,10 @@ export default async function MasterDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  return <MasterDetailClient master={master} />; // 渲染客户端组件，并将数据作为prop传入
+  return <MasterDetailClient master={master} />;
 }
 
-// 这是纯粹的服务器函数，负责生成SEO元数据
+// Pure server function for SEO metadata generation
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
   const master = getMasterBySlug(slug);

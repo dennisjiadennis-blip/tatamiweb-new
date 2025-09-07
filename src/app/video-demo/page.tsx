@@ -11,45 +11,45 @@ import { EnhancedVideoPlayer } from '@/components/video/enhanced-video-player'
 import { PageLoader, usePageLoading } from '@/components/optimization/page-loader'
 import { motion } from 'framer-motion'
 
-// 增强的视频数据 - 支持播放列表功能
+// Enhanced video data with playlist functionality
 const demoVideos = [
   {
     id: 'video-1',
-    title: '传统陶艺大师 - 山田太郎的工艺之路',
-    description: '跟随山田太郎大师学习传统日本陶艺的精髓，从选土到成型，每一个步骤都凝聚着数十年的经验与智慧。',
+    title: 'Master Sake Brewer - Hiroki Sato\'s Craft Journey',
+    description: 'Follow Master Hiroki Sato as he reveals the essence of traditional Japanese sake brewing, from rice selection to fermentation. Each step embodies decades of wisdom and experience.',
     src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    poster: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
+    poster: '/images/Gemini_Generated_Image_pcmj4ppcmj4ppcmj.png',
     duration: '30:45',
-    masterId: 'master-1',
+    masterId: 'hiroki-sato',
     master: {
-      name: '山田太郎',
-      specialty: '传统陶艺'
+      name: 'Hiroki Sato',
+      specialty: 'Sake Brewing'
     }
   },
   {
     id: 'video-2',
-    title: '茶道艺术 - 细川美子的禅意人生',
-    description: '茶道不仅仅是泡茶的技艺，更是一种生活的哲学。细川美子老师将带您走进茶道的静谧世界。',
+    title: 'Geisha Arts - Chiyo\'s World of Beauty',
+    description: 'Enter the serene world of traditional Japanese arts with Master Chiyo. More than technique, it\'s a philosophy of life expressed through dance, tea ceremony, and shamisen.',
     src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-    poster: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop',
+    poster: '/images/Gemini_Generated_Image_e27vtie27vtie27v.png',
     duration: '25:20',
-    masterId: 'master-2',
+    masterId: 'chiyo',
     master: {
-      name: '细川美子',
-      specialty: '茶道艺术'
+      name: 'Chiyo',
+      specialty: 'Traditional Arts'
     }
   },
   {
     id: 'video-3',
-    title: '和纸制作 - 古老技艺的现代传承',
-    description: '和纸制作是日本传统文化的重要组成部分。观看田中花子大师如何将千年技艺与现代设计相结合。',
+    title: 'Nambu Ironware - Ancient Craft, Modern Legacy',
+    description: 'Watch Master Kenzo Tanaka forge ironware using techniques passed down for centuries. Witness how thousand-year-old craftsmanship meets contemporary design.',
     src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    poster: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
+    poster: '/images/Gemini_Generated_Image_q1uu34q1uu34q1uu.png',
     duration: '18:30',
-    masterId: 'master-3',
+    masterId: 'kenzo-tanaka',
     master: {
-      name: '田中花子',
-      specialty: '和纸工艺'
+      name: 'Kenzo Tanaka',
+      specialty: 'Ironware Crafting'
     }
   }
 ]
@@ -69,51 +69,51 @@ export default function VideoDemoPage() {
     <>
       <PageLoader 
         isLoading={isLoading}
-        loadingText="正在加载视频内容..."
+        loadingText="Loading video content..."
         minLoadTime={600}
       />
       
       <div className="min-h-screen">
-      {/* 视频背景英雄区域 */}
+      {/* Video background hero section */}
       <VideoBackground
         src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
         overlay="dark"
         overlayOpacity={0.5}
         className="h-screen"
-        poster="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1200&h=800&fit=crop"
+        poster="/images/Gemini_Generated_Image_78uzdf78uzdf78uz.png"
       >
         <div className="h-full flex items-center justify-center p-4">
           <div className="text-center max-w-4xl">
             <h1 className="font-brand-title mb-6">
-              匠心视界
+              Artisan Stories
             </h1>
             <Card backgroundColor="offwhite" className="inline-block">
               <p className="font-card-subtitle text-xl text-gray-700">
-                通过镜头，走进日本匠人的精神世界
+                Step into the world of Japan&apos;s master artisans through immersive storytelling
               </p>
             </Card>
           </div>
         </div>
       </VideoBackground>
 
-      {/* 内容区域 */}
+      {/* Content Area */}
       <div className="p-4 md:p-8">
         <CardMosaicContainer className="max-w-7xl mx-auto">
           
-          {/* 介绍卡片 */}
+          {/* Introduction card */}
           <Card backgroundColor="blue" className="mb-8 text-center">
             <h2 className="font-card-headline mb-4">
-              深度视频体验
+              Immersive Video Experience
             </h2>
             <p className="font-card-subtitle text-slate-700">
-              每一个视频都是一扇窗，让您近距离感受日本匠人的专注与热爱。
-              从陶艺师的手工拉坯，到茶道宗师的每一个动作，都承载着深厚的文化内涵。
+              Each video is a window, bringing you close to feel the dedication and passion of Japanese craftsmen.
+              From the potter&apos;s wheel to the tea master&apos;s every gesture, each carries profound cultural significance.
             </p>
           </Card>
 
-          {/* 视频演示模式选择 */}
+          {/* Video demo mode selection */}
           <Card backgroundColor="offwhite" className="mb-8 text-center">
-            <h2 className="font-card-headline mb-6">选择体验模式</h2>
+            <h2 className="font-card-headline mb-6">Choose Your Experience</h2>
             <div className="flex flex-wrap justify-center gap-4">
               <Button
                 onClick={() => setSelectedDemo('playlist')}
@@ -123,7 +123,7 @@ export default function VideoDemoPage() {
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                📋 播放列表
+📋 Playlist
               </Button>
               <Button
                 onClick={() => setSelectedDemo('enhanced')}
@@ -133,7 +133,7 @@ export default function VideoDemoPage() {
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                🎬 增强播放器
+🎬 Enhanced Player
               </Button>
               <Button
                 onClick={() => setSelectedDemo('gallery')}
@@ -143,12 +143,12 @@ export default function VideoDemoPage() {
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                🖼️ 视频画廊
+🖼️ Video Gallery
               </Button>
             </div>
           </Card>
 
-          {/* 动态视频展示区域 */}
+          {/* Dynamic video display area */}
           <motion.div
             key={selectedDemo}
             initial={{ opacity: 0, y: 20 }}
@@ -158,8 +158,8 @@ export default function VideoDemoPage() {
             {selectedDemo === 'playlist' && (
               <Card backgroundColor="white" className="mb-8">
                 <div className="text-center mb-6">
-                  <h3 className="font-card-headline text-xl mb-2">播放列表演示</h3>
-                  <p className="text-gray-600">支持连续播放、评论互动、收藏管理等功能</p>
+                  <h3 className="font-card-headline text-xl mb-2">Playlist Demo</h3>
+                  <p className="text-gray-600">Supports continuous playback, comment interaction, and bookmark management</p>
                 </div>
                 <VideoPlaylist 
                   videos={demoVideos}
@@ -172,8 +172,8 @@ export default function VideoDemoPage() {
             {selectedDemo === 'enhanced' && (
               <Card backgroundColor="white" className="mb-8">
                 <div className="text-center mb-6">
-                  <h3 className="font-card-headline text-xl mb-2">增强视频播放器</h3>
-                  <p className="text-gray-600">支持评论、收藏、分享等社交功能</p>
+                  <h3 className="font-card-headline text-xl mb-2">Enhanced Video Player</h3>
+                  <p className="text-gray-600">Supports comments, bookmarks, sharing and social features</p>
                 </div>
                 <EnhancedVideoPlayer
                   src={demoVideos[0].src}
@@ -189,34 +189,34 @@ export default function VideoDemoPage() {
             {selectedDemo === 'gallery' && (
               <Card backgroundColor="white" className="mb-8">
                 <div className="text-center mb-6">
-                  <h3 className="font-card-headline text-xl mb-2">视频画廊</h3>
-                  <p className="text-gray-600">浏览模式，快速预览和选择视频</p>
+                  <h3 className="font-card-headline text-xl mb-2">Video Gallery</h3>
+                  <p className="text-gray-600">Browse mode, quick preview and video selection</p>
                 </div>
                 <VideoGallery videos={demoVideos} />
               </Card>
             )}
           </motion.div>
 
-          {/* 体验邀请 */}
+          {/* Experience invitation */}
           <Card backgroundColor="green" className="mt-12 text-center">
             <h2 className="font-card-headline mb-6">
-              这只是开始
+              This is Just the Beginning
             </h2>
             <p className="font-card-subtitle text-slate-100 mb-6">
-              真正的体验远比视频更加震撼。加入我们，获得与大师面对面交流的机会。
+              The real experience is far more profound than any video. Join us for face-to-face encounters with master artisans.
             </p>
             <div className="space-x-4">
               <button 
                 onClick={() => window.location.href = '/masters'}
                 className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
               >
-                探索大师
+                Explore Masters
               </button>
               <button 
                 onClick={() => window.location.href = '/auth'}
                 className="bg-white hover:bg-gray-100 text-green-800 font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
               >
-                立即加入
+                Join Now
               </button>
             </div>
           </Card>

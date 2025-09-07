@@ -1,49 +1,49 @@
-// 核心数据类型定义
+// Core data type definitions
 
 /**
- * 大师信息接口
+ * Master information interface
  */
 export interface Master {
-  /** 唯一标识符 */
+  /** Unique identifier */
   id: string
-  /** URL路径标识符 */
+  /** URL path identifier */
   slug: string
-  /** 头像图片URL */
+  /** Avatar image URL */
   imageUrl: string
-  /** 作品图片URL数组 */
+  /** Works image URL array */
   works: string[]
-  /** 多语言内容 */
+  /** Multi-language content */
   i18n: {
     en: {
-      /** 大师姓名 */
+      /** Master name */
       name: string
-      /** 专业领域 */
+      /** Professional field */
       field: string
-      /** 大师传记 */
+      /** Master biography */
       bio: string
-      /** 个人哲学理念 */
+      /** Personal philosophy */
       philosophy: string
     }
-    // 未来可以添加 jp, zh 等
+    // Can add jp, zh etc. in the future
   }
 }
 
 /**
- * 支柱信息接口
+ * Pillar information interface
  */
 export interface Pillar {
-  /** 支柱标题 */
+  /** Pillar title */
   title: string
-  /** 支柱描述 */
+  /** Pillar description */
   description: string
-  /** 图片URL */
+  /** Image URL */
   imageUrl: string
-  /** 边框颜色类名 */
+  /** Border color class name */
   borderColor: string
 }
 
 /**
- * API响应通用接口
+ * Generic API response interface
  */
 export interface ApiResponse<T = unknown> {
   data?: T
@@ -52,7 +52,7 @@ export interface ApiResponse<T = unknown> {
 }
 
 /**
- * API错误响应接口
+ * API error response interface
  */
 export interface ApiError {
   error: string
@@ -60,19 +60,19 @@ export interface ApiError {
 }
 
 /**
- * 导航菜单项接口
+ * Navigation menu item interface
  */
 export interface NavItem {
-  /** 链接地址 */
+  /** Link address */
   href: string
-  /** 显示标签 */
+  /** Display label */
   label: string
-  /** 图标 */
+  /** Icon */
   icon: string
 }
 
 /**
- * 用户会话信息接口（扩展NextAuth类型）
+ * User session info interface (extends NextAuth types)
  */
 export interface UserSession {
   id?: string
@@ -82,7 +82,7 @@ export interface UserSession {
 }
 
 /**
- * 组件通用Props接口
+ * Component common Props interface
  */
 export interface BaseComponentProps {
   className?: string
@@ -90,21 +90,21 @@ export interface BaseComponentProps {
 }
 
 /**
- * 页面参数接口（用于动态路由）
+ * Page parameters interface (for dynamic routing)
  */
 export interface PageParams {
   slug: string
 }
 
 /**
- * 页面Props接口
+ * Page Props interface
  */
 export interface PageProps {
   params: Promise<PageParams>
 }
 
 /**
- * 网络连接信息接口（用于性能监控）
+ * Network connection info interface (for performance monitoring)
  */
 export interface NetworkConnection {
   effectiveType?: '2g' | '3g' | '4g' | 'slow-2g'
@@ -114,15 +114,15 @@ export interface NetworkConnection {
 }
 
 /**
- * 性能指标接口
+ * Performance metrics interface
  */
 export interface PerformanceMetrics {
-  /** 首次内容绘制时间 */
+  /** First Contentful Paint time */
   firstContentfulPaint?: number
-  /** 最大内容绘制时间 */
+  /** Largest Contentful Paint time */
   largestContentfulPaint?: number
-  /** 首次输入延迟 */
+  /** First Input Delay */
   firstInputDelay?: number
-  /** 累积布局偏移 */
+  /** Cumulative Layout Shift */
   cumulativeLayoutShift?: number
 }

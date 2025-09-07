@@ -7,19 +7,19 @@ import { useSession, signOut } from 'next-auth/react'
 import AuthButton from '@/components/ui/AuthButton'
 
 const navItems = [
-  { href: '/', label: '首页', icon: '🏠' },
-  { href: '/product-intro', label: '产品介绍', icon: '📖' },
-  { href: '/masters', label: '大师', icon: '👨‍🎨' },
-  { href: '/philosophy', label: '理念', icon: '💭' },
-  { href: '/video-demo', label: '视频体验', icon: '🎬' },
-  { href: '/auth', label: '加入', icon: '🚪' }
+  { href: '/', label: 'Home', icon: '🏠' },
+  { href: '/product-intro', label: 'Experience', icon: '📖' },
+  { href: '/masters', label: 'Artisans', icon: '👨‍🎨' },
+  { href: '/philosophy', label: 'Philosophy', icon: '💭' },
+  { href: '/video-demo', label: 'Stories', icon: '🎬' },
+  { href: '/auth', label: 'Join', icon: '🚪' }
 ]
 
 const userNavItems = [
-  { href: '/profile', label: '个人中心', icon: '👤' },
-  { href: '/masters', label: '大师', icon: '👨‍🎨' },
-  { href: '/philosophy', label: '理念', icon: '💭' },
-  { href: '/video-demo', label: '视频体验', icon: '🎬' }
+  { href: '/profile', label: 'Profile', icon: '👤' },
+  { href: '/masters', label: 'Artisans', icon: '👨‍🎨' },
+  { href: '/philosophy', label: 'Philosophy', icon: '💭' },
+  { href: '/video-demo', label: 'Stories', icon: '🎬' }
 ]
 
 export function Navigation() {
@@ -33,7 +33,7 @@ export function Navigation() {
 
   return (
     <>
-      {/* 桌面端导航 - 固定在顶部 */}
+      {/* Desktop Navigation - Fixed at top */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -46,7 +46,7 @@ export function Navigation() {
               TATAMI LABS
             </button>
 
-            {/* 桌面端菜单 */}
+            {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-1">
               {(session ? userNavItems : navItems.filter(item => item.href !== '/auth')).map((item) => (
                 <button
@@ -63,13 +63,13 @@ export function Navigation() {
                 </button>
               ))}
               
-              {/* 用户认证按钮 */}
+              {/* User Authentication Button */}
               <div className="ml-4 flex items-center">
                 <AuthButton />
               </div>
             </div>
 
-            {/* 移动端菜单按钮 */}
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-white hover:text-orange-300 transition-colors"
@@ -86,11 +86,11 @@ export function Navigation() {
         </div>
       </nav>
 
-      {/* 移动端侧边菜单 */}
+      {/* Mobile Side Menu */}
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* 遮罩层 */}
+            {/* Overlay */}
             <motion.div
               className="fixed inset-0 bg-black/50 z-40 md:hidden"
               initial={{ opacity: 0 }}
@@ -99,7 +99,7 @@ export function Navigation() {
               onClick={() => setIsOpen(false)}
             />
 
-            {/* 侧边菜单 */}
+            {/* Side Menu */}
             <motion.div
               className="fixed top-0 right-0 h-full w-80 bg-slate-900 shadow-xl z-50 md:hidden"
               initial={{ x: '100%' }}
@@ -109,10 +109,10 @@ export function Navigation() {
             >
               <div className="p-6">
                 
-                {/* 菜单标题 */}
+                {/* Menu Title */}
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="font-card-headline text-white text-xl">
-                    导航菜单
+                    Navigation
                   </h2>
                   <button
                     onClick={() => setIsOpen(false)}
@@ -124,7 +124,7 @@ export function Navigation() {
                   </button>
                 </div>
 
-                {/* 菜单项 */}
+                {/* Menu Items */}
                 <div className="space-y-2">
                   {(session ? userNavItems : navItems).map((item) => (
                     <button
@@ -144,7 +144,7 @@ export function Navigation() {
                     </button>
                   ))}
                   
-                  {/* 移动端用户操作 */}
+                  {/* Mobile User Actions */}
                   {session ? (
                     <button
                       onClick={() => {
@@ -154,7 +154,7 @@ export function Navigation() {
                       className="w-full text-left px-4 py-3 rounded-lg font-card-subtitle transition-all duration-200 flex items-center text-red-400 hover:bg-red-500/10"
                     >
                       <span className="mr-3 text-xl">🚪</span>
-                      退出登录
+                      Sign Out
                     </button>
                   ) : (
                     <button
@@ -165,17 +165,17 @@ export function Navigation() {
                       className="w-full text-left px-4 py-3 rounded-lg font-card-subtitle transition-all duration-200 flex items-center text-green-400 hover:bg-green-500/10"
                     >
                       <span className="mr-3 text-xl">🚪</span>
-                      登录/注册
+                      Sign In / Register
                     </button>
                   )}
                 </div>
 
-                {/* 底部信息 */}
+                {/* Footer Info */}
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="text-gray-400 text-sm font-card-subtitle">
-                    © 2024 Tatami Labs
+                    © 2025 Tatami Labs
                     <br />
-                    匠心传承 · 文化桥梁
+                    Where Tradition Meets Innovation
                   </div>
                 </div>
 
@@ -185,7 +185,7 @@ export function Navigation() {
         )}
       </AnimatePresence>
 
-      {/* 为固定导航留出空间 */}
+      {/* Space for fixed navigation */}
       <div className="h-16"></div>
     </>
   )

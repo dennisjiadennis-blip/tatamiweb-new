@@ -8,25 +8,25 @@ const pillarsData: Pillar[] = [
   {
     title: "The Dialogue",
     description: "Engage in meaningful conversations with master artisans.",
-    imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=800&auto=format&fit=crop",
+    imageUrl: "/images/Gemini_Generated_Image_e27vtie27vtie27v.png",
     borderColor: "border-muted-moss"
   },
   {
     title: "The Space",
     description: "Experience the serene environments where craft is born.",
-    imageUrl: "https://images.unsplash.com/photo-1511406322959-44161a01b9a2?q=80&w=800&auto=format&fit=crop",
+    imageUrl: "/images/Gemini_Generated_Image_nadsj1nadsj1nads.png",
     borderColor: "border-amber-400"
   },
   {
     title: "The Craft",
     description: "Witness the meticulous techniques passed down for generations.",
-    imageUrl: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop",
+    imageUrl: "/images/Gemini_Generated_Image_sogwpsogwpsogwps.png",
     borderColor: "border-powder-blue"
   },
   {
     title: "Your Story Awaits",
     description: "Become a member to unlock exclusive journeys.",
-    imageUrl: "https://images.unsplash.com/photo-1520038410233-7141be7e6f97?q=80&w=800&auto=format&fit=crop",
+    imageUrl: "/images/Gemini_Generated_Image_78uzdf78uzdf78uz.png",
     borderColor: "border-primary"
   }
 ]
