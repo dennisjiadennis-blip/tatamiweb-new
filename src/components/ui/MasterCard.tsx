@@ -3,9 +3,12 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Master, BaseComponentProps } from '@/types'
 
-interface MasterCardProps extends Pick<Master, 'name' | 'field' | 'imageUrl' | 'slug'>, BaseComponentProps {}
+interface MasterCardProps extends BaseComponentProps {
+  master: Master
+}
 
-export default function MasterCard({ name, field, imageUrl, slug }: MasterCardProps) {
+export default function MasterCard({ master, className }: MasterCardProps) {
+  const { name, field, imageUrl, slug } = master
   return (
     <Link href={`/masters/${slug}`} className="block">
       <div className="bg-card rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-lg cursor-pointer">

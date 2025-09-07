@@ -4,7 +4,7 @@ import { Master, ApiError } from '@/types'
  * API 服务类 - 统一管理所有API调用
  */
 export class ApiService {
-  private static baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  private static baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
   /**
    * 处理 fetch 请求的通用方法
@@ -43,8 +43,7 @@ export class ApiService {
     try {
       return await ApiService.fetchApi<Master[]>('/masters')
     } catch (error) {
-      console.error('Failed to fetch masters:', error)
-      return [] // 返回空数组作为 fallback
+      throw new Error('Unable to fetch masters data. Please check your network connection and try again.')
     }
   }
 
@@ -55,8 +54,7 @@ export class ApiService {
     try {
       return await ApiService.fetchApi<Master>(`/masters?slug=${slug}`)
     } catch (error) {
-      console.error(`Failed to fetch master with slug ${slug}:`, error)
-      return null
+      throw new Error(`Unable to fetch master data for "${slug}". Please verify the master exists and try again.`)
     }
   }
 
@@ -69,8 +67,7 @@ export class ApiService {
         cache: 'no-store' // 确保获取最新数据
       })
     } catch (error) {
-      console.error(`SSR: Failed to fetch master with slug ${slug}:`, error)
-      return null
+      throw new Error(`Server-side fetch failed for master "${slug}". The requested master may not exist.`)
     }
   }
 }

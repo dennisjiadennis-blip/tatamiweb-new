@@ -10,7 +10,15 @@ interface MasterDetailPageProps extends PageProps {}
 
 export default async function MasterDetailPage({ params }: MasterDetailPageProps) {
   const { slug } = await params
-  const master = await getMasterBySlugSSR(slug)
+  let master
+  
+  try {
+    master = await getMasterBySlugSSR(slug)
+  } catch (error) {
+    console.error(`Error loading master detail for slug "${slug}":`, error)
+    // If there's an error fetching the master, show not found
+    notFound()
+  }
 
   if (!master) {
     notFound()
@@ -148,7 +156,18 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
 // Generate metadata for SEO
 export async function generateMetadata({ params }: MasterDetailPageProps) {
   const { slug } = await params
-  const master = await getMasterBySlugSSR(slug)
+  let master
+  
+  try {
+    master = await getMasterBySlugSSR(slug)
+  } catch (error) {
+    console.error(`Error generating metadata for master "${slug}":`, error)
+    // Return default metadata for failed requests
+    return {
+      title: 'Master Not Found - Tatami Labs',
+      description: 'The requested master craftsman could not be found.',
+    }
+  }
   
   if (!master) {
     return {

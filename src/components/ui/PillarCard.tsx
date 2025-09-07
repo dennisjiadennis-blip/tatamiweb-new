@@ -1,14 +1,13 @@
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import { Pillar, BaseComponentProps } from '@/types'
 
-interface PillarCardProps {
-  title: string
-  description: string
-  imageUrl: string
-  borderColor: string
+interface PillarCardProps extends BaseComponentProps {
+  pillar: Pillar
 }
 
-export default function PillarCard({ title, description, imageUrl, borderColor }: PillarCardProps) {
+export default function PillarCard({ pillar, className }: PillarCardProps) {
+  const { title, description, imageUrl, borderColor } = pillar
   return (
     <div className={`bg-card rounded-xl border-2 ${borderColor} p-4 shadow-sm transition-shadow hover:shadow-md`}>
       {/* Image */}

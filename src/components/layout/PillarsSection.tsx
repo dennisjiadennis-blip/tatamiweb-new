@@ -2,8 +2,9 @@ import PillarCard from '@/components/ui/PillarCard'
 import Container from '@/components/ui/Container'
 import SectionTitle from '@/components/ui/SectionTitle'
 import GridLayout from '@/components/ui/GridLayout'
+import { Pillar } from '@/types'
 
-const pillarsData = [
+const pillarsData: Pillar[] = [
   {
     title: "The Dialogue",
     description: "Engage in meaningful conversations with master artisans.",
@@ -43,10 +44,7 @@ export default function PillarsSection() {
           {pillarsData.map((pillar, index) => (
             <PillarCard
               key={index}
-              title={pillar.title}
-              description={pillar.description}
-              imageUrl={pillar.imageUrl}
-              borderColor={pillar.borderColor}
+              pillar={pillar}
             />
           ))}
         </GridLayout>

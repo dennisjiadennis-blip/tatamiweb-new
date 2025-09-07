@@ -15,6 +15,20 @@ export interface Master {
 }
 
 /**
+ * 支柱信息接口
+ */
+export interface Pillar {
+  /** 支柱标题 */
+  title: string
+  /** 支柱描述 */
+  description: string
+  /** 图片URL */
+  imageUrl: string
+  /** 边框颜色类名 */
+  borderColor: string
+}
+
+/**
  * API响应通用接口
  */
 export interface ApiResponse<T = unknown> {
