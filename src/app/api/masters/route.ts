@@ -4,71 +4,71 @@ import { Master, ApiError } from '@/types'
 const mastersData: Master[] = [
   {
     id: "1",
-    slug: "yuki-tanaka",
-    imageUrl: "/images/yuki-tanaka-portrait.jpg",
-    works: ["/images/yuki-tanaka-work-1.jpg", "/images/yuki-tanaka-work-2.jpg"],
+    slug: "hiroki-sato",
+    imageUrl: "https://images.unsplash.com/photo-1549237511-6b684e00b863?q=80&w=1740&auto=format&fit=crop", // Portrait of a brewer
+    works: [ "https://images.unsplash.com/photo-1585412211260-8d8a7de4f274?q=80&w=1740&auto=format&fit=crop" ], // Sake bottles
     i18n: {
       en: {
-        name: "Yuki Tanaka",
-        field: "Kaiseki Cuisine Master",
-        bio: "Yuki Tanaka is a modern interpreter of kaiseki cuisine, incorporating seasonal changes into every dish. Her cuisine is not only a feast for the taste buds, but also a banquet for the eyes and soul.",
-        philosophy: "Cuisine is like tea ceremony, precious in its once-in-a-lifetime encounter. Each meal is a unique meeting that should be savored with heart in the present moment."
+        name: "Hiroki Sato",
+        field: "Master Sake Brewer",
+        bio: "Hiroki Sato is a fourth-generation Toji (Master Brewer) from Niigata, a region famed for its pure water and premium rice. He honors centuries-old traditions while subtly innovating to create sake that speaks to a modern palate.",
+        philosophy: "Sake is a living thing. It's a conversation between rice, water, and yeast. My role is simply to be a respectful mediator in that conversation."
       }
     }
   },
   {
     id: "2",
-    slug: "masao-yamamoto",
-    imageUrl: "/images/masao-yamamoto-portrait.jpg",
-    works: ["/images/masao-yamamoto-work-1.jpg", "/images/masao-yamamoto-work-2.jpg"],
+    slug: "kenzo-tanaka",
+    imageUrl: "https://images.unsplash.com/photo-1620432856538-4b7b2def23d7?q=80&w=1740&auto=format&fit=crop", // Portrait of a craftsman
+    works: [ "https://images.unsplash.com/photo-1610350320312-335b2dec8283?q=80&w=1740&auto=format&fit=crop" ], // Iron Kettle
     i18n: {
       en: {
-        name: "Masao Yamamoto",
-        field: "Bizen Ware Pottery Master",
-        bio: "A contemporary successor of Bizen ware, Master Yamamoto's work has won the Commissioner for Cultural Affairs Award. He insists on hand-shaping and refuses any modern mechanical assistance.",
-        philosophy: "True pottery is not about showing off technique, but about inner peace. Only with a calm mind can one feel the breath of the clay and the temper of the fire."
+        name: "Kenzo Tanaka",
+        field: "Nambu Ironware Artisan",
+        bio: "From a small workshop in Iwate, Kenzo Tanaka forges Nambu Tekki (ironware) with techniques passed down since the 17th century. Each iron kettle he creates is known to last for over a century.",
+        philosophy: "Iron has a stubborn heart. You cannot force it. You must persuade it with heat, with rhythm, and with patience. The hammer is my paintbrush."
       }
     }
   },
   {
     id: "3",
-    slug: "akiko-sato",
-    imageUrl: "/images/akiko-sato-portrait.jpg",
-    works: ["/images/akiko-sato-work-1.jpg", "/images/akiko-sato-work-2.jpg"],
+    slug: "yuki-kimura",
+    imageUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop", // Portrait of an architect
+    works: [ "https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=1740&auto=format&fit=crop" ], // Minimalist architecture
     i18n: {
       en: {
-        name: "Akiko Sato",
-        field: "Kyo-yuzen Dyeing Master",
-        bio: "As the third-generation successor of Kyo-yuzen dyeing, Akiko Sato's work blends traditional techniques with modern aesthetics, each piece a poem of Kyoto's cultural heritage.",
-        philosophy: "Fabric is like life; truth is found in the interplay of warp and weft. Beauty is not in opulence, but in the perfect touch of elegance and restraint."
+        name: "Yuki Kimura",
+        field: "Master Architect",
+        bio: "Yuki Kimura is a renowned architect known for her minimalist designs that harmoniously blend traditional Japanese aesthetics with modern living. Her work focuses on light, shadow, and natural materials.",
+        philosophy: "A building should not be a monument. It should be a quiet vessel that holds the lives and memories of those within. My job is to create beautiful silence."
       }
     }
   },
   {
     id: "4",
-    slug: "toshiro-nakamura",
-    imageUrl: "/images/toshiro-nakamura-portrait.jpg",
-    works: ["/images/toshiro-nakamura-work-1.jpg", "/images/toshiro-nakamura-work-2.jpg"],
+    slug: "takeru-honda",
+    imageUrl: "https://images.unsplash.com/photo-1593432924968-04f8602b9370?q=80&w=1887&auto=format&fit=crop", // Portrait of a powerful man
+    works: [ "https://images.unsplash.com/photo-1594911403935-b6d8a39a61d6?q=80&w=1740&auto=format&fit=crop" ], // Sumo ring
     i18n: {
       en: {
-        name: "Toshiro Nakamura",
-        field: "Blade Forging Master",
-        bio: "Toshiro Nakamura is a national treasure-level master of Japanese sword forging, inheriting ancient school forging techniques. Each blade he forges embodies the spirit of bushido, with patterns flowing like water.",
-        philosophy: "The sword reflects the heart, and forging is spiritual practice. Through countless hammer strikes, not only is steel refined, but the craftsman's soul is elevated."
+        name: "Takeru Honda",
+        field: "Sumo Grand Champion (Yokozuna)",
+        bio: "Once a legendary Yokozuna, Takeru Honda now runs a stable to train the next generation of wrestlers. He embodies the principles of 'hinkaku' (dignity) and 'chikara' (power) central to the sport.",
+        philosophy: "The ring is small, but it contains the universe. Victory is not about defeating your opponent, but about conquering the weakness within yourself."
       }
     }
   },
   {
     id: "5",
-    slug: "hiroto-suzuki",
-    imageUrl: "/images/hiroto-suzuki-portrait.jpg",
-    works: ["/images/hiroto-suzuki-work-1.jpg", "/images/hiroto-suzuki-work-2.jpg"],
+    slug: "chiyo",
+    imageUrl: "https://images.unsplash.com/photo-1545920367-e4e7c7031b67?q=80&w=1887&auto=format&fit=crop", // Portrait of a geisha
+    works: [ "https://images.unsplash.com/photo-1589218292237-7752b4515126?q=80&w=1740&auto=format&fit=crop" ], // Tea ceremony
     i18n: {
       en: {
-        name: "Hiroto Suzuki",
-        field: "Traditional Woodworking Master",
-        bio: "Hiroto Suzuki is a master craftsman specializing in traditional Japanese woodworking techniques. His work exemplifies the perfect harmony between functionality and beauty that defines Japanese craftsmanship.",
-        philosophy: "Wood has its own spirit and character. My role is not to dominate, but to listen and guide its natural beauty into forms that serve and inspire."
+        name: "Chiyo",
+        field: "Geisha & Traditional Arts Master",
+        bio: "Known simply as Chiyo in the Gion district of Kyoto, she is a master of traditional dance, the tea ceremony, and the shamisen. She is a living guardian of Japan's intangible cultural heritage.",
+        philosophy: "Beauty is not something you see. It is something you feel. It is the sincerity in a gesture, the silence between notes, the dedication of a lifetime to a single art form."
       }
     }
   }
