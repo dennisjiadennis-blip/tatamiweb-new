@@ -10,19 +10,19 @@ export default function HeroSection() {
       }}
     >
       <Container>
-        <div className="bg-card/80 backdrop-blur-sm rounded-xl p-12 shadow-lg max-w-2xl mx-auto text-center">
+        <div className="bg-card/80 backdrop-blur-sm rounded-xl p-8 md:p-12 shadow-soft border border-black/5 max-w-2xl mx-auto text-center">
           {/* Main Title */}
-          <h1 className="font-serif text-5xl font-bold text-foreground mb-6">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
             A Story Woven with a Master
           </h1>
           
           {/* Description */}
-          <p className="font-sans text-lg text-foreground/80 mb-8 leading-relaxed">
+          <p className="font-sans text-lg text-foreground/80 mt-4 mb-8 leading-relaxed max-w-xl mx-auto">
             More than travel, it's dialogue of creation. Connect with master craftsmen through immersive experiences and discover the wisdom embedded in every gesture, every tradition.
           </p>
           
           {/* Button */}
-          <Button variant="outline" size="lg">
+          <Button variant="outline" size="lg" className="rounded-full">
             View Profile
           </Button>
         </div>

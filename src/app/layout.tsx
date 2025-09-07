@@ -1,17 +1,16 @@
-import { Cormorant_Garamond, Ma_Shan_Zheng } from 'next/font/google'
+import { Inter, Noto_Serif_JP } from 'next/font/google'
 import './globals.css'
 import { NextAuthProvider } from './Providers'
 
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-cormorant-garamond',
+const inter = Inter({ 
+  subsets: ['latin'], 
+  variable: '--font-sans' 
 })
 
-const maShanZheng = Ma_Shan_Zheng({
+const notoSerifJP = Noto_Serif_JP({
   subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-ma-shan-zheng',
+  weight: ['400', '500', '700'],
+  variable: '--font-serif',
 })
 
 export const metadata = {
@@ -27,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${cormorantGaramond.variable} ${maShanZheng.variable} font-serif bg-japandi-background text-japandi-charcoal`}
+        className={`${inter.variable} ${notoSerifJP.variable} font-sans antialiased bg-background text-foreground`}
       >
         <NextAuthProvider>
           <main>{children}</main>
