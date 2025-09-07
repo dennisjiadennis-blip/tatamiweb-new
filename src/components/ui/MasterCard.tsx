@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Master, BaseComponentProps } from '@/types'
 
@@ -12,7 +13,11 @@ export default function MasterCard({ master, className }: MasterCardProps) {
   const { name, field } = i18n.en
   return (
     <Link href={`/masters/${slug}`} className="block">
-      <div className="bg-card rounded-xl border border-transparent hover:border-border-subtle p-4 shadow-soft transition-shadow duration-300 hover:shadow-lg cursor-pointer">
+      <motion.div 
+        className="bg-card rounded-xl border border-transparent hover:border-border-subtle p-4 shadow-soft transition-shadow duration-300 hover:shadow-lg cursor-pointer"
+        whileHover={{ scale: 1.03, y: -5 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
         {/* Master Image */}
         <div className="relative w-full h-64 md:h-72">
           <Image
@@ -42,7 +47,7 @@ export default function MasterCard({ master, className }: MasterCardProps) {
             View Profile
           </Button>
         </div>
-      </div>
+      </motion.div>
     </Link>
   )
 }

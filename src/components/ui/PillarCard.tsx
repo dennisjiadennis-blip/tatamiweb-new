@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Pillar, BaseComponentProps } from '@/types'
 
@@ -9,7 +10,11 @@ interface PillarCardProps extends BaseComponentProps {
 export default function PillarCard({ pillar, className }: PillarCardProps) {
   const { title, description, imageUrl, borderColor } = pillar
   return (
-    <div className={`bg-card rounded-xl border-2 ${borderColor} p-6 shadow-soft hover:shadow-lg transition-shadow duration-300`}>
+    <motion.div 
+      className={`bg-card rounded-xl border-2 ${borderColor} p-6 shadow-soft hover:shadow-lg transition-shadow duration-300`}
+      whileHover={{ scale: 1.03, y: -5 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    >
       {/* Image */}
       <div className="relative w-full h-40 md:h-48">
         <Image
@@ -39,6 +44,6 @@ export default function PillarCard({ pillar, className }: PillarCardProps) {
           View Profile
         </Button>
       </div>
-    </div>
+    </motion.div>
   )
 }

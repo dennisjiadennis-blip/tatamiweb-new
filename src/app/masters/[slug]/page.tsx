@@ -1,15 +1,19 @@
+'use client';
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { Button, buttonVariants } from '@/components/ui/button'
 import Container from '@/components/ui/Container'
 import { getMasterBySlug } from '@/lib/data'
 import { PageProps } from '@/types'
+import { use } from 'react'
 
 interface MasterDetailPageProps extends PageProps {}
 
-export default async function MasterDetailPage({ params }: MasterDetailPageProps) {
-  const { slug } = await params
+export default function MasterDetailPage({ params }: MasterDetailPageProps) {
+  const { slug } = use(params)
   const master = getMasterBySlug(slug)
 
   if (!master) {
@@ -32,7 +36,12 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
         <div className="absolute inset-0 bg-black/30" />
       </div>
 
-      <Container className="py-12 md:py-16">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
+      >
+        <Container className="py-12 md:py-16">
         {/* 2. 返回链接 */}
         <Link href="/" className={buttonVariants({ variant: "ghost", className: "mb-8" })}>
           &larr; Back to Home
@@ -107,14 +116,15 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
             </Button>
           </div>
         </div>
-      </Container>
+        </Container>
+      </motion.div>
     </main>
   )
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: MasterDetailPageProps) {
-  const { slug } = await params
+export function generateMetadata({ params }: MasterDetailPageProps) {
+  const { slug } = use(params)
   const master = getMasterBySlug(slug)
   
   if (!master) {
