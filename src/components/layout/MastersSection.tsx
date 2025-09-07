@@ -20,12 +20,12 @@ export default async function MastersSection() {
 
   if (hasError) {
     return (
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-background">
         <Container>
           <SectionTitle 
             title="The Masters"
             subtitle="We're having trouble loading the masters data right now"
-            size="lg"
+            size="xl"
           />
           <div className="mt-12 text-center">
             <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 max-w-md mx-auto">
@@ -40,18 +40,18 @@ export default async function MastersSection() {
   }
 
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-16 bg-background">
       <Container>
         <SectionTitle 
           title="The Masters"
-          subtitle="Meet the extraordinary artisans who have dedicated their lives to preserving and perfecting traditional Japanese crafts"
-          size="lg"
+          subtitle="Meet the artisans who dedicate their lives to the soul of Japanese craft."
+          size="xl"
         />
         
         <GridLayout cols={1} mdCols={2} lgCols={3} gap={8} marginTop={12}>
-          {masters.map((master, index) => (
+          {masters.map((master) => (
             <MasterCard
-              key={master.slug}
+              key={master.id}
               master={master}
             />
           ))}

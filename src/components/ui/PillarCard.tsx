@@ -9,9 +9,9 @@ interface PillarCardProps extends BaseComponentProps {
 export default function PillarCard({ pillar, className }: PillarCardProps) {
   const { title, description, imageUrl, borderColor } = pillar
   return (
-    <div className={`bg-card rounded-xl border-2 ${borderColor} p-4 shadow-sm transition-shadow hover:shadow-md`}>
+    <div className={`bg-card rounded-xl border-2 ${borderColor} p-6 shadow-soft hover:shadow-lg transition-shadow duration-300`}>
       {/* Image */}
-      <div className="relative w-full h-48 mb-4">
+      <div className="relative w-full h-40 md:h-48">
         <Image
           src={imageUrl}
           alt={title}
@@ -23,20 +23,22 @@ export default function PillarCard({ pillar, className }: PillarCardProps) {
         />
       </div>
       
-      {/* Title */}
-      <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
-        {title}
-      </h3>
-      
-      {/* Description */}
-      <p className="text-sm text-foreground/70 mb-4 leading-relaxed">
-        {description}
-      </p>
-      
-      {/* Button */}
-      <Button variant="outline" className="w-full">
-        View Profile
-      </Button>
+      <div className="mt-4 space-y-3">
+        {/* Title */}
+        <h3 className="font-serif text-lg font-semibold text-foreground">
+          {title}
+        </h3>
+        
+        {/* Description */}
+        <p className="text-sm text-foreground/70 leading-relaxed">
+          {description}
+        </p>
+        
+        {/* Button */}
+        <Button variant="outline" className="w-full rounded-full">
+          View Profile
+        </Button>
+      </div>
     </div>
   )
 }

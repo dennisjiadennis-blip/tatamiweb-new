@@ -53,7 +53,7 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
               <div className="relative w-full h-80 rounded-lg overflow-hidden">
                 <Image
                   src={master.imageUrl}
-                  alt={`${master.name} - ${master.field}`}
+                  alt={`${master.i18n.en.name} - ${master.i18n.en.field}`}
                   fill
                   className="object-cover"
                   priority={true}
@@ -65,16 +65,16 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
             {/* Master Info */}
             <div className="md:col-span-2">
               <h1 className="text-4xl font-serif font-bold text-foreground mb-2">
-                {master.name}
+                {master.i18n.en.name}
               </h1>
               <h2 className="text-xl text-primary font-medium mb-4">
-                {master.field}
+                {master.i18n.en.field}
               </h2>
               <p className="text-foreground/70 text-lg leading-relaxed mb-6">
-                Meet {master.name}, a renowned {master.field.toLowerCase()} who has dedicated their life to preserving and perfecting traditional Japanese craftsmanship.
+                {master.i18n.en.bio}
               </p>
               <p className="text-foreground/70 leading-relaxed mb-8">
-                With decades of experience, {master.name.split(' ')[0]} represents the finest traditions of Japanese artistry, combining time-honored techniques with contemporary vision. Their work embodies the essence of mono no aware - the beautiful impermanence that defines Japanese aesthetic philosophy.
+                With decades of experience, {master.i18n.en.name.split(' ')[0]} represents the finest traditions of Japanese artistry, combining time-honored techniques with contemporary vision. Their work embodies the essence of mono no aware - the beautiful impermanence that defines Japanese aesthetic philosophy.
               </p>
               
               <div className="flex gap-4">
@@ -95,17 +95,17 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
             Master's Philosophy
           </h2>
           <blockquote className="text-lg italic text-foreground/80 border-l-4 border-primary pl-6">
-            "True mastery comes not from perfection, but from the endless pursuit of harmony between tradition and innovation. Every piece tells a story, and every story connects us to the eternal flow of Japanese craftsmanship."
+            "{master.i18n.en.philosophy}"
           </blockquote>
           <p className="text-right mt-4 text-foreground/60">
-            — {master.name}
+            — {master.i18n.en.name}
           </p>
         </div>
 
         {/* Experience Section */}
         <div className="bg-card rounded-xl p-8 mb-8 shadow-sm">
           <h2 className="text-2xl font-serif font-semibold text-foreground mb-6">
-            Craft Experience with {master.name.split(' ')[0]}
+            Craft Experience with {master.i18n.en.name.split(' ')[0]}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -135,13 +135,13 @@ export default async function MasterDetailPage({ params }: MasterDetailPageProps
             Ready to Begin Your Journey?
           </h2>
           <p className="text-foreground/70 mb-6 max-w-2xl mx-auto">
-            Experience the profound connection between artisan and craft. Book your exclusive session with {master.name} and discover the timeless wisdom of Japanese craftsmanship.
+            Experience the profound connection between artisan and craft. Book your exclusive session with {master.i18n.en.name} and discover the timeless wisdom of Japanese craftsmanship.
           </p>
           <div className="flex gap-4 justify-center">
             <Button size="lg">
               Book Now
             </Button>
-            <Button variant="outline" size="lg" asChild>
+            <Button variant="outline" size="lg" className="rounded-full" asChild>
               <Link href="/">
                 Explore More Masters
               </Link>
@@ -177,11 +177,11 @@ export async function generateMetadata({ params }: MasterDetailPageProps) {
   }
   
   return {
-    title: `${master.name} - ${master.field} - Tatami Labs`,
-    description: `Experience traditional Japanese craftsmanship with ${master.name}, a master ${master.field.toLowerCase()}. Book your exclusive artisan experience today.`,
+    title: `${master.i18n.en.name} - ${master.i18n.en.field} - Tatami Labs`,
+    description: `Experience traditional Japanese craftsmanship with ${master.i18n.en.name}, a master ${master.i18n.en.field.toLowerCase()}. Book your exclusive artisan experience today.`,
     openGraph: {
-      title: `${master.name} - ${master.field}`,
-      description: `Experience traditional Japanese craftsmanship with ${master.name}`,
+      title: `${master.i18n.en.name} - ${master.i18n.en.field}`,
+      description: `Experience traditional Japanese craftsmanship with ${master.i18n.en.name}`,
       images: [master.imageUrl],
     },
   }

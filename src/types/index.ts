@@ -4,14 +4,28 @@
  * 大师信息接口
  */
 export interface Master {
-  /** 大师姓名 */
-  name: string
-  /** 专业领域 */
-  field: string
-  /** 头像图片URL */
-  imageUrl: string
+  /** 唯一标识符 */
+  id: string
   /** URL路径标识符 */
   slug: string
+  /** 头像图片URL */
+  imageUrl: string
+  /** 作品图片URL数组 */
+  works: string[]
+  /** 多语言内容 */
+  i18n: {
+    en: {
+      /** 大师姓名 */
+      name: string
+      /** 专业领域 */
+      field: string
+      /** 大师传记 */
+      bio: string
+      /** 个人哲学理念 */
+      philosophy: string
+    }
+    // 未来可以添加 jp, zh 等
+  }
 }
 
 /**

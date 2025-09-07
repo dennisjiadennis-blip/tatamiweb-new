@@ -15,6 +15,7 @@ module.exports = {
         'muted-moss': '#7A8A6B',        // 柔和苔藓绿
         'powder-blue': '#B0C4DE',       // 粉末蓝
         'border-subtle': '#D1D5DB',    // 精致的边框颜色
+        'amber-400': '#FBBF24',        // 琥珀色 400
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'sans-serif'],

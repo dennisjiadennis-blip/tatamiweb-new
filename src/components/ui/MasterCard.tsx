@@ -8,12 +8,13 @@ interface MasterCardProps extends BaseComponentProps {
 }
 
 export default function MasterCard({ master, className }: MasterCardProps) {
-  const { name, field, imageUrl, slug } = master
+  const { imageUrl, slug, i18n } = master
+  const { name, field } = i18n.en
   return (
     <Link href={`/masters/${slug}`} className="block">
-      <div className="bg-card rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-lg cursor-pointer">
+      <div className="bg-card rounded-xl border border-transparent hover:border-border-subtle p-4 shadow-soft transition-shadow duration-300 hover:shadow-lg cursor-pointer">
         {/* Master Image */}
-        <div className="relative w-full h-60">
+        <div className="relative w-full h-64 md:h-72">
           <Image
             src={imageUrl}
             alt={`${name} - ${field}`}
@@ -37,7 +38,7 @@ export default function MasterCard({ master, className }: MasterCardProps) {
           </p>
           
           {/* View Profile Button */}
-          <Button variant="outline" className="w-full mt-4">
+          <Button variant="outline" className="w-full mt-4 rounded-full transition-colors hover:bg-primary/5">
             View Profile
           </Button>
         </div>
