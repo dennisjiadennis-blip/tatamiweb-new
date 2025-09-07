@@ -1,6 +1,6 @@
 import { Cormorant_Garamond, Ma_Shan_Zheng } from 'next/font/google'
 import './globals.css'
-import { AuthProvider } from '@/components/providers/session-provider'
+import { NextAuthProvider } from './Providers'
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -29,9 +29,9 @@ export default function RootLayout({
       <body
         className={`${cormorantGaramond.variable} ${maShanZheng.variable} font-serif bg-japandi-background text-japandi-charcoal`}
       >
-        <AuthProvider>
+        <NextAuthProvider>
           <main>{children}</main>
-        </AuthProvider>
+        </NextAuthProvider>
       </body>
     </html>
   )

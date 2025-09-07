@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
+import AuthButton from '@/components/ui/AuthButton'
 
 const navItems = [
   { href: '/', label: '首页', icon: '🏠' },
@@ -62,27 +63,10 @@ export function Navigation() {
                 </button>
               ))}
               
-              {/* 用户状态 */}
-              {session ? (
-                <div className="flex items-center space-x-2 ml-4">
-                  <span className="text-gray-300 font-card-subtitle">
-                    欢迎, {session.user?.name || session.user?.email}
-                  </span>
-                  <button
-                    onClick={handleSignOut}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-card-subtitle transition-colors duration-200"
-                  >
-                    退出
-                  </button>
-                </div>
-              ) : status !== 'loading' && (
-                <button
-                  onClick={() => window.location.href = '/auth'}
-                  className="ml-4 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-card-subtitle transition-colors duration-200"
-                >
-                  登录
-                </button>
-              )}
+              {/* 用户认证按钮 */}
+              <div className="ml-4 flex items-center">
+                <AuthButton />
+              </div>
             </div>
 
             {/* 移动端菜单按钮 */}
