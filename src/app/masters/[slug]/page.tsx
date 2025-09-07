@@ -1,30 +1,34 @@
 'use client';
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Button, buttonVariants } from '@/components/ui/button'
-import Container from '@/components/ui/Container'
-import { getMasterBySlug } from '@/lib/data'
-import { PageProps } from '@/types'
-import { use } from 'react'
+import { use } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { Button, buttonVariants } from '@/components/ui/button';
+import Container from '@/components/ui/Container';
+import { getMasterBySlug } from '@/lib/data';
+import type { PageProps, Master } from '@/types';
 
-interface MasterDetailPageProps extends PageProps {}
-
-export default function MasterDetailPage({ params }: MasterDetailPageProps) {
-  const { slug } = use(params)
-  const master = getMasterBySlug(slug)
+// 这是客户端组件，负责渲染页面
+export default function MasterDetailPage({ params }: PageProps) {
+  // 在客户端组件中，使用 'use' hook 来处理Promise
+  const { slug } = use(params);
+  const master = getMasterBySlug(slug);
 
   if (!master) {
-    notFound()
+    notFound();
   }
 
-  const { name, field, bio, philosophy } = master.i18n.en
+  const { name, field, bio, philosophy } = master.i18n.en;
 
   return (
-    <main className="bg-background">
-      {/* 1. 大幅顶部图片 */}
+    <motion.main
+      className="bg-background"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="relative w-full h-80 md:h-96">
         <Image
           src={master.works[0] || master.imageUrl}
@@ -36,20 +40,12 @@ export default function MasterDetailPage({ params }: MasterDetailPageProps) {
         <div className="absolute inset-0 bg-black/30" />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
-      >
-        <Container className="py-12 md:py-16">
-        {/* 2. 返回链接 */}
+      <Container className="py-12 md:py-16">
         <Link href="/" className={buttonVariants({ variant: "ghost", className: "mb-8" })}>
           &larr; Back to Home
         </Link>
 
-        {/* 3. 两列式布局 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-          {/* 左侧：大师肖像与核心信息 */}
           <aside className="md:col-span-1 space-y-6">
             <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-soft">
               <Image src={master.imageUrl} alt={name} fill className="object-cover" />
@@ -64,12 +60,10 @@ export default function MasterDetailPage({ params }: MasterDetailPageProps) {
             </div>
           </aside>
 
-          {/* 右侧：详细内容 */}
           <div className="md:col-span-2">
             <section className="prose prose-lg max-w-none text-foreground/80">
               <h2>Biography</h2>
               <p>{bio}</p>
-              
               <h2>Master's Philosophy</h2>
               <blockquote className="border-l-4 border-primary pl-4 italic">
                 <p>"{philosophy}"</p>
@@ -116,31 +110,29 @@ export default function MasterDetailPage({ params }: MasterDetailPageProps) {
             </Button>
           </div>
         </div>
-        </Container>
-      </motion.div>
-    </main>
-  )
+      </Container>
+    </motion.main>
+  );
 }
 
-// Generate metadata for SEO
-export function generateMetadata({ params }: MasterDetailPageProps) {
-  const { slug } = use(params)
-  const master = getMasterBySlug(slug)
-  
+// 这是服务器端函数，负责生成SEO元数据
+// 它必须是 async 的，并且可以直接 await params
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params;
+  const master = getMasterBySlug(slug);
+
   if (!master) {
-    return {
-      title: 'Master Not Found - Tatami Labs',
-      description: 'The requested master craftsman could not be found.',
-    }
+    return { title: 'Master Not Found' };
   }
-  
+
+  const { name, field } = master.i18n.en;
   return {
-    title: `${master.i18n.en.name} - ${master.i18n.en.field} - Tatami Labs`,
-    description: `Experience traditional Japanese craftsmanship with ${master.i18n.en.name}, a master ${master.i18n.en.field.toLowerCase()}. Book your exclusive artisan experience today.`,
+    title: `${name} - ${field} | Tatami Labs`,
+    description: `Discover the work and philosophy of ${name}, a master of ${field}.`,
     openGraph: {
-      title: `${master.i18n.en.name} - ${master.i18n.en.field}`,
-      description: `Experience traditional Japanese craftsmanship with ${master.i18n.en.name}`,
+      title: `${name} - ${field}`,
+      description: `Experience traditional Japanese craftsmanship with ${name}`,
       images: [master.imageUrl],
     },
-  }
+  };
 }
