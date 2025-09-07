@@ -4,12 +4,23 @@ import { Master, ApiError } from '@/types'
 const mastersData: Master[] = [
   {
     id: "1",
+    slug: "yuki-tanaka",
+    imageUrl: "/images/yuki-tanaka-portrait.jpg",
+    works: ["/images/yuki-tanaka-work-1.jpg", "/images/yuki-tanaka-work-2.jpg"],
+    i18n: {
+      en: {
+        name: "Yuki Tanaka",
+        field: "Kaiseki Cuisine Master",
+        bio: "Yuki Tanaka is a modern interpreter of kaiseki cuisine, incorporating seasonal changes into every dish. Her cuisine is not only a feast for the taste buds, but also a banquet for the eyes and soul.",
+        philosophy: "Cuisine is like tea ceremony, precious in its once-in-a-lifetime encounter. Each meal is a unique meeting that should be savored with heart in the present moment."
+      }
+    }
+  },
+  {
+    id: "2",
     slug: "masao-yamamoto",
-    imageUrl: "https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?q=80&w=800&auto=format&fit=crop",
-    works: [
-      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop"
-    ],
+    imageUrl: "/images/masao-yamamoto-portrait.jpg",
+    works: ["/images/masao-yamamoto-work-1.jpg", "/images/masao-yamamoto-work-2.jpg"],
     i18n: {
       en: {
         name: "Masao Yamamoto",
@@ -20,13 +31,10 @@ const mastersData: Master[] = [
     }
   },
   {
-    id: "2",
+    id: "3",
     slug: "akiko-sato",
-    imageUrl: "https://images.unsplash.com/photo-1525328437458-f3be46b5a599?q=80&w=800&auto=format&fit=crop",
-    works: [
-      "https://images.unsplash.com/photo-1511406322959-44161a01b9a2?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1520038410233-7141be7e6f97?q=80&w=800&auto=format&fit=crop"
-    ],
+    imageUrl: "/images/akiko-sato-portrait.jpg",
+    works: ["/images/akiko-sato-work-1.jpg", "/images/akiko-sato-work-2.jpg"],
     i18n: {
       en: {
         name: "Akiko Sato",
@@ -37,13 +45,10 @@ const mastersData: Master[] = [
     }
   },
   {
-    id: "3",
+    id: "4",
     slug: "toshiro-nakamura",
-    imageUrl: "https://images.unsplash.com/photo-1554126807-6b10f600673a?q=80&w=800&auto=format&fit=crop",
-    works: [
-      "https://images.unsplash.com/photo-1595353389896-120815a5c13b?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=800&auto=format&fit=crop"
-    ],
+    imageUrl: "/images/toshiro-nakamura-portrait.jpg",
+    works: ["/images/toshiro-nakamura-work-1.jpg", "/images/toshiro-nakamura-work-2.jpg"],
     i18n: {
       en: {
         name: "Toshiro Nakamura",
@@ -54,19 +59,16 @@ const mastersData: Master[] = [
     }
   },
   {
-    id: "4",
-    slug: "yuki-tanaka",
-    imageUrl: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=800&auto=format&fit=crop",
-    works: [
-      "https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1541413807996-748925232da9?q=80&w=2070&auto=format&fit=crop"
-    ],
+    id: "5",
+    slug: "hiroto-suzuki",
+    imageUrl: "/images/hiroto-suzuki-portrait.jpg",
+    works: ["/images/hiroto-suzuki-work-1.jpg", "/images/hiroto-suzuki-work-2.jpg"],
     i18n: {
       en: {
-        name: "Yuki Tanaka",
-        field: "Kaiseki Cuisine Master",
-        bio: "Yuki Tanaka is a modern interpreter of kaiseki cuisine, incorporating seasonal changes into every dish. Her cuisine is not only a feast for the taste buds, but also a banquet for the eyes and soul.",
-        philosophy: "Cuisine is like tea ceremony, precious in its once-in-a-lifetime encounter. Each meal is a unique meeting that should be savored with heart in the present moment."
+        name: "Hiroto Suzuki",
+        field: "Traditional Woodworking Master",
+        bio: "Hiroto Suzuki is a master craftsman specializing in traditional Japanese woodworking techniques. His work exemplifies the perfect harmony between functionality and beauty that defines Japanese craftsmanship.",
+        philosophy: "Wood has its own spirit and character. My role is not to dominate, but to listen and guide its natural beauty into forms that serve and inspire."
       }
     }
   }
