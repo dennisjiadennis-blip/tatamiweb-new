@@ -68,8 +68,9 @@ export default function HomePage() {
             <MosaicCard
               size="lg"
               color="beige"
-              title="Stories of Mastery"
-              description="Where ancient wisdom meets artisan hands, every creation tells a tale of generations devoted to perfection."
+              title="A Story Woven with a Master"
+              description="Stories"
+              tag="#5F5FE8"
               hasPattern
               href="/masters"
             />
@@ -83,8 +84,8 @@ export default function HomePage() {
             <MosaicCard
               size="xl"
               color="sage"
-              title="Moss Garden Harmony"
-              description="Nature's gentle touch preserved in enduring beauty."
+              title="BocSot Moss Shape"
+              tag="#2D2D2b"
               hasPattern
             />
           </motion.div>
@@ -104,17 +105,17 @@ export default function HomePage() {
 
           {/* Row 2: Journey Experience */}
           
-          {/* Meet the Masters - Small Left */}
+          {/* The Masters Who Shape Your World - Small Left */}
           <motion.div 
             className="card-sm"
             variants={cardVariants}
           >
             <MosaicCard
               size="sm"
-              color="beige"
-              title="Meet the Masters"
+              color="sage"
+              title="The Masters Who Shape Your World"
+              tag="#7A8A6B"
               href="/masters"
-              hasPattern
             />
           </motion.div>
 
@@ -126,9 +127,8 @@ export default function HomePage() {
             <MosaicCard
               size="xl"
               color="terracotta"
-              title="Journey Into Mastery"
-              subtitle="Crafted Experiences"
-              description="Beyond mere travel—step into workshops where centuries of knowledge live on. Connect with master artisans and witness tradition in motion."
+              title="One Journey, a Lifetime of Insight"
+              subtitle="Watari Ochre"
               href="/video-demo"
             >
               <div className="mt-4">
@@ -152,6 +152,7 @@ export default function HomePage() {
               size="sm"
               color="sage"
               title="My Tatami"
+              tag="#D9C9B3"
               icon={<ShoeIcon size={24} />}
               href="/auth"
             />
@@ -168,8 +169,7 @@ export default function HomePage() {
               size="sm"
               color="sage"
               title="Stories"
-              icon={<BookIcon size={24} />}
-              description="Living traditions"
+              icon={<ShoeIcon size={32} />}
               href="/video-demo"
             />
           </motion.div>
@@ -181,9 +181,9 @@ export default function HomePage() {
           >
             <MosaicCard
               size="md"
-              color="beige"
-              title="Begin Your Journey"
-              icon={<HatIcon size={24} />}
+              color="terracotta"
+              title="Join a Journey"
+              tag="#2DDD2D"
               href="/auth"
             />
           </motion.div>
