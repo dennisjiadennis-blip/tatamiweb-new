@@ -73,7 +73,7 @@ export function Card({
         transition: { duration: 0.3, ease: 'easeOut' }
       }}
       style={cardStyle}
-      className={clsx('transition-transform duration-300 ease-out relative paper-texture', className)}
+      className={clsx('transition-transform duration-300 ease-out relative tatami-texture', className)}
       onClick={handleClick}
     >
       {children}

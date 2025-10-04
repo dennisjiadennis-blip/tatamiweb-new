@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tatami Labs - 智能选品推荐系统</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .input-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .input-group select,
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-group select:focus,
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .product-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .product-category {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .product-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .score-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .score-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #f1f5f9;
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .total-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 2rem;
+            font-weight: 900;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .reasons-list {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .reasons-list h4 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .reasons-list ul {
+            list-style: none;
+        }
+
+        .reasons-list li {
+            background: white;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            color: #374151;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+            margin-top: 50px;
+        }
+
+        .demographic-summary {
+            background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            color: #92400e;
+        }
+
+        .demographic-summary h3 {
+            margin-bottom: 15px;
+            color: #78350f;
+        }
+
+        .demographic-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .score-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" x-data="demographicSelector()">
+        <div class="header">
+            <h1>🎯 Tatami Labs 智能选品推荐系统</h1>
+            <p>基于消费者画像的日本产品智能推荐</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Input Section -->
+            <div class="input-section">
+                <h2 style="margin-bottom: 25px; color: #1e293b; font-weight: 700;">消费者画像输入</h2>
+                
+                <div class="input-group">
+                    <label for="region">📍 目标地域</label>
+                    <select id="region" x-model="demographics.region">
+                        <option value="">请选择地域</option>
+                        <option value="china-tier1">中国一线城市 (北上广深)</option>
+                        <option value="china-tier2">中国二线城市</option>
+                        <option value="china-tier3">中国三四线城市</option>
+                        <option value="japan-urban">日本都市圈</option>
+                        <option value="japan-rural">日本地方城市</option>
+                        <option value="southeast-asia">东南亚发达地区</option>
+                        <option value="north-america">北美地区</option>
+                        <option value="europe">欧洲发达地区</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="price-range">💰 客单价范围 (人民币)</label>
+                    <select id="price-range" x-model="demographics.priceRange">
+                        <option value="">请选择价格区间</option>
+                        <option value="50-200">¥50 - ¥200 (入门级)</option>
+                        <option value="200-500">¥200 - ¥500 (中档)</option>
+                        <option value="500-1000">¥500 - ¥1,000 (中高档)</option>
+                        <option value="1000-2000">¥1,000 - ¥2,000 (高档)</option>
+                        <option value="2000-5000">¥2,000 - ¥5,000 (奢华)</option>
+                        <option value="5000+">¥5,000+ (顶级)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="age-group">👥 目标年龄段</label>
+                    <select id="age-group" x-model="demographics.ageGroup">
+                        <option value="">请选择年龄段</option>
+                        <option value="18-25">18-25岁 (Z世代)</option>
+                        <option value="26-35">26-35岁 (年轻白领)</option>
+                        <option value="36-45">36-45岁 (中产家庭)</option>
+                        <option value="46-55">46-55岁 (成熟消费者)</option>
+                        <option value="55+">55岁以上 (银发族)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="gender">⚥ 主要性别</label>
+                    <select id="gender" x-model="demographics.gender">
+                        <option value="">请选择主要性别</option>
+                        <option value="female">女性为主 (70%+)</option>
+                        <option value="male">男性为主 (70%+)</option>
+                        <option value="balanced">性别均衡</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="lifestyle">🏠 生活方式</label>
+                    <select id="lifestyle" x-model="demographics.lifestyle">
+                        <option value="">请选择生活方式</option>
+                        <option value="urban-professional">都市白领</option>
+                        <option value="family-oriented">家庭导向</option>
+                        <option value="wellness-focused">健康养生</option>
+                        <option value="luxury-seeker">品质追求</option>
+                        <option value="tech-savvy">科技潮流</option>
+                        <option value="traditional">传统文化</option>
+                    </select>
+                </div>
+
+                <button class="analyze-btn" @click="analyzeProfile()" :disabled="!canAnalyze">
+                    🔍 智能推荐分析
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <h2 style="margin-bottom: 25px; color: #1e293b; font-weight: 700;">推荐结果</h2>
+
+                <!-- Show demographic summary if analysis is done -->
+                <div x-show="analyzed" class="demographic-summary">
+                    <h3>📊 目标客群画像</h3>
+                    <div class="demographic-item">
+                        <span>目标地域:</span>
+                        <span x-text="getRegionLabel(demographics.region)"></span>
+                    </div>
+                    <div class="demographic-item">
+                        <span>客单价:</span>
+                        <span x-text="demographics.priceRange"></span>
+                    </div>
+                    <div class="demographic-item">
+                        <span>年龄段:</span>
+                        <span x-text="demographics.ageGroup"></span>
+                    </div>
+                    <div class="demographic-item">
+                        <span>性别倾向:</span>
+                        <span x-text="getGenderLabel(demographics.gender)"></span>
+                    </div>
+                    <div class="demographic-item">
+                        <span>生活方式:</span>
+                        <span x-text="getLifestyleLabel(demographics.lifestyle)"></span>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div x-show="recommendations.length > 0">
+                    <template x-for="(product, index) in recommendations" :key="index">
+                        <div class="recommendation-card">
+                            <div class="product-name" x-text="product.name"></div>
+                            <div class="product-category" x-text="product.category"></div>
+                            <div class="product-description" x-text="product.description"></div>
+                            
+                            <div class="total-score">
+                                总评分: <span x-text="product.totalScore"></span>/70
+                            </div>
+
+                            <div class="score-container">
+                                <div class="score-item">
+                                    <span class="score-value" x-text="product.scores.japanMade"></span>
+                                    <div class="score-label">🇯🇵 日本制造</div>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-value" x-text="product.scores.durability"></span>
+                                    <div class="score-label">♻️ 耐用性</div>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-value" x-text="product.scores.priceReasonable"></span>
+                                    <div class="score-label">💰 价格合理</div>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-value" x-text="product.scores.personalization"></span>
+                                    <div class="score-label">✏️ 个性化</div>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-value" x-text="product.scores.repeatPurchase"></span>
+                                    <div class="score-label">🔄 复购</div>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-value" x-text="product.scores.socialMedia"></span>
+                                    <div class="score-label">📱 社交传播</div>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-value" x-text="product.scores.targetAudience"></span>
+                                    <div class="score-label">🎯 目标明确</div>
+                                </div>
+                            </div>
+
+                            <div class="reasons-list">
+                                <h4>💡 推荐理由:</h4>
+                                <ul>
+                                    <template x-for="reason in product.reasons" :key="reason">
+                                        <li x-text="reason"></li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div x-show="analyzed && recommendations.length === 0" class="no-results">
+                    <h3>😔 暂无匹配推荐</h3>
+                    <p>请尝试调整消费者画像参数</p>
+                </div>
+
+                <div x-show="!analyzed" class="no-results">
+                    <h3>👆 请完善消费者画像</h3>
+                    <p>填写左侧表单开始智能推荐</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function demographicSelector() {
+            return {
+                demographics: {
+                    region: '',
+                    priceRange: '',
+                    ageGroup: '',
+                    gender: '',
+                    lifestyle: ''
+                },
+                analyzed: false,
+                recommendations: [],
+
+                get canAnalyze() {
+                    return this.demographics.region && 
+                           this.demographics.priceRange && 
+                           this.demographics.ageGroup && 
+                           this.demographics.gender && 
+                           this.demographics.lifestyle;
+                },
+
+                analyzeProfile() {
+                    if (!this.canAnalyze) return;
+                    
+                    this.analyzed = true;
+                    this.recommendations = this.generateRecommendations();
+                },
+
+                generateRecommendations() {
+                    const productDatabase = this.getProductDatabase();
+                    const recommendations = [];
+
+                    // 基于人口统计学数据评估每个产品
+                    productDatabase.forEach(product => {
+                        // 首先检查地域适配
+                        if (!this.isRegionCompatible(product)) {
+                            return; // 跳过不适配的地域产品
+                        }
+                        
+                        const scores = this.calculateProductScores(product);
+                        const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
+                        
+                        // 动态阈值：根据最佳匹配度设定
+                        const matchScore = this.calculateDemographicMatch(product);
+                        if (matchScore >= 75) { // 提高匹配阈值到75分
+                            recommendations.push({
+                                ...product,
+                                scores: scores,
+                                totalScore: totalScore,
+                                matchScore: matchScore,
+                                reasons: this.generateReasons(product, scores)
+                            });
+                        }
+                    });
+
+                    // 按匹配度严格排序
+                    const sortedRecommendations = recommendations
+                        .sort((a, b) => {
+                            // 首先按匹配度排序
+                            if (b.matchScore !== a.matchScore) {
+                                return b.matchScore - a.matchScore;
+                            }
+                            // 如果匹配度相同，按总分排序
+                            return b.totalScore - a.totalScore;
+                        });
+                    
+                    // 如果匹配度最高的产品少于80分，说明匹配度不够高
+                    if (sortedRecommendations.length > 0 && sortedRecommendations[0].matchScore < 80) {
+                        console.log('最高匹配度:', sortedRecommendations[0].matchScore, '产品数量:', sortedRecommendations.length);
+                    }
+                    
+                    return sortedRecommendations.slice(0, 3); // 只返回前3个最佳匹配
+                },
+
+                calculateProductScores(product) {
+                    const scores = {
+                        japanMade: 0,
+                        durability: 0,
+                        priceReasonable: 0,
+                        personalization: 0,
+                        repeatPurchase: 0,
+                        socialMedia: 0,
+                        targetAudience: 0
+                    };
+
+                    // 日本制造评分 (固定10分，所有产品都是日本制造)
+                    scores.japanMade = 10;
+
+                    // 耐用性评分
+                    scores.durability = product.durabilityScore || 8;
+
+                    // 价格合理性评分
+                    scores.priceReasonable = this.calculatePriceScore(product);
+
+                    // 个性化潜力评分
+                    scores.personalization = this.calculatePersonalizationScore(product);
+
+                    // 复购潜力评分
+                    scores.repeatPurchase = this.calculateRepeatPurchaseScore(product);
+
+                    // 社交传播力评分
+                    scores.socialMedia = this.calculateSocialMediaScore(product);
+
+                    // 目标客群明确性评分
+                    scores.targetAudience = this.calculateTargetAudienceScore(product);
+
+                    return scores;
+                },
+
+                calculatePriceScore(product) {
+                    const priceRange = this.demographics.priceRange;
+                    const productPrice = product.priceRange;
+                    
+                    // 价格区间匹配度
+                    if (priceRange === productPrice) return 10;
+                    
+                    // 相邻价格区间
+                    const priceOrder = ['50-200', '200-500', '500-1000', '1000-2000', '2000-5000', '5000+'];
+                    const targetIndex = priceOrder.indexOf(priceRange);
+                    const productIndex = priceOrder.indexOf(productPrice);
+                    
+                    if (Math.abs(targetIndex - productIndex) === 1) return 7;
+                    if (Math.abs(targetIndex - productIndex) === 2) return 4;
+                    
+                    return 2;
+                },
+
+                isRegionCompatible(product) {
+                    const region = this.demographics.region;
+                    const compatibleRegions = product.compatibleRegions || [];
+                    
+                    // 如果产品没有地域限制，则适用于所有地域
+                    if (compatibleRegions.length === 0) return true;
+                    
+                    // 严格地域匹配
+                    return compatibleRegions.includes(region);
+                },
+
+                calculateDemographicMatch(product) {
+                    let matchScore = 0;
+                    const maxScore = 100;
+                    
+                    // 价格匹配 (30分) - 提高权重
+                    if (this.demographics.priceRange === product.priceRange) {
+                        matchScore += 30;
+                    } else {
+                        const priceOrder = ['50-200', '200-500', '500-1000', '1000-2000', '2000-5000', '5000+'];
+                        const targetIndex = priceOrder.indexOf(this.demographics.priceRange);
+                        const productIndex = priceOrder.indexOf(product.priceRange);
+                        const distance = Math.abs(targetIndex - productIndex);
+                        if (distance === 1) matchScore += 15;
+                        else if (distance === 2) matchScore += 5;
+                        // 距离超过2个价格区间的产品得0分
+                    }
+                    
+                    // 性别匹配 (25分) - 提高权重
+                    if (product.targetGender === this.demographics.gender) {
+                        matchScore += 25;
+                    } else if (product.targetGender === 'balanced' && this.demographics.gender !== '') {
+                        matchScore += 8; // 降低balanced的分数
+                    }
+                    
+                    // 年龄匹配 (25分) - 必须精确匹配
+                    if (product.targetAge && product.targetAge.includes(this.demographics.ageGroup)) {
+                        matchScore += 25;
+                    } else {
+                        // 年龄不匹配直接扣分
+                        matchScore -= 10;
+                    }
+                    
+                    // 生活方式匹配 (20分) - 必须精确匹配
+                    if (product.targetLifestyle && product.targetLifestyle.includes(this.demographics.lifestyle)) {
+                        matchScore += 20;
+                    } else {
+                        // 生活方式不匹配扣分
+                        matchScore -= 5;
+                    }
+                    
+                    // 地域适配检查 - 不匹配直接排除
+                    if (!this.isRegionCompatible(product)) {
+                        return 0; // 地域不匹配直接返回0分
+                    }
+                    
+                    return Math.max(0, matchScore); // 确保不会出现负分
+                },
+
+                calculatePersonalizationScore(product) {
+                    const ageGroup = this.demographics.ageGroup;
+                    const lifestyle = this.demographics.lifestyle;
+                    
+                    let score = product.personalizationBase || 3; // 降低基础分
+                    
+                    // 年龄段匹配加分
+                    if (product.targetAge && product.targetAge.includes(ageGroup)) {
+                        score += 4;
+                    }
+                    
+                    // 生活方式匹配加分
+                    if (product.targetLifestyle && product.targetLifestyle.includes(lifestyle)) {
+                        score += 3;
+                    }
+                    
+                    return Math.min(score, 10);
+                },
+
+                calculateRepeatPurchaseScore(product) {
+                    let score = product.repeatPurchaseBase || 5;
+                    
+                    // 消耗品加分
+                    if (product.isConsumable) score += 3;
+                    
+                    // 收藏价值加分
+                    if (product.isCollectable) score += 2;
+                    
+                    // 礼品属性加分
+                    if (product.isGiftable) score += 2;
+                    
+                    return Math.min(score, 10);
+                },
+
+                calculateSocialMediaScore(product) {
+                    const ageGroup = this.demographics.ageGroup;
+                    let score = product.socialMediaBase || 5;
+                    
+                    // 年轻群体社交传播力更强
+                    if (['18-25', '26-35'].includes(ageGroup)) {
+                        score += 3;
+                    } else if (['36-45'].includes(ageGroup)) {
+                        score += 1;
+                    }
+                    
+                    // 视觉冲击力加分
+                    if (product.visualAppeal) score += 2;
+                    
+                    return Math.min(score, 10);
+                },
+
+                calculateTargetAudienceScore(product) {
+                    let score = 2; // 降低基础分
+                    
+                    // 性别匹配
+                    if (product.targetGender === this.demographics.gender) {
+                        score += 4;
+                    } else if (product.targetGender === 'balanced') {
+                        score += 2;
+                    }
+                    
+                    // 年龄段匹配
+                    if (product.targetAge && product.targetAge.includes(this.demographics.ageGroup)) {
+                        score += 4;
+                    }
+                    
+                    return Math.min(score, 10);
+                },
+
+                generateReasons(product, scores) {
+                    const reasons = [];
+                    
+                    if (scores.priceReasonable >= 8) {
+                        reasons.push(`价格区间与目标客群完美匹配 (${this.demographics.priceRange})`);
+                    }
+                    
+                    if (scores.targetAudience >= 8) {
+                        reasons.push(`高度符合目标客群特征 (${this.getGenderLabel(this.demographics.gender)}, ${this.demographics.ageGroup})`);
+                    }
+                    
+                    // 添加匹配度说明
+                    if (product.matchScore >= 90) {
+                        reasons.push('🎯 完美匹配您的消费者画像');
+                    } else if (product.matchScore >= 80) {
+                        reasons.push('✅ 高度匹配您的需求特征');
+                    }
+                    
+                    if (scores.socialMedia >= 8) {
+                        reasons.push('具备强大的社交媒体传播潜力');
+                    }
+                    
+                    if (scores.repeatPurchase >= 8) {
+                        reasons.push('优秀的复购和生态构建能力');
+                    }
+                    
+                    if (scores.personalization >= 8) {
+                        reasons.push(`高个性化潜力，适合${this.getLifestyleLabel(this.demographics.lifestyle)}群体`);
+                    }
+                    
+                    reasons.push('日本原产品质保障，符合消费升级趋势');
+                    
+                    return reasons;
+                },
+
+                getProductDatabase() {
+                    // 基于人口统计学的日本产品数据库
+                    return [
+                        {
+                            name: '日本手工陶瓷茶具套装',
+                            category: '生活美学',
+                            description: '传统匠人手工制作，融合现代简约设计的茶具套装，适合现代都市生活的茶文化体验。',
+                            priceRange: '500-1000',
+                            targetGender: 'female',
+                            targetAge: ['26-35', '36-45'],
+                            targetLifestyle: ['wellness-focused', 'traditional', 'luxury-seeker'],
+                            compatibleRegions: ['china-tier1', 'china-tier2', 'japan-urban', 'north-america', 'europe'],
+                            durabilityScore: 9,
+                            personalizationBase: 7,
+                            repeatPurchaseBase: 6,
+                            socialMediaBase: 8,
+                            isConsumable: false,
+                            isCollectable: true,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: '日式护肤精华液',
+                            category: '美妆护肤',
+                            description: '采用日本传统植物萃取技术，温和有效的抗衰老精华，适合亚洲女性肌肤。',
+                            priceRange: '200-500',
+                            targetGender: 'female',
+                            targetAge: ['26-35', '36-45', '46-55'],
+                            targetLifestyle: ['wellness-focused', 'luxury-seeker', 'urban-professional'],
+                            compatibleRegions: ['china-tier1', 'china-tier2', 'china-tier3', 'japan-urban', 'japan-rural', 'southeast-asia'],
+                            durabilityScore: 6,
+                            personalizationBase: 8,
+                            repeatPurchaseBase: 9,
+                            socialMediaBase: 7,
+                            isConsumable: true,
+                            isCollectable: false,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: '日本职人手工皮具包',
+                            category: '时尚配件',
+                            description: '采用最高级牛皮和传统工艺制作，简约设计适合商务和日常使用。',
+                            priceRange: '1000-2000',
+                            targetGender: 'balanced',
+                            targetAge: ['26-35', '36-45'],
+                            targetLifestyle: ['urban-professional', 'luxury-seeker'],
+                            compatibleRegions: ['china-tier1', 'china-tier2', 'japan-urban', 'north-america', 'europe'],
+                            durabilityScore: 10,
+                            personalizationBase: 6,
+                            repeatPurchaseBase: 4,
+                            socialMediaBase: 6,
+                            isConsumable: false,
+                            isCollectable: true,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: '日式家居香薰系列',
+                            category: '家居生活',
+                            description: '天然植物精油调配，多种季节限定香型，营造纯正日式居家氛围。',
+                            priceRange: '50-200',
+                            targetGender: 'female',
+                            targetAge: ['18-25', '26-35', '36-45'],
+                            targetLifestyle: ['wellness-focused', 'family-oriented', 'urban-professional'],
+                            compatibleRegions: [], // 全地域适用
+                            durabilityScore: 7,
+                            personalizationBase: 9,
+                            repeatPurchaseBase: 8,
+                            socialMediaBase: 8,
+                            isConsumable: true,
+                            isCollectable: true,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: '日本智能小家电',
+                            category: '科技生活',
+                            description: '结合日式设计美学和先进科技的智能家电，提升现代生活品质。',
+                            priceRange: '500-1000',
+                            targetGender: 'balanced',
+                            targetAge: ['26-35', '36-45'],
+                            targetLifestyle: ['tech-savvy', 'urban-professional', 'family-oriented'],
+                            compatibleRegions: ['china-tier1', 'china-tier2', 'japan-urban', 'southeast-asia'],
+                            durabilityScore: 8,
+                            personalizationBase: 6,
+                            repeatPurchaseBase: 5,
+                            socialMediaBase: 7,
+                            isConsumable: false,
+                            isCollectable: false,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: '日式健康食品补充剂',
+                            category: '健康养生',
+                            description: '基于日本长寿饮食文化开发的天然营养补充剂，支持现代人健康生活。',
+                            priceRange: '200-500',
+                            targetGender: 'balanced',
+                            targetAge: ['36-45', '46-55', '55+'],
+                            targetLifestyle: ['wellness-focused', 'family-oriented'],
+                            compatibleRegions: [], // 全地域适用
+                            durabilityScore: 6,
+                            personalizationBase: 7,
+                            repeatPurchaseBase: 9,
+                            socialMediaBase: 5,
+                            isConsumable: true,
+                            isCollectable: false,
+                            isGiftable: false,
+                            visualAppeal: false
+                        },
+                        {
+                            name: '日本文具收纳系列',
+                            category: '学习办公',
+                            description: '精致实用的日式文具和收纳用品，提升工作学习效率和仪式感。',
+                            priceRange: '50-200',
+                            targetGender: 'female',
+                            targetAge: ['18-25', '26-35'],
+                            targetLifestyle: ['urban-professional', 'tech-savvy'],
+                            compatibleRegions: ['china-tier1', 'china-tier2', 'japan-urban', 'southeast-asia'],
+                            durabilityScore: 8,
+                            personalizationBase: 8,
+                            repeatPurchaseBase: 7,
+                            socialMediaBase: 9,
+                            isConsumable: false,
+                            isCollectable: true,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: '日式婴幼儿用品',
+                            category: '母婴育儿',
+                            description: '安全无害的日本制造婴幼儿用品，守护宝宝健康成长。',
+                            priceRange: '200-500',
+                            targetGender: 'female',
+                            targetAge: ['26-35', '36-45'],
+                            targetLifestyle: ['family-oriented', 'wellness-focused'],
+                            compatibleRegions: [], // 全地域适用
+                            durabilityScore: 9,
+                            personalizationBase: 6,
+                            repeatPurchaseBase: 8,
+                            socialMediaBase: 6,
+                            isConsumable: true,
+                            isCollectable: false,
+                            isGiftable: true,
+                            visualAppeal: false
+                        },
+                        {
+                            name: '日本传统工艺装饰品',
+                            category: '艺术收藏',
+                            description: '承载深厚文化底蕴的日本传统工艺品，兼具装饰和收藏价值。',
+                            priceRange: '1000-2000',
+                            targetGender: 'balanced',
+                            targetAge: ['36-45', '46-55', '55+'],
+                            targetLifestyle: ['traditional', 'luxury-seeker'],
+                            compatibleRegions: ['china-tier1', 'japan-urban', 'japan-rural', 'north-america', 'europe'],
+                            durabilityScore: 10,
+                            personalizationBase: 5,
+                            repeatPurchaseBase: 6,
+                            socialMediaBase: 7,
+                            isConsumable: false,
+                            isCollectable: true,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },,
+                        {
+                            name: '日式运动健身器材',
+                            category: '运动健康',
+                            description: '结合人体工学设计的日式健身器材，适合家庭使用的健康生活方案。',
+                            priceRange: '500-1000',
+                            targetGender: 'balanced',
+                            targetAge: ['26-35', '36-45'],
+                            targetLifestyle: ['wellness-focused', 'urban-professional'],
+                            compatibleRegions: ['china-tier1', 'china-tier2', 'japan-urban', 'southeast-asia', 'north-america'],
+                            durabilityScore: 9,
+                            personalizationBase: 6,
+                            repeatPurchaseBase: 5,
+                            socialMediaBase: 6,
+                            isConsumable: false,
+                            isCollectable: false,
+                            isGiftable: false,
+                            visualAppeal: false
+                        },
+                        // 新增产品 - 增加差异化
+                        {
+                            name: '日本老年人辅助用品',
+                            category: '银发健康',
+                            description: '专为老年人设计的日常辅助用品，提高生活质量和独立性。',
+                            priceRange: '200-500',
+                            targetGender: 'balanced',
+                            targetAge: ['55+'],
+                            targetLifestyle: ['wellness-focused', 'family-oriented'],
+                            compatibleRegions: ['china-tier3', 'japan-rural'], // 主要面向三线城市和乡村
+                            durabilityScore: 9,
+                            personalizationBase: 4,
+                            repeatPurchaseBase: 6,
+                            socialMediaBase: 3,
+                            isConsumable: false,
+                            isCollectable: false,
+                            isGiftable: true,
+                            visualAppeal: false
+                        },
+                        {
+                            name: '日式高端化妆品',
+                            category: '奢华美容',
+                            description: '顿级日本化妆品牌，使用珍贵原料和先进技术，面向高端消费群体。',
+                            priceRange: '2000-5000',
+                            targetGender: 'female',
+                            targetAge: ['36-45', '46-55'],
+                            targetLifestyle: ['luxury-seeker'],
+                            compatibleRegions: ['china-tier1', 'japan-urban', 'north-america', 'europe'],
+                            durabilityScore: 7,
+                            personalizationBase: 9,
+                            repeatPurchaseBase: 8,
+                            socialMediaBase: 9,
+                            isConsumable: true,
+                            isCollectable: true,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: '日式男士扒顾用品',
+                            category: '男士美容',
+                            description: '专为男性设计的日式扒顾护肤产品，简单高效的男士美容方案。',
+                            priceRange: '200-500',
+                            targetGender: 'male',
+                            targetAge: ['26-35', '36-45'],
+                            targetLifestyle: ['urban-professional', 'tech-savvy'],
+                            compatibleRegions: ['china-tier1', 'china-tier2', 'southeast-asia'],
+                            durabilityScore: 6,
+                            personalizationBase: 5,
+                            repeatPurchaseBase: 7,
+                            socialMediaBase: 6,
+                            isConsumable: true,
+                            isCollectable: false,
+                            isGiftable: false,
+                            visualAppeal: false
+                        },
+                        {
+                            name: '日式超高端交通工具',
+                            category: '顽级科技',
+                            description: '日本顶级工艺打造的超高端交通工具，为最高端消费者提供顶级体验。',
+                            priceRange: '5000+',
+                            targetGender: 'male',
+                            targetAge: ['36-45', '46-55'],
+                            targetLifestyle: ['luxury-seeker'],
+                            compatibleRegions: ['china-tier1', 'japan-urban', 'north-america', 'europe'],
+                            durabilityScore: 10,
+                            personalizationBase: 8,
+                            repeatPurchaseBase: 3,
+                            socialMediaBase: 9,
+                            isConsumable: false,
+                            isCollectable: true,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        // 🎆 未来科技系列 - 高想象力产品
+                        {
+                            name: '全息投影家居艺术系统',
+                            category: '未来科技',
+                            description: '日本黑科技：将任意空间变成沉浸式艺术馆，全息投影技术展示日本四季美景、古典艺术作品或个人定制内容。',
+                            priceRange: '2000-5000',
+                            targetGender: 'balanced',
+                            targetAge: ['26-35', '36-45'],
+                            targetLifestyle: ['tech-savvy', 'luxury-seeker'],
+                            compatibleRegions: ['china-tier1', 'japan-urban', 'north-america', 'europe'],
+                            durabilityScore: 8,
+                            personalizationBase: 10,
+                            repeatPurchaseBase: 7,
+                            socialMediaBase: 10,
+                            isConsumable: false,
+                            isCollectable: true,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: 'AI情感陷伴机器人“心灵伙伴”',
+                            category: '情感科技',
+                            description: '连接心灵的AI伙伴：能够读懂你的情绪、记住你的爱好、陪伴你成长的智能机器人。结合日式禅意设计和深度学习技术。',
+                            priceRange: '1000-2000',
+                            targetGender: 'balanced',
+                            targetAge: ['18-25', '26-35'],
+                            targetLifestyle: ['tech-savvy', 'wellness-focused'],
+                            compatibleRegions: ['china-tier1', 'china-tier2', 'japan-urban', 'southeast-asia'],
+                            durabilityScore: 7,
+                            personalizationBase: 10,
+                            repeatPurchaseBase: 9,
+                            socialMediaBase: 9,
+                            isConsumable: false,
+                            isCollectable: false,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: '智能情绪感知魔镜',
+                            category: '智能美容',
+                            description: '魔镜魔镜告诉我：通过面部识别和生物信号检测，实时分析你的心情、健康状态和美容需求，提供个性化建议。',
+                            priceRange: '1000-2000',
+                            targetGender: 'female',
+                            targetAge: ['18-25', '26-35', '36-45'],
+                            targetLifestyle: ['tech-savvy', 'wellness-focused', 'luxury-seeker'],
+                            compatibleRegions: ['china-tier1', 'japan-urban', 'southeast-asia'],
+                            durabilityScore: 8,
+                            personalizationBase: 10,
+                            repeatPurchaseBase: 6,
+                            socialMediaBase: 10,
+                            isConsumable: false,
+                            isCollectable: false,
+                            isGiftable: true,
+                            visualAppeal: true
+                        },
+                        {
+                            name: 'DNA定制个人营养配方',
+                            category: '精准医疗',
+                            description: '独一无二的你：通过基因检测分析你的营养代谢特点，日本营养学家为你设计专属的营养品配方和饮食计划。',
+                            priceRange: '2000-5000',
+                            targetGender: 'balanced',
+                            targetAge: ['26-35', '36-45', '46-55'],
+                            targetLifestyle: ['wellness-focused', 'luxury-seeker'],
+                            compatibleRegions: ['china-tier1', 'japan-urban', 'north-america', 'europe'],
+                            durabilityScore: 9,
+                            personalizationBase: 10,
+                            repeatPurchaseBase: 9,
+                            socialMediaBase: 7,
+                            isConsumable: true,
+                            isCollectable: false,
+                            isGiftable: false,
+                            visualAppeal: false
+                        }
+                    ];
+                },
+
+                getRegionLabel(region) {
+                    const labels = {
+                        'china-tier1': '中国一线城市',
+                        'china-tier2': '中国二线城市',
+                        'china-tier3': '中国三四线城市',
+                        'japan-urban': '日本都市圈',
+                        'japan-rural': '日本地方城市',
+                        'southeast-asia': '东南亚发达地区',
+                        'north-america': '北美地区',
+                        'europe': '欧洲发达地区'
+                    };
+                    return labels[region] || region;
+                },
+
+                getGenderLabel(gender) {
+                    const labels = {
+                        'female': '女性为主',
+                        'male': '男性为主',
+                        'balanced': '性别均衡'
+                    };
+                    return labels[gender] || gender;
+                },
+
+                getLifestyleLabel(lifestyle) {
+                    const labels = {
+                        'urban-professional': '都市白领',
+                        'family-oriented': '家庭导向',
+                        'wellness-focused': '健康养生',
+                        'luxury-seeker': '品质追求',
+                        'tech-savvy': '科技潮流',
+                        'traditional': '传统文化'
+                    };
+                    return labels[lifestyle] || lifestyle;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

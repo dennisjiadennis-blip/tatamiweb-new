@@ -53,7 +53,7 @@ export default function MosaicCard({
     tatami-card 
     card-${color} 
     card-${size}
-    ${hasPattern ? 'paper-texture' : ''}
+    ${hasPattern ? 'woven-texture' : 'tatami-texture'}
     ${className}
   `.trim()
 

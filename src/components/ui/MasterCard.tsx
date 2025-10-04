@@ -14,7 +14,7 @@ export default function MasterCard({ master, className }: MasterCardProps) {
   return (
     <Link href={`/masters/${slug}`} className="block">
       <motion.div 
-        className="bg-card rounded-xl border border-transparent hover:border-border-subtle p-4 shadow-soft transition-shadow duration-300 hover:shadow-lg cursor-pointer"
+        className="bg-card rounded-xl border border-transparent hover:border-border-subtle p-4 shadow-soft transition-shadow duration-300 hover:shadow-lg cursor-pointer relative tatami-texture"
         whileHover={{ scale: 1.03, y: -5 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >

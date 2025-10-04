@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tatami Labs - 七大精准选品法则工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .core-rule { border-left: 4px solid #dc2626; }
+        .market-rule { border-left: 4px solid #2563eb; }
+        .new-rule { border-left: 4px solid #16a34a; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div x-data="advancedProductSelectionTool()" x-cloak class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="gradient-bg rounded-2xl p-8 text-white mb-8">
+                <h1 class="text-4xl font-bold mb-4">🎯 Tatami Labs 七大精准选品法则</h1>
+                <p class="text-xl opacity-90 mb-4">升级版智能产品评估系统</p>
+                <div class="text-sm opacity-80 mb-6">总分70分制 · 合格线50分 · 优秀线60分</div>
+                
+                <!-- 法则概览 -->
+                <div class="grid grid-cols-1 md:grid-cols-7 gap-3 text-xs">
+                    <!-- 核心法则 -->
+                    <div class="bg-red-500/20 rounded-lg p-3 border border-red-300">
+                        <div class="font-bold">🇯🇵 日本制造</div>
+                        <div class="text-red-200">核心法则</div>
+                    </div>
+                    <div class="bg-red-500/20 rounded-lg p-3 border border-red-300">
+                        <div class="font-bold">♻️ 耐用性</div>
+                        <div class="text-red-200">核心法则</div>
+                    </div>
+                    <div class="bg-red-500/20 rounded-lg p-3 border border-red-300">
+                        <div class="font-bold">💰 价格合理</div>
+                        <div class="text-red-200">核心法则</div>
+                    </div>
+                    
+                    <!-- 市场法则 -->
+                    <div class="bg-blue-500/20 rounded-lg p-3 border border-blue-300">
+                        <div class="font-bold">✏️ 个性化</div>
+                        <div class="text-blue-200">市场法则</div>
+                    </div>
+                    <div class="bg-blue-500/20 rounded-lg p-3 border border-blue-300">
+                        <div class="font-bold">🔄 复购生态</div>
+                        <div class="text-blue-200">市场法则</div>
+                    </div>
+                    
+                    <!-- 新增法则 -->
+                    <div class="bg-green-500/20 rounded-lg p-3 border border-green-300">
+                        <div class="font-bold">📱 社交传播</div>
+                        <div class="text-green-200">新增法则</div>
+                    </div>
+                    <div class="bg-green-500/20 rounded-lg p-3 border border-green-300">
+                        <div class="font-bold">🎯 客群明确</div>
+                        <div class="text-green-200">新增法则</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mb-8">
+            <div class="flex bg-white rounded-lg p-1 card-shadow">
+                <button @click="activeTab = 'input'" 
+                        :class="activeTab === 'input' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-gray-900'"
+                        class="flex-1 py-3 px-6 rounded-md font-semibold transition-all">
+                    📝 产品录入
+                </button>
+                <button @click="activeTab = 'results'" 
+                        :class="activeTab === 'results' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-gray-900'"
+                        class="flex-1 py-3 px-6 rounded-md font-semibold transition-all">
+                    📊 评估结果 <span x-show="evaluations.length > 0" class="bg-red-500 text-white rounded-full px-2 py-1 text-xs ml-2" x-text="evaluations.length"></span>
+                </button>
+                <button @click="activeTab = 'portfolio'" 
+                        :class="activeTab === 'portfolio' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-gray-900'"
+                        class="flex-1 py-3 px-6 rounded-md font-semibold transition-all">
+                    🎯 组合推荐
+                </button>
+                <button @click="activeTab = 'rules'" 
+                        :class="activeTab === 'rules' ? 'bg-purple-500 text-white' : 'text-gray-600 hover:text-gray-900'"
+                        class="flex-1 py-3 px-6 rounded-md font-semibold transition-all">
+                    📋 法则说明
+                </button>
+            </div>
+        </div>
+
+        <!-- Rules Tab -->
+        <div x-show="activeTab === 'rules'" class="space-y-6">
+            <div class="bg-white rounded-2xl p-8 card-shadow">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">📋 七大精准选品法则详解</h2>
+                
+                <!-- 核心法则 -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-red-600 mb-4">🔴 核心法则（必须满足，≥8分）</h3>
+                    <div class="space-y-4">
+                        <div class="core-rule bg-red-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-bold text-gray-900 mb-2">🇯🇵 1. 日本制造确认（强化版）</h4>
+                            <p class="text-gray-700 mb-3">需要提供原产地证明、工匠认证或品牌授权</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><span class="font-bold">10分：</span>有官方认证 + 知名工匠/品牌</div>
+                                <div><span class="font-bold">8-9分：</span>有原产地证明</div>
+                                <div><span class="font-bold">6-7分：</span>声称日本制造但无证明</div>
+                                <div><span class="font-bold">1-5分：</span>非日本制造</div>
+                            </div>
+                        </div>
+                        
+                        <div class="core-rule bg-red-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-bold text-gray-900 mb-2">♻️ 2. 耐用性与维护性</h4>
+                            <p class="text-gray-700 mb-3">产品可使用5年以上，且维护成本<原价20%</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><span class="font-bold">10分：</span>终身使用，无需维护</div>
+                                <div><span class="font-bold">8-9分：</span>5-10年寿命，维护简单</div>
+                                <div><span class="font-bold">6-7分：</span>3-5年寿命，定期维护</div>
+                                <div><span class="font-bold">1-5分：</span>消耗品或高维护成本</div>
+                            </div>
+                        </div>
+                        
+                        <div class="core-rule bg-red-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-bold text-gray-900 mb-2">💰 3. 价格合理性（精准化）</h4>
+                            <p class="text-gray-700 mb-3">考虑品类合理性和市场接受度</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><span class="font-bold">10分：</span>$75-150，甜蜜价格区间</div>
+                                <div><span class="font-bold">8-9分：</span>$50-75 或 $150-200</div>
+                                <div><span class="font-bold">6-7分：</span>$40-50 或 $200-250</div>
+                                <div><span class="font-bold">1-5分：</span><$40 或 >$250</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 市场法则 -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-blue-600 mb-4">🔵 市场法则（重要评估因素）</h3>
+                    <div class="space-y-4">
+                        <div class="market-rule bg-blue-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-bold text-gray-900 mb-2">✏️ 4. 个性化潜力</h4>
+                            <p class="text-gray-700 mb-3">至少支持2种个性化方式</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><span class="font-bold">10分：</span>激光雕刻+手工雕刻+定制包装</div>
+                                <div><span class="font-bold">8-9分：</span>2种个性化方式</div>
+                                <div><span class="font-bold">6-7分：</span>1种个性化方式</div>
+                                <div><span class="font-bold">1-5分：</span>无个性化选项</div>
+                            </div>
+                        </div>
+                        
+                        <div class="market-rule bg-blue-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-bold text-gray-900 mb-2">🔄 5. 复购生态系统</h4>
+                            <p class="text-gray-700 mb-3">明确的复购路径和生态建设</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><span class="font-bold">10分：</span>强收集文化+礼品属性+配件生态</div>
+                                <div><span class="font-bold">8-9分：</span>2种复购逻辑</div>
+                                <div><span class="font-bold">6-7分：</span>1种复购逻辑</div>
+                                <div><span class="font-bold">1-5分：</span>一次性购买</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 新增法则 -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-green-600 mb-4">🟢 新增法则（差异化竞争）</h3>
+                    <div class="space-y-4">
+                        <div class="new-rule bg-green-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-bold text-gray-900 mb-2">📱 6. 社交传播力</h4>
+                            <p class="text-gray-700 mb-3">产品的"Instagram-worthy"特质和口碑传播潜力</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><span class="font-bold">10分：</span>极高颜值+独特故事+拍照效果好</div>
+                                <div><span class="font-bold">8-9分：</span>高颜值+有故事性</div>
+                                <div><span class="font-bold">6-7分：</span>外观不错，有一定传播性</div>
+                                <div><span class="font-bold">1-5分：</span>普通外观，无传播价值</div>
+                            </div>
+                        </div>
+                        
+                        <div class="new-rule bg-green-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-bold text-gray-900 mb-2">🎯 7. 目标客群明确性</h4>
+                            <p class="text-gray-700 mb-3">产品对特定客群的吸引力和市场定位清晰度</p>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><span class="font-bold">10分：</span>精准客群+强烈需求+低替代性</div>
+                                <div><span class="font-bold">8-9分：</span>明确客群+确定需求</div>
+                                <div><span class="font-bold">6-7分：</span>客群较广泛，需求一般</div>
+                                <div><span class="font-bold">1-5分：</span>客群模糊，需求不明</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 评分系统 -->
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">📊 新评分系统</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600">≥60分</div>
+                            <div class="text-sm text-gray-600">HIGH优先级</div>
+                            <div class="text-xs text-gray-500">核心法则全部≥8分</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-yellow-600">≥50分</div>
+                            <div class="text-sm text-gray-600">MEDIUM优先级</div>
+                            <div class="text-xs text-gray-500">核心法则全部≥7分</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600"><50分</div>
+                            <div class="text-sm text-gray-600">LOW优先级</div>
+                            <div class="text-xs text-gray-500">不推荐选择</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Tab -->
+        <div x-show="activeTab === 'input'" class="space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Product Input Form -->
+                <div class="lg:col-span-2 bg-white rounded-2xl p-8 card-shadow">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">产品信息录入</h2>
+                        <div class="flex gap-2">
+                            <button @click="loadAdvancedSampleProducts()" class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium">
+                                📋 载入高分样例
+                            </button>
+                            <button @click="loadFailureSamples()" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium">
+                                ❌ 载入失败案例
+                            </button>
+                        </div>
+                    </div>
+
+                    <form @submit.prevent="addProduct()" class="space-y-6">
+                        <!-- 基础信息 -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">📋 基础信息</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" placeholder="产品名称 *" x-model="currentProduct.name" required
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" placeholder="产品类别" x-model="currentProduct.category"
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <input type="text" placeholder="供应商/品牌" x-model="currentProduct.supplier"
+                                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <select x-model="currentProduct.targetMarket" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">选择目标市场</option>
+                                    <option value="female">女性市场</option>
+                                    <option value="male">男性市场</option>
+                                    <option value="b2b">企业客户</option>
+                                    <option value="collector">收藏家</option>
+                                    <option value="general">通用市场</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 价格信息 -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">💰 价格信息</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">批发价（美元）*</label>
+                                    <input type="number" step="0.01" x-model="currentProduct.wholesalePrice" required
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">预计零售价（美元）*</label>
+                                    <input type="number" step="0.01" x-model="currentProduct.estimatedRetailPrice" required
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">最小订购量</label>
+                                    <input type="number" x-model="currentProduct.minimumOrderQuantity"
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">交货时间（天）</label>
+                                    <input type="number" x-model="currentProduct.leadTime"
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 核心法则评分 -->
+                        <div class="bg-red-50 rounded-lg p-6 border-l-4 border-red-500">
+                            <h3 class="text-lg font-semibold text-red-800 mb-4">🔴 核心法则评分 (必须≥8分)</h3>
+                            <div class="space-y-4">
+                                <template x-for="(rule, key) in coreRules" :key="key">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <label class="text-sm font-medium text-gray-700" x-text="rule.label"></label>
+                                            <span class="text-lg font-bold" 
+                                                  :class="currentProduct[key] >= 8 ? 'text-green-600' : 'text-red-600'" 
+                                                  x-text="currentProduct[key]"></span>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <span class="text-sm text-gray-500">1</span>
+                                            <input type="range" min="1" max="10" x-model="currentProduct[key]"
+                                                   class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                            <span class="text-sm text-gray-500">10</span>
+                                        </div>
+                                        <div class="text-xs text-gray-600 mt-1" x-text="rule.description"></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- 市场法则评分 -->
+                        <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-4">🔵 市场法则评分</h3>
+                            <div class="space-y-4">
+                                <template x-for="(rule, key) in marketRules" :key="key">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <label class="text-sm font-medium text-gray-700" x-text="rule.label"></label>
+                                            <span class="text-lg font-bold text-blue-600" x-text="currentProduct[key]"></span>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <span class="text-sm text-gray-500">1</span>
+                                            <input type="range" min="1" max="10" x-model="currentProduct[key]"
+                                                   class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                            <span class="text-sm text-gray-500">10</span>
+                                        </div>
+                                        <div class="text-xs text-gray-600 mt-1" x-text="rule.description"></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- 新增法则评分 -->
+                        <div class="bg-green-50 rounded-lg p-6 border-l-4 border-green-500">
+                            <h3 class="text-lg font-semibold text-green-800 mb-4">🟢 新增法则评分</h3>
+                            <div class="space-y-4">
+                                <template x-for="(rule, key) in newRules" :key="key">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <label class="text-sm font-medium text-gray-700" x-text="rule.label"></label>
+                                            <span class="text-lg font-bold text-green-600" x-text="currentProduct[key]"></span>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <span class="text-sm text-gray-500">1</span>
+                                            <input type="range" min="1" max="10" x-model="currentProduct[key]"
+                                                   class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                            <span class="text-sm text-gray-500">10</span>
+                                        </div>
+                                        <div class="text-xs text-gray-600 mt-1" x-text="rule.description"></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- 市场预测 -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">📈 市场预测</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">预计月销量</label>
+                                    <input type="number" x-model="currentProduct.estimatedMonthlySales"
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">单位营销成本</label>
+                                    <input type="number" step="0.01" x-model="currentProduct.marketingCostPerUnit"
+                                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">运输复杂度 (1-10)</label>
+                                    <input type="range" min="1" max="10" x-model="currentProduct.shippingComplexity"
+                                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">季节性因素</label>
+                                    <select x-model="currentProduct.seasonalityFactor"
+                                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <option value="0.5">低季节性 (0.5)</option>
+                                        <option value="1.0">无季节性 (1.0)</option>
+                                        <option value="1.5">中季节性 (1.5)</option>
+                                        <option value="2.0">高季节性 (2.0)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg">
+                            ➕ 添加产品到评估列表
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="bg-white rounded-2xl p-8 card-shadow">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">👁️ 实时预览</h2>
+                    
+                    <template x-if="currentProduct.name">
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                                <h3 class="font-bold text-lg text-gray-900" x-text="currentProduct.name"></h3>
+                                <p class="text-gray-600" x-text="currentProduct.category || '未分类'"></p>
+                                <p class="text-sm text-gray-500" x-text="getTargetMarketText(currentProduct.targetMarket)"></p>
+                            </div>
+                            
+                            <!-- 快速指标 -->
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div class="bg-green-50 p-3 rounded-lg text-center">
+                                    <div class="font-bold text-green-600" x-text="'$' + (currentProduct.estimatedRetailPrice || 0)"></div>
+                                    <div class="text-green-700">零售价</div>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded-lg text-center">
+                                    <div class="font-bold text-blue-600" x-text="calculateMargin() + '%'"></div>
+                                    <div class="text-blue-700">毛利率</div>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-lg text-center">
+                                    <div class="font-bold text-purple-600" x-text="calculateAdvancedTotalScore() + '/70'"></div>
+                                    <div class="text-purple-700">总评分</div>
+                                </div>
+                                <div class="bg-orange-50 p-3 rounded-lg text-center">
+                                    <div class="font-bold text-orange-600" x-text="checkAdvancedCompliance() ? '✅' : '❌'"></div>
+                                    <div class="text-orange-700">核心法则</div>
+                                </div>
+                            </div>
+
+                            <!-- 法则评分展示 -->
+                            <div class="space-y-3">
+                                <div class="text-sm font-semibold text-red-700">核心法则 (必须≥8分)</div>
+                                <template x-for="(rule, key) in coreRules" :key="key">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs" x-text="rule.shortLabel"></span>
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                <div class="h-2 rounded-full" 
+                                                     :class="currentProduct[key] >= 8 ? 'bg-green-500' : 'bg-red-500'"
+                                                     :style="'width: ' + (currentProduct[key] * 10) + '%'"></div>
+                                            </div>
+                                            <span class="text-xs font-bold w-6" 
+                                                  :class="currentProduct[key] >= 8 ? 'text-green-600' : 'text-red-600'"
+                                                  x-text="currentProduct[key]"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                                
+                                <div class="text-sm font-semibold text-blue-700 pt-2">市场法则</div>
+                                <template x-for="(rule, key) in marketRules" :key="key">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs" x-text="rule.shortLabel"></span>
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-blue-500 h-2 rounded-full" :style="'width: ' + (currentProduct[key] * 10) + '%'"></div>
+                                            </div>
+                                            <span class="text-xs font-bold text-blue-600 w-6" x-text="currentProduct[key]"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                                
+                                <div class="text-sm font-semibold text-green-700 pt-2">新增法则</div>
+                                <template x-for="(rule, key) in newRules" :key="key">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs" x-text="rule.shortLabel"></span>
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" :style="'width: ' + (currentProduct[key] * 10) + '%'"></div>
+                                            </div>
+                                            <span class="text-xs font-bold text-green-600 w-6" x-text="currentProduct[key]"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="!currentProduct.name">
+                        <div class="text-center py-8">
+                            <div class="text-6xl mb-4">📝</div>
+                            <p class="text-gray-500">请填写产品信息以查看预览</p>
+                        </div>
+                    </template>
+
+                    <!-- 已添加产品列表 -->
+                    <template x-if="products.length > 0">
+                        <div class="mt-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">已添加产品 (<span x-text="products.length"></span>)</h3>
+                            <div class="space-y-2 max-h-60 overflow-y-auto">
+                                <template x-for="product in products" :key="product.id">
+                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <span class="font-medium" x-text="product.name"></span>
+                                            <span class="text-gray-500 ml-2" x-text="'$' + product.estimatedRetailPrice"></span>
+                                        </div>
+                                        <button @click="removeProduct(product.id)" class="text-red-500 hover:text-red-700 font-bold">
+                                            ✕
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Tab -->
+        <div x-show="activeTab === 'results'" class="space-y-8">
+            <template x-if="evaluations.length > 0">
+                <div class="space-y-6">
+                    <template x-for="(evaluation, index) in evaluations" :key="evaluation.candidate.id">
+                        <div class="bg-white rounded-2xl p-8 card-shadow">
+                            <!-- Header -->
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="text-2xl font-bold text-gray-900" x-text="'#' + (index + 1)"></span>
+                                        <h3 class="text-2xl font-bold text-gray-900" x-text="evaluation.candidate.name"></h3>
+                                        <span :class="getAdvancedPriorityClass(evaluation.priorityLevel)" class="px-3 py-1 rounded-full text-sm font-bold">
+                                            <span x-text="getPriorityText(evaluation.priorityLevel)"></span>
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-600" x-text="evaluation.candidate.category + ' · ' + evaluation.candidate.supplier"></p>
+                                    <p class="text-sm text-gray-500" x-text="getTargetMarketText(evaluation.candidate.targetMarket)"></p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-3xl font-black text-blue-600" x-text="evaluation.totalScore + '/70'"></div>
+                                    <div class="text-sm text-gray-500">总评分</div>
+                                    <div class="text-xs mt-1" :class="evaluation.coreRulesPass ? 'text-green-600' : 'text-red-600'" 
+                                         x-text="evaluation.coreRulesPass ? '✅ 核心法则通过' : '❌ 核心法则未过'"></div>
+                                </div>
+                            </div>
+
+                            <!-- 法则得分详情 -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <div class="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+                                    <div class="text-2xl font-bold text-red-600" x-text="evaluation.coreRulesScore + '/30'"></div>
+                                    <div class="text-sm text-gray-600">核心法则得分</div>
+                                    <div class="text-xs text-gray-500">必须≥24分</div>
+                                </div>
+                                <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                    <div class="text-2xl font-bold text-blue-600" x-text="evaluation.marketRulesScore + '/20'"></div>
+                                    <div class="text-sm text-gray-600">市场法则得分</div>
+                                </div>
+                                <div class="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                                    <div class="text-2xl font-bold text-green-600" x-text="evaluation.newRulesScore + '/20'"></div>
+                                    <div class="text-sm text-gray-600">新增法则得分</div>
+                                </div>
+                            </div>
+
+                            <!-- 财务指标 -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
+                                <div>
+                                    <div class="text-gray-600">毛利率</div>
+                                    <div class="text-lg font-bold" x-text="evaluation.grossMarginPercentage + '%'"></div>
+                                </div>
+                                <div>
+                                    <div class="text-gray-600">预计月营收</div>
+                                    <div class="text-lg font-bold" x-text="'$' + evaluation.estimatedMonthlyRevenue.toLocaleString()"></div>
+                                </div>
+                                <div>
+                                    <div class="text-gray-600">预计月利润</div>
+                                    <div class="text-lg font-bold" x-text="'$' + evaluation.estimatedMonthlyProfit.toLocaleString()"></div>
+                                </div>
+                                <div>
+                                    <div class="text-gray-600">投资回报</div>
+                                    <div class="text-lg font-bold" x-text="evaluation.roiTimeframe + '个月'"></div>
+                                </div>
+                            </div>
+
+                            <!-- 推荐意见 -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">💡 推荐意见</h4>
+                                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+                                    <p class="text-gray-700" x-text="evaluation.recommendation"></p>
+                                </div>
+                            </div>
+
+                            <!-- 下一步行动 -->
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">📋 下一步行动</h4>
+                                <ul class="space-y-2">
+                                    <template x-for="step in evaluation.nextSteps" :key="step">
+                                        <li class="flex items-start gap-2">
+                                            <span class="text-blue-600 mt-1">•</span>
+                                            <span class="text-gray-700" x-text="step"></span>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template x-if="evaluations.length === 0">
+                <div class="text-center py-16">
+                    <div class="text-6xl mb-4">📊</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">暂无评估结果</h3>
+                    <p class="text-gray-600 mb-6">请先在"产品录入"页面添加产品信息</p>
+                    <button @click="activeTab = 'input'" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                        开始录入产品
+                    </button>
+                </div>
+            </template>
+        </div>
+
+        <!-- Portfolio Tab (简化版) -->
+        <div x-show="activeTab === 'portfolio'" class="space-y-8">
+            <template x-if="portfolioRecommendation && portfolioRecommendation.recommendedProducts.length > 0">
+                <div class="bg-white rounded-2xl p-8 card-shadow">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">🎯 推荐产品组合</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="text-center p-6 bg-blue-50 rounded-lg">
+                            <div class="text-3xl font-black text-blue-600" x-text="portfolioRecommendation.recommendedProducts.length"></div>
+                            <div class="text-sm text-gray-600">推荐产品数量</div>
+                        </div>
+                        <div class="text-center p-6 bg-green-50 rounded-lg">
+                            <div class="text-3xl font-black text-green-600" x-text="'$' + portfolioRecommendation.totalInvestment.toLocaleString()"></div>
+                            <div class="text-sm text-gray-600">总投资金额</div>
+                        </div>
+                        <div class="text-center p-6 bg-purple-50 rounded-lg">
+                            <div class="text-3xl font-black text-purple-600" x-text="'$' + portfolioRecommendation.expectedMonthlyRevenue.toLocaleString()"></div>
+                            <div class="text-sm text-gray-600">预期月营收</div>
+                        </div>
+                        <div class="text-center p-6 bg-orange-50 rounded-lg">
+                            <div class="text-3xl font-black text-orange-600" x-text="portfolioRecommendation.averageScore"></div>
+                            <div class="text-sm text-gray-600">平均评分</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <template x-for="(evaluation, index) in portfolioRecommendation.recommendedProducts" :key="evaluation.candidate.id">
+                            <div class="flex items-center justify-between p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg">
+                                <div class="flex items-center gap-4">
+                                    <span class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                                        <span x-text="index + 1"></span>
+                                    </span>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 text-lg" x-text="evaluation.candidate.name"></h4>
+                                        <p class="text-gray-600" x-text="evaluation.candidate.category"></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-8 text-sm">
+                                    <div class="text-center">
+                                        <div class="font-bold text-purple-600 text-lg" x-text="evaluation.totalScore + '/70'"></div>
+                                        <div class="text-gray-500">总评分</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="font-bold text-green-600 text-lg" x-text="'$' + evaluation.candidate.estimatedRetailPrice"></div>
+                                        <div class="text-gray-500">零售价</div>
+                                    </div>
+                                    <span :class="getAdvancedPriorityClass(evaluation.priorityLevel)" class="px-3 py-1 rounded-full text-xs font-bold">
+                                        <span x-text="getPriorityText(evaluation.priorityLevel)"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <template x-if="!portfolioRecommendation || portfolioRecommendation.recommendedProducts.length === 0">
+                <div class="text-center py-16">
+                    <div class="text-6xl mb-4">🎯</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">暂无组合推荐</h3>
+                    <p class="text-gray-600 mb-6">请先添加符合标准的产品</p>
+                    <button @click="activeTab = 'input'" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                        开始选品分析
+                    </button>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <script>
+        function advancedProductSelectionTool() {
+            return {
+                activeTab: 'input',
+                products: [],
+                evaluations: [],
+                portfolioRecommendation: null,
+                
+                currentProduct: {
+                    name: '',
+                    category: '',
+                    supplier: '',
+                    targetMarket: '',
+                    wholesalePrice: 0,
+                    estimatedRetailPrice: 0,
+                    minimumOrderQuantity: 50,
+                    leadTime: 30,
+                    
+                    // 核心法则 (3项)
+                    japanMadeScore: 5,
+                    durabilityScore: 5,
+                    priceReasonableScore: 5,
+                    
+                    // 市场法则 (2项)
+                    personalizationScore: 5,
+                    repeatPurchaseScore: 5,
+                    
+                    // 新增法则 (2项)
+                    socialMediaScore: 5,
+                    targetAudienceScore: 5,
+                    
+                    estimatedMonthlySales: 20,
+                    marketingCostPerUnit: 5,
+                    shippingComplexity: 5,
+                    seasonalityFactor: 1.0,
+                    notes: ''
+                },
+
+                coreRules: {
+                    japanMadeScore: {
+                        label: '🇯🇵 日本制造确认（强化版）',
+                        shortLabel: '日本制造',
+                        description: '需要提供原产地证明、工匠认证或品牌授权'
+                    },
+                    durabilityScore: {
+                        label: '♻️ 耐用性与维护性',
+                        shortLabel: '耐用性',
+                        description: '产品可使用5年以上，且维护成本<原价20%'
+                    },
+                    priceReasonableScore: {
+                        label: '💰 价格合理性（精准化）',
+                        shortLabel: '价格合理',
+                        description: '考虑品类合理性和市场接受度，甜蜜区间$75-150'
+                    }
+                },
+
+                marketRules: {
+                    personalizationScore: {
+                        label: '✏️ 个性化潜力',
+                        shortLabel: '个性化',
+                        description: '至少支持2种个性化方式'
+                    },
+                    repeatPurchaseScore: {
+                        label: '🔄 复购生态系统',
+                        shortLabel: '复购生态',
+                        description: '明确的复购路径和生态建设'
+                    }
+                },
+
+                newRules: {
+                    socialMediaScore: {
+                        label: '📱 社交传播力',
+                        shortLabel: '社交传播',
+                        description: '产品的"Instagram-worthy"特质和口碑传播潜力'
+                    },
+                    targetAudienceScore: {
+                        label: '🎯 目标客群明确性',
+                        shortLabel: '客群明确',
+                        description: '产品对特定客群的吸引力和市场定位清晰度'
+                    }
+                },
+
+                calculateMargin() {
+                    if (this.currentProduct.estimatedRetailPrice > 0) {
+                        return Math.round(((this.currentProduct.estimatedRetailPrice - this.currentProduct.wholesalePrice) / this.currentProduct.estimatedRetailPrice) * 100);
+                    }
+                    return 0;
+                },
+
+                calculateAdvancedTotalScore() {
+                    return (this.currentProduct.japanMadeScore || 0) + 
+                           (this.currentProduct.durabilityScore || 0) + 
+                           (this.currentProduct.priceReasonableScore || 0) + 
+                           (this.currentProduct.personalizationScore || 0) + 
+                           (this.currentProduct.repeatPurchaseScore || 0) + 
+                           (this.currentProduct.socialMediaScore || 0) + 
+                           (this.currentProduct.targetAudienceScore || 0);
+                },
+
+                checkAdvancedCompliance() {
+                    return this.currentProduct.japanMadeScore >= 8 &&
+                           this.currentProduct.durabilityScore >= 8 &&
+                           this.currentProduct.priceReasonableScore >= 8;
+                },
+
+                addProduct() {
+                    if (!this.currentProduct.name || !this.currentProduct.wholesalePrice || !this.currentProduct.estimatedRetailPrice) {
+                        alert('请填写必要信息：产品名称、批发价、零售价');
+                        return;
+                    }
+
+                    const newProduct = {
+                        ...this.currentProduct,
+                        id: Date.now().toString()
+                    };
+
+                    this.products.push(newProduct);
+                    this.evaluateProducts();
+                    this.resetForm();
+                    this.activeTab = 'results';
+                },
+
+                removeProduct(id) {
+                    this.products = this.products.filter(p => p.id !== id);
+                    this.evaluateProducts();
+                },
+
+                resetForm() {
+                    this.currentProduct = {
+                        name: '',
+                        category: '',
+                        supplier: '',
+                        targetMarket: '',
+                        wholesalePrice: 0,
+                        estimatedRetailPrice: 0,
+                        minimumOrderQuantity: 50,
+                        leadTime: 30,
+                        japanMadeScore: 5,
+                        durabilityScore: 5,
+                        priceReasonableScore: 5,
+                        personalizationScore: 5,
+                        repeatPurchaseScore: 5,
+                        socialMediaScore: 5,
+                        targetAudienceScore: 5,
+                        estimatedMonthlySales: 20,
+                        marketingCostPerUnit: 5,
+                        shippingComplexity: 5,
+                        seasonalityFactor: 1.0,
+                        notes: ''
+                    };
+                },
+
+                evaluateProducts() {
+                    this.evaluations = this.products.map(product => this.evaluateAdvancedProduct(product))
+                                                  .sort((a, b) => {
+                                                      const priorityWeight = { 'HIGH': 3, 'MEDIUM': 2, 'LOW': 1 };
+                                                      if (priorityWeight[a.priorityLevel] !== priorityWeight[b.priorityLevel]) {
+                                                          return priorityWeight[b.priorityLevel] - priorityWeight[a.priorityLevel];
+                                                      }
+                                                      return b.totalScore - a.totalScore;
+                                                  });
+                    
+                    this.generateAdvancedPortfolioRecommendation();
+                },
+
+                evaluateAdvancedProduct(candidate) {
+                    // 计算各类法则得分
+                    const coreRulesScore = candidate.japanMadeScore + candidate.durabilityScore + candidate.priceReasonableScore;
+                    const marketRulesScore = candidate.personalizationScore + candidate.repeatPurchaseScore;
+                    const newRulesScore = candidate.socialMediaScore + candidate.targetAudienceScore;
+                    const totalScore = coreRulesScore + marketRulesScore + newRulesScore;
+                    
+                    // 检查核心法则是否通过
+                    const coreRulesPass = candidate.japanMadeScore >= 8 && candidate.durabilityScore >= 8 && candidate.priceReasonableScore >= 8;
+                    
+                    // 计算财务指标
+                    const grossMargin = candidate.estimatedRetailPrice - candidate.wholesalePrice;
+                    const grossMarginPercentage = Math.round((grossMargin / candidate.estimatedRetailPrice) * 100 * 10) / 10;
+                    
+                    const estimatedMonthlyRevenue = candidate.estimatedMonthlySales * candidate.estimatedRetailPrice;
+                    const totalMonthlyCosts = (candidate.estimatedMonthlySales * candidate.wholesalePrice) + 
+                                            (candidate.estimatedMonthlySales * candidate.marketingCostPerUnit);
+                    const estimatedMonthlyProfit = estimatedMonthlyRevenue - totalMonthlyCosts;
+                    
+                    const fixedCosts = candidate.minimumOrderQuantity * candidate.wholesalePrice;
+                    const breakEvenQuantity = Math.ceil(fixedCosts / grossMargin);
+                    
+                    const initialInvestment = fixedCosts + 10000;
+                    const roiTimeframe = estimatedMonthlyProfit > 0 ? Math.ceil(initialInvestment / estimatedMonthlyProfit) : 999;
+                    
+                    // 确定优先级 (更严格的标准)
+                    let priorityLevel = 'LOW';
+                    if (coreRulesPass && totalScore >= 60) {
+                        priorityLevel = 'HIGH';
+                    } else if (coreRulesPass && totalScore >= 50) {
+                        priorityLevel = 'MEDIUM';
+                    }
+                    
+                    // 生成推荐
+                    let recommendation = '';
+                    if (!coreRulesPass) {
+                        recommendation = "❌ 核心法则未通过，不符合Tatami Labs标准。需要提升日本制造认证、耐用性或价格合理性评分至8分以上。";
+                    } else if (priorityLevel === 'HIGH') {
+                        recommendation = "🎯 强烈推荐！此产品完全符合七大精准法则，具有优秀的市场潜力。建议优先启动。";
+                    } else if (priorityLevel === 'MEDIUM') {
+                        recommendation = "⚖️ 可考虑选择。核心法则通过，但需要进一步提升社交传播力或客群定位以达到优秀水平。";
+                    } else {
+                        recommendation = "⚠️ 不推荐。虽然可能符合部分标准，但整体评分不足，建议重新评估或寻找替代品。";
+                    }
+                    
+                    // 生成下一步行动
+                    const nextSteps = [];
+                    if (priorityLevel === 'HIGH') {
+                        nextSteps.push("🔍 立即进行市场验证和小批量测试");
+                        nextSteps.push("📊 制定详细的营销和销售策略");
+                        nextSteps.push("🎨 开发个性化服务和定制方案");
+                        nextSteps.push("📈 建立供应链和质量控制体系");
+                    } else if (priorityLevel === 'MEDIUM') {
+                        nextSteps.push("📋 重点提升薄弱环节评分");
+                        nextSteps.push("🔍 深入分析目标客群需求");
+                        nextSteps.push("📱 增强产品社交媒体传播属性");
+                        nextSteps.push("💰 优化价格策略和成本结构");
+                    } else {
+                        nextSteps.push("🔄 重新评估产品是否符合核心法则");
+                        nextSteps.push("🔍 寻找更符合标准的替代产品");
+                        nextSteps.push("📊 收集更多市场数据支撑");
+                    }
+                    
+                    return {
+                        candidate,
+                        totalScore,
+                        coreRulesScore,
+                        marketRulesScore,
+                        newRulesScore,
+                        coreRulesPass,
+                        priorityLevel,
+                        grossMarginPercentage,
+                        estimatedMonthlyRevenue: Math.round(estimatedMonthlyRevenue),
+                        estimatedMonthlyProfit: Math.round(estimatedMonthlyProfit),
+                        breakEvenQuantity,
+                        roiTimeframe,
+                        recommendation,
+                        nextSteps
+                    };
+                },
+
+                generateAdvancedPortfolioRecommendation() {
+                    if (this.evaluations.length === 0) {
+                        this.portfolioRecommendation = null;
+                        return;
+                    }
+
+                    const highPriority = this.evaluations.filter(e => e.priorityLevel === 'HIGH');
+                    const mediumPriority = this.evaluations.filter(e => e.priorityLevel === 'MEDIUM');
+                    
+                    const recommendedProducts = [
+                        ...highPriority.slice(0, 3),
+                        ...mediumPriority.slice(0, 2)
+                    ].slice(0, 4);
+                    
+                    if (recommendedProducts.length === 0) {
+                        this.portfolioRecommendation = null;
+                        return;
+                    }
+                    
+                    const totalInvestment = recommendedProducts.reduce((sum, e) => 
+                        sum + (e.candidate.minimumOrderQuantity * e.candidate.wholesalePrice), 0
+                    );
+                    
+                    const expectedMonthlyRevenue = recommendedProducts.reduce((sum, e) => 
+                        sum + e.estimatedMonthlyRevenue, 0
+                    );
+                    
+                    const averageScore = Math.round(recommendedProducts.reduce((sum, e) => sum + e.totalScore, 0) / recommendedProducts.length);
+                    
+                    this.portfolioRecommendation = {
+                        recommendedProducts,
+                        totalInvestment: Math.round(totalInvestment),
+                        expectedMonthlyRevenue: Math.round(expectedMonthlyRevenue),
+                        averageScore
+                    };
+                },
+
+                getAdvancedPriorityClass(priority) {
+                    const classes = {
+                        'HIGH': 'bg-green-100 text-green-800 border border-green-300',
+                        'MEDIUM': 'bg-yellow-100 text-yellow-800 border border-yellow-300',
+                        'LOW': 'bg-red-100 text-red-800 border border-red-300'
+                    };
+                    return classes[priority] || classes['LOW'];
+                },
+
+                getPriorityText(priority) {
+                    const texts = {
+                        'HIGH': '高优先级',
+                        'MEDIUM': '中优先级',
+                        'LOW': '低优先级'
+                    };
+                    return texts[priority] || texts['LOW'];
+                },
+
+                getTargetMarketText(market) {
+                    const texts = {
+                        'female': '👩 女性市场',
+                        'male': '👨 男性市场',
+                        'b2b': '🏢 企业客户',
+                        'collector': '🎯 收藏家',
+                        'general': '🌐 通用市场'
+                    };
+                    return texts[market] || '';
+                },
+
+                loadAdvancedSampleProducts() {
+                    const sampleProducts = [
+                        {
+                            id: '1',
+                            name: 'Kaweco Brass Sport 钢笔',
+                            category: '高端文具',
+                            supplier: 'Kaweco Japan官方授权',
+                            targetMarket: 'collector',
+                            wholesalePrice: 65,
+                            estimatedRetailPrice: 95,
+                            minimumOrderQuantity: 50,
+                            leadTime: 30,
+                            japanMadeScore: 9,
+                            durabilityScore: 10,
+                            priceReasonableScore: 9,
+                            personalizationScore: 10,
+                            repeatPurchaseScore: 9,
+                            socialMediaScore: 9,
+                            targetAudienceScore: 10,
+                            estimatedMonthlySales: 25,
+                            marketingCostPerUnit: 8,
+                            shippingComplexity: 3,
+                            seasonalityFactor: 1.2,
+                            notes: '有官方授权，工艺精湛，收藏价值高'
+                        },
+                        {
+                            id: '2',
+                            name: '日本手工皮革钱包',
+                            category: '皮革制品',
+                            supplier: '栃木皮革认证工房',
+                            targetMarket: 'female',
+                            wholesalePrice: 55,
+                            estimatedRetailPrice: 120,
+                            minimumOrderQuantity: 30,
+                            leadTime: 35,
+                            japanMadeScore: 10,
+                            durabilityScore: 9,
+                            priceReasonableScore: 8,
+                            personalizationScore: 9,
+                            repeatPurchaseScore: 8,
+                            socialMediaScore: 10,
+                            targetAudienceScore: 9,
+                            estimatedMonthlySales: 35,
+                            marketingCostPerUnit: 12,
+                            shippingComplexity: 2,
+                            seasonalityFactor: 1.3,
+                            notes: '栃木皮革，Instagram效果佳，女性喜爱'
+                        }
+                    ];
+                    
+                    this.products = sampleProducts;
+                    this.evaluateProducts();
+                    this.activeTab = 'results';
+                },
+
+                loadFailureSamples() {
+                    const failureSamples = [
+                        {
+                            id: '3',
+                            name: '银质茶壶',
+                            category: '家居用品',
+                            supplier: '中国制造商',
+                            targetMarket: 'general',
+                            wholesalePrice: 120,
+                            estimatedRetailPrice: 280,
+                            minimumOrderQuantity: 20,
+                            leadTime: 45,
+                            japanMadeScore: 3, // 非日本制造
+                            durabilityScore: 6, // 需要定期保养
+                            priceReasonableScore: 4, // 超出价格区间
+                            personalizationScore: 5,
+                            repeatPurchaseScore: 3, // 一次性购买
+                            socialMediaScore: 6,
+                            targetAudienceScore: 4, // 客群模糊
+                            estimatedMonthlySales: 8,
+                            marketingCostPerUnit: 25,
+                            shippingComplexity: 7,
+                            seasonalityFactor: 1.0,
+                            notes: '价格过高，非日本制造，维护复杂'
+                        }
+                    ];
+                    
+                    this.products = failureSamples;
+                    this.evaluateProducts();
+                    this.activeTab = 'results';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

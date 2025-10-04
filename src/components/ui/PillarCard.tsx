@@ -11,7 +11,7 @@ export default function PillarCard({ pillar, className }: PillarCardProps) {
   const { title, description, imageUrl, borderColor } = pillar
   return (
     <motion.div 
-      className={`bg-card rounded-xl border-2 ${borderColor} p-6 shadow-soft hover:shadow-lg transition-shadow duration-300`}
+      className={`bg-card rounded-xl border-2 ${borderColor} p-6 shadow-soft hover:shadow-lg transition-shadow duration-300 relative tatami-texture`}
       whileHover={{ scale: 1.03, y: -5 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
