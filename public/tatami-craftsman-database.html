@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tatami Labs - 日本職人・工芸家データベース・協力分析システム</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .overview-stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #8B4513;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+        }
+
+        .filter-section h3 {
+            color: #8B4513;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+
+        .region-map {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .region-map h4 {
+            color: #8B4513;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .region-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .region-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #D2691E;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .region-item:hover {
+            background: #fef7ed;
+            transform: translateX(5px);
+        }
+
+        .region-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .region-count {
+            background: #D2691E;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .results-title {
+            color: #8B4513;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sort-btn {
+            padding: 8px 16px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .sort-btn.active {
+            background: #8B4513;
+            color: white;
+            border-color: #8B4513;
+        }
+
+        .craftsman-card {
+            background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border-left: 6px solid #8B4513;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .craftsman-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 69, 19, 0.15);
+        }
+
+        .craftsman-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, rgba(139, 69, 19, 0.1) 0%, transparent 100%);
+            border-radius: 0 0 0 150px;
+        }
+
+        .craftsman-header {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .craftsman-basic {
+            z-index: 10;
+            position: relative;
+        }
+
+        .craftsman-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #8B4513;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .craft-type {
+            color: #D2691E;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .workshop-name {
+            color: #6b7280;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        .heritage-badge {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .match-score {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: 700;
+            min-width: 140px;
+        }
+
+        .match-score .score-value {
+            font-size: 2.5rem;
+            display: block;
+            line-height: 1;
+        }
+
+        .match-score .score-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .craftsman-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #f3f4f6;
+            text-align: center;
+        }
+
+        .detail-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .specialty-section {
+            background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .specialty-title {
+            color: #0277bd;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .specialty-description {
+            color: #01579b;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .awards-section {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .awards-title {
+            color: #059669;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .awards-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .award-item {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .cooperation-analysis {
+            background: linear-gradient(135deval, #dbeafe 0%, #bfdbfe 100%);
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .cooperation-title {
+            color: #1d4ed8;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .potential-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #e0e7ff;
+        }
+
+        .metric-score {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1d4ed8;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .cooperation-reasons {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .reasons-title {
+            color: #1d4ed8;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .reasons-list {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+        }
+
+        .reason-item {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #374151;
+            border-left: 3px solid #3b82f6;
+        }
+
+        @media (max-width: 1400px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .overview-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .craftsman-header {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .craftsman-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .potential-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" x-data="craftsmanDatabase()">
+        <div class="header">
+            <h1>🏺 Tatami Labs 日本職人・工芸家データベース</h1>
+            <p>Tatami Labs パートナー発見・評価システム - 伝統工芸士 × 現代起業家</p>
+        </div>
+
+        <!-- Overview Statistics -->
+        <div class="overview-stats">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" x-text="totalStats.craftsmen"></div>
+                <div class="stat-label">登録職人総数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🗾</div>
+                <div class="stat-value" x-text="totalStats.regions"></div>
+                <div class="stat-label">対応都道府県</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎨</div>
+                <div class="stat-value" x-text="totalStats.craftTypes"></div>
+                <div class="stat-label">工芸種類</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-value" x-text="totalStats.avgExperience"></div>
+                <div class="stat-label">平均経験年数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🤝</div>
+                <div class="stat-value" x-text="totalStats.cooperationReady"></div>
+                <div class="stat-label">協力準備済み</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Sidebar with Filters and Regional Map -->
+            <div class="sidebar">
+                <div class="filter-section">
+                    <h3>🔍 フィルター条件</h3>
+                    
+                    <div class="filter-group">
+                        <label>工芸種類</label>
+                        <select x-model="filters.craftType" @change="applyFilters()">
+                            <option value="">全ての工芸</option>
+                            <optgroup label="伝統工芸">
+                                <option value="pottery">陶磁工芸 (陶芸)</option>
+                                <option value="textile">織物工芸 (織物)</option>
+                                <option value="woodwork">木工芸 (木工)</option>
+                                <option value="lacquerware">漆器工芸 (漆芸)</option>
+                                <option value="metalwork">金属工芸 (金工)</option>
+                                <option value="papercraft">和紙工芸 (紙漉き)</option>
+                                <option value="glasswork">ガラス工芸 (ガラス工芸)</option>
+                                <option value="bamboo">竹工芸 (竹工芸)</option>
+                            </optgroup>
+                            <optgroup label="現代革新工芸">
+                                <option value="modern-design">モダンデザイン工芸</option>
+                                <option value="sustainable-craft">持続可能工芸</option>
+                                <option value="tech-craft">テクノロジー工芸</option>
+                                <option value="lifestyle-brand">ライフスタイルブランド</option>
+                                <option value="food-craft">フードクラフト</option>
+                                <option value="wellness-craft">ウェルネスクラフト</option>
+                                <option value="digital-traditional">デジタル伝統工芸</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>経験年数</label>
+                        <select x-model="filters.experience" @change="applyFilters()">
+                            <option value="">すべての経験</option>
+                            <option value="10-20">10-20年</option>
+                            <option value="20-30">20-30年</option>
+                            <option value="30-40">30-40年</option>
+                            <option value="40+">40年以上</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>協力意向</label>
+                        <select x-model="filters.cooperationWillingness" @change="applyFilters()">
+                            <option value="">すべての意向</option>
+                            <option value="high">高い意向</option>
+                            <option value="medium">中程度の意向</option>
+                            <option value="low">様子見姿勢</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Regional Distribution -->
+                <div class="region-map">
+                    <h4>📍 地理的分布</h4>
+                    <div class="region-list">
+                        <template x-for="region in regionStats" :key="region.name">
+                            <div class="region-item" @click="filterByRegion(region.code)">
+                                <span class="region-name" x-text="region.name"></span>
+                                <span class="region-count" x-text="region.count + '人'"></span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-header">
+                    <h2 class="results-title">🏆 職人プロファイル・協力評価</h2>
+                    <div class="sort-controls">
+                        <button class="sort-btn" :class="{ active: sortBy === 'score' }" @click="sortCraftsmen('score')">
+                            協力スコア順
+                        </button>
+                        <button class="sort-btn" :class="{ active: sortBy === 'experience' }" @click="sortCraftsmen('experience')">
+                            経験年数順
+                        </button>
+                        <button class="sort-btn" :class="{ active: sortBy === 'location' }" @click="sortCraftsmen('location')">
+                            地域順
+                        </button>
+                    </div>
+                </div>
+
+                <div x-show="filteredCraftsmen.length > 0">
+                    <template x-for="(craftsman, index) in filteredCraftsmen" :key="index">
+                        <div class="craftsman-card">
+                            <!-- Header Section -->
+                            <div class="craftsman-header">
+                                <div class="craftsman-basic">
+                                    <div class="craftsman-name" x-text="craftsman.name"></div>
+                                    <div class="craft-type" x-text="craftsman.craftTypeDisplay"></div>
+                                    <div class="workshop-name" x-text="craftsman.workshop"></div>
+                                </div>
+                                <div class="heritage-badge" x-text="craftsman.heritage"></div>
+                                <div class="match-score">
+                                    <span class="score-value" x-text="craftsman.cooperationScore"></span>
+                                    <span class="score-label">協力指数</span>
+                                </div>
+                            </div>
+
+                            <!-- Details Grid -->
+                            <div class="craftsman-details">
+                                <div class="detail-card">
+                                    <div class="detail-icon">📍</div>
+                                    <div class="detail-value" x-text="craftsman.location"></div>
+                                    <div class="detail-label">工房所在地</div>
+                                </div>
+                                <div class="detail-card">
+                                    <div class="detail-icon">⏰</div>
+                                    <div class="detail-value" x-text="craftsman.experience + '年'"></div>
+                                    <div class="detail-label">工芸経験</div>
+                                </div>
+                                <div class="detail-card">
+                                    <div class="detail-icon">💰</div>
+                                    <div class="detail-value" x-text="craftsman.priceRange"></div>
+                                    <div class="detail-label">作品価格</div>
+                                </div>
+                                <div class="detail-card">
+                                    <div class="detail-icon">🌐</div>
+                                    <div class="detail-value" x-text="getDigitalStatusDisplay(craftsman.digitalStatus)"></div>
+                                    <div class="detail-label">デジタル化度</div>
+                                </div>
+                            </div>
+
+                            <!-- Specialty Section -->
+                            <div class="specialty-section">
+                                <div class="specialty-title">🎯 専門分野</div>
+                                <div class="specialty-description" x-text="craftsman.specialtyDescription"></div>
+                            </div>
+
+                            <!-- Awards Section -->
+                            <div class="awards-section" x-show="craftsman.awards && craftsman.awards.length > 0">
+                                <div class="awards-title">🏆 主な受賞歴</div>
+                                <div class="awards-list">
+                                    <template x-for="award in craftsman.awards" :key="award">
+                                        <div class="award-item" x-text="award"></div>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Cooperation Analysis -->
+                            <div class="cooperation-analysis">
+                                <div class="cooperation-title">🤝 Tatami Labs 協力ポテンシャル分析</div>
+                                
+                                <div class="potential-metrics">
+                                    <div class="metric-item">
+                                        <div class="metric-score" x-text="craftsman.metrics.salesPotential"></div>
+                                        <div class="metric-label">売上向上ポテンシャル</div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-score" x-text="craftsman.metrics.exposureNeed"></div>
+                                        <div class="metric-label">ネット露出ニーズ</div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-score" x-text="craftsman.metrics.internationalReady"></div>
+                                        <div class="metric-label">国際化準備度</div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-score" x-text="craftsman.metrics.productFit"></div>
+                                        <div class="metric-label">製品マッチ度</div>
+                                    </div>
+                                </div>
+
+                                <div class="cooperation-reasons">
+                                    <div class="reasons-title">💡 協力を推薦するコア理由</div>
+                                    <ul class="reasons-list">
+                                        <template x-for="reason in craftsman.cooperationReasons" :key="reason">
+                                            <li class="reason-item" x-text="reason"></li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div x-show="filteredCraftsmen.length === 0" style="text-align: center; padding: 60px; color: #6b7280;">
+                    <h3>😔 条件に一致する職人が見つかりません</h3>
+                    <p>フィルター条件を調整してください</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function craftsmanDatabase() {
+            return {
+                filters: {
+                    craftType: '',
+                    experience: '',
+                    cooperationWillingness: '',
+                    region: ''
+                },
+                sortBy: 'score',
+                allCraftsmen: [],
+                filteredCraftsmen: [],
+                totalStats: {
+                    craftsmen: 0,
+                    regions: 0,
+                    craftTypes: 0,
+                    avgExperience: 0,
+                    cooperationReady: 0
+                },
+                regionStats: [],
+
+                init() {
+                    this.allCraftsmen = this.loadCraftsmenDatabase();
+                    this.calculateStats();
+                    this.applyFilters();
+                    // 默认按合作评分排序（从高到低）
+                    this.sortCraftsmen('score');
+                },
+
+                loadCraftsmenDatabase() {
+                    return [
+                        {
+                            name: '田中和夫 (Tanaka Kazuo)',
+                            craftType: 'pottery',
+                            craftTypeDisplay: '陶瓷工艺 (陶芸)',
+                            location: '京都府信楽町',
+                            locationDisplay: '京都府信楽町 (Shigaraki, Kyoto)',
+                            region: 'kyoto',
+                            experience: 35,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥8,000-25,000',
+                            workshop: '田中陶芸工房 (Tanaka Pottery Studio)',
+                            heritage: '三代目工匠',
+                            specialtyDescription: '专精信楽焼茶器制作，传承三代的独特釉药配方，擅长制作日常茶道用具。作品以自然朴素的美感著称，深受茶道爱好者喜爱。',
+                            awards: [
+                                '京都府伝統工芸品展 優秀賞 (2019)',
+                                '日本陶芸展 入選 (2020)',
+                                '信楽焼陶芸の里 会長賞 (2021)'
+                            ],
+                            cooperationScore: 92,
+                            metrics: {
+                                salesPotential: 95,
+                                exposureNeed: 98,
+                                internationalReady: 88,
+                                productFit: 87
+                            },
+                            cooperationReasons: [
+                                '💰 当前主要依靠本地销售，急需扩大销售渠道，通过Tatami平台可实现销售额3-5倍增长',
+                                '📱 完全没有数字化销售经验，Tatami可提供从零开始的全方位数字化解决方案',
+                                '🌍 对海外市场有强烈兴趣，曾表达希望将日本茶文化传播到海外的愿望',
+                                '🎯 茶具产品完美符合Tatami"日式生活美学"定位，价格区间适中，具有很强的商业化潜力'
+                            ]
+                        },
+                        {
+                            name: '佐藤美智子 (Sato Michiko)',
+                            craftType: 'textile',
+                            craftTypeDisplay: '纺织工艺 (織物)',
+                            location: '京都市西陣',
+                            locationDisplay: '京都市西陣 (Nishijin, Kyoto)',
+                            region: 'kyoto',
+                            experience: 28,
+                            digitalStatus: 'medium',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥15,000-80,000',
+                            workshop: '佐藤織物工房 (Sato Textile Studio)',
+                            heritage: '二代目織師',
+                            specialtyDescription: '继承西陣織传统技艺，专门制作高级和服腰带与装饰品。擅长将传统图案与现代设计相结合，创作出适合现代生活的精美织物作品。',
+                            awards: [
+                                '西陣織工業組合 優秀作品賞 (2021)',
+                                '京都伝統工芸品展 金賞 (2020)',
+                                '全国織物展覧会 特別賞 (2022)'
+                            ],
+                            cooperationScore: 88,
+                            metrics: {
+                                salesPotential: 85,
+                                exposureNeed: 82,
+                                internationalReady: 95,
+                                productFit: 90
+                            },
+                            cooperationReasons: [
+                                '🌸 西陣織工艺具有极高的国际认知度，海外市场接受度很高',
+                                '💡 已有基础的数字化销售经验，可快速适应Tatami平台的运营模式',
+                                '🎨 作品兼具传统美感与现代实用性，非常适合海外消费者的审美需求',
+                                '🤝 合作意愿强烈，愿意为海外市场开发定制化产品'
+                            ]
+                        },
+                        {
+                            name: '山田孝一 (Yamada Koichi)',
+                            craftType: 'woodwork',
+                            craftTypeDisplay: '木工艺 (木工)',
+                            location: '岐阜県高山市',
+                            locationDisplay: '岐阜県高山市 (Takayama, Gifu)',
+                            region: 'gifu',
+                            experience: 42,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'medium',
+                            priceRange: '¥3,000-15,000',
+                            workshop: '山田木工房 (Yamada Woodcraft Workshop)',
+                            heritage: '四代目職人',
+                            specialtyDescription: '飛騨春慶塗的传统工艺大师，四代传承的木工技艺。专精制作日常使用的木器，如餐具、茶具、小型家具等，作品以简洁实用著称。',
+                            awards: [
+                                '飛騨春慶塗組合 名人認定 (2018)',
+                                '全国伝統的工芸品公募展 入選 (2019)',
+                                '岐阜県知事賞 (2020)'
+                            ],
+                            cooperationScore: 85,
+                            metrics: {
+                                salesPotential: 90,
+                                exposureNeed: 95,
+                                internationalReady: 75,
+                                productFit: 80
+                            },
+                            cooperationReasons: [
+                                '🔥 销售潜力巨大，目前主要通过传统渠道销售，网络销售几乎为零',
+                                '🌿 木制品在海外市场具有"可持续生活"标签，符合当前消费趋势',
+                                '💰 价格亲民，适合批量销售，利润空间充足',
+                                '👨‍🎨 四代传承的深厚工艺底蕴，产品品质有绝对保障'
+                            ]
+                        },
+                        {
+                            name: '高橋雅子 (Takahashi Masako)',
+                            craftType: 'lacquerware',
+                            craftTypeDisplay: '漆器工艺 (漆芸)',
+                            location: '石川県輪島市',
+                            locationDisplay: '石川県輪島市 (Wajima, Ishikawa)',
+                            region: 'kanazawa',
+                            experience: 25,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥25,000-150,000',
+                            workshop: '高橋漆芸工房 (Takahashi Urushi Studio)',
+                            heritage: '漆芸師匠',
+                            specialtyDescription: '輪島塗の女性漆芸师，擅长现代漆器设计。在保持传统工艺的基础上，开发适合现代生活的漆器用品，如餐具、装饰品、文具等。',
+                            awards: [
+                                '輪島塗協同組合 新人賞 (2020)',
+                                '石川県美術展覧会 特別賞 (2021)',
+                                '日本漆工芸展 優秀賞 (2022)'
+                            ],
+                            cooperationScore: 94,
+                            metrics: {
+                                salesPotential: 88,
+                                exposureNeed: 85,
+                                internationalReady: 98,
+                                productFit: 95
+                            },
+                            cooperationReasons: [
+                                '🌟 已有完善的数字化销售体系，能够快速接入Tatami平台',
+                                '💎 轮岛塗是日本最著名的漆器工艺，具有极高的国际品牌价值',
+                                '🚀 对国际市场有深入了解，曾参与多个海外展览',
+                                '✨ 作品设计现代化程度高，非常适合海外年轻消费群体'
+                            ]
+                        },
+                        {
+                            name: '伊藤健太郎 (Ito Kentaro)',
+                            craftType: 'metalwork',
+                            craftTypeDisplay: '金属工艺 (金工)',
+                            location: '新潟県燕市',
+                            locationDisplay: '新潟県燕市 (Tsubame, Niigata)',
+                            region: 'niigata',
+                            experience: 18,
+                            digitalStatus: 'medium',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥8,000-35,000',
+                            workshop: '伊藤金属工房 (Ito Metal Workshop)',
+                            heritage: '若手職人',
+                            specialtyDescription: '燕市传统的槌起铜器工艺传承者，年轻一代的代表人物。专精制作铜制餐具、酒器、装饰品等，作品融合传统工艺与现代设计理念。',
+                            awards: [
+                                '燕市産業振興賞 (2022)',
+                                '新潟県伝統工芸品展 奨励賞 (2021)',
+                                '全国金工展 入選 (2023)'
+                            ],
+                            cooperationScore: 89,
+                            metrics: {
+                                salesPotential: 92,
+                                exposureNeed: 88,
+                                internationalReady: 85,
+                                productFit: 90
+                            },
+                            cooperationReasons: [
+                                '🔥 年轻工匠具有强烈的创新意识，愿意尝试新的销售模式',
+                                '💫 铜器制品在海外具有独特的魅力，特别受到生活品质追求者喜爱',
+                                '📈 目前正处于事业上升期，急需扩大知名度和销售渠道',
+                                '🎯 产品设计现代感强，价格适中，商业化潜力巨大'
+                            ]
+                        },
+                        {
+                            name: '鈴木花子 (Suzuki Hanako)',
+                            craftType: 'papercraft',
+                            craftTypeDisplay: '和纸工艺 (紙漉き)',
+                            location: '岐阜県美濃市',
+                            locationDisplay: '岐阜県美濃市 (Mino, Gifu)',
+                            region: 'gifu',
+                            experience: 33,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'medium',
+                            priceRange: '¥500-8,000',
+                            workshop: '鈴木和紙工房 (Suzuki Washi Studio)',
+                            heritage: '紙漉き師',
+                            specialtyDescription: '美濃和紙の伝統技法を守る紙漉き職人。手工制作的和纸具有独特的质感和美感，适用于书画、装饰、包装等多种用途。',
+                            awards: [
+                                '美濃和紙伝統産業会長賞 (2020)',
+                                '岐阜県美術展 優秀賞 (2019)',
+                                '全国和紙展 入選 (2021)'
+                            ],
+                            cooperationScore: 78,
+                            metrics: {
+                                salesPotential: 85,
+                                exposureNeed: 90,
+                                internationalReady: 65,
+                                productFit: 75
+                            },
+                            cooperationReasons: [
+                                '🌿 和纸工艺符合海外"环保手工"的消费趋势',
+                                '💰 产品价格亲民，适合大众消费市场',
+                                '🎨 可开发多样化产品线，如文具、装饰品、包装材料',
+                                '📚 具有深厚的文化内涵，容易形成品牌故事'
+                            ]
+                        },
+                        {
+                            name: '中村大介 (Nakamura Daisuke)',
+                            craftType: 'glasswork',
+                            craftTypeDisplay: '玻璃工艺 (ガラス工芸)',
+                            location: '東京都江戸川区',
+                            locationDisplay: '東京都江戸川区 (Edogawa, Tokyo)',
+                            region: 'tokyo',
+                            experience: 22,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥12,000-60,000',
+                            workshop: '中村硝子工房 (Nakamura Glass Studio)',
+                            heritage: '江戸切子職人',
+                            specialtyDescription: '江戸切子の現代的な継承者，在保持传统切割技法的同时，创作现代生活中实用的玻璃制品。作品包括酒器、花瓶、装饰品等。',
+                            awards: [
+                                '江戸切子協同組合 優秀技能賞 (2021)',
+                                '東京都伝統工芸品展 金賞 (2022)',
+                                '全国ガラス工芸展 特別賞 (2020)'
+                            ],
+                            cooperationScore: 91,
+                            metrics: {
+                                salesPotential: 88,
+                                exposureNeed: 80,
+                                internationalReady: 95,
+                                productFit: 92
+                            },
+                            cooperationReasons: [
+                                '✨ 江戸切子具有极高的国际知名度和艺术价值',
+                                '🌐 已建立完善的在线销售体系，数字化程度高',
+                                '🍶 酒器类产品在海外日本料理文化推广中需求量大',
+                                '🎯 位于东京，便于参与国际展览和商务活动'
+                            ]
+                        },
+                        {
+                            name: '松本和彦 (Matsumoto Kazuhiko)',
+                            craftType: 'bamboo',
+                            craftTypeDisplay: '竹工艺 (竹工芸)',
+                            location: '大分県別府市',
+                            locationDisplay: '大分県別府市 (Beppu, Oita)',
+                            region: 'kyushu',
+                            experience: 38,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'low',
+                            priceRange: '¥2,000-12,000',
+                            workshop: '松本竹細工工房 (Matsumoto Bamboo Workshop)',
+                            heritage: '竹工芸名人',
+                            specialtyDescription: '別府竹細工の伝統工芸士，专精制作日常生活用的竹制品。包括篮子、收纳用具、装饰品等，作品以实用性和耐久性著称。',
+                            awards: [
+                                '別府竹細工伝統工芸士認定 (2015)',
+                                '大分県知事賞 (2018)',
+                                '全国竹工芸展 優秀賞 (2019)'
+                            ],
+                            cooperationScore: 65,
+                            metrics: {
+                                salesPotential: 70,
+                                exposureNeed: 80,
+                                internationalReady: 45,
+                                productFit: 65
+                            },
+                            cooperationReasons: [
+                                '🌱 竹制品符合可持续发展理念，海外市场接受度高',
+                                '💰 价格适中，具有良好的成本优势',
+                                '🏠 日常生活用品市场需求稳定',
+                                '📈 通过数字化销售可大幅提升销量'
+                            ]
+                        },
+                        // === 现代创新工匠与创业公司 ===
+                        {
+                            name: '青木智弘 (Aoki Tomohiro)',
+                            craftType: 'modern-design',
+                            craftTypeDisplay: '现代设计工艺 (モダンデザイン)',
+                            location: '東京都渋谷区',
+                            locationDisplay: '東京都渋谷区 (Shibuya, Tokyo)',
+                            region: 'tokyo',
+                            experience: 8,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥18,000-120,000',
+                            workshop: 'AOKI DESIGN STUDIO',
+                            heritage: '现代工艺创新者',
+                            specialtyDescription: '新锐设计师，专注于将日本传统美学与现代3D打印技术相结合。创作现代家居用品、艺术装饰品，作品在国际设计界获得高度关注。',
+                            awards: [
+                                'Good Design Award 受賞 (2023)',
+                                'Tokyo Design Week 特別賞 (2022)',
+                                'International Design Competition 入選 (2023)'
+                            ],
+                            cooperationScore: 96,
+                            metrics: {
+                                salesPotential: 98,
+                                exposureNeed: 70,
+                                internationalReady: 100,
+                                productFit: 95
+                            },
+                            cooperationReasons: [
+                                '🚀 具有强烈的商业化意识和国际化视野，完全理解现代电商运营',
+                                '💡 创新技术与传统美学的完美结合，产品差异化明显',
+                                '📱 数字原生代，对社交媒体营销和品牌建设有深入理解',
+                                '🌍 作品已在海外设计展获奖，具有成熟的国际市场认知'
+                            ]
+                        },
+                        {
+                            name: '林美佳 (Hayashi Mika)',
+                            craftType: 'sustainable-craft',
+                            craftTypeDisplay: '可持续工艺 (サステナブルクラフト)',
+                            location: '神奈川県鎌倉市',
+                            locationDisplay: '神奈川県鎌倉市 (Kamakura, Kanagawa)',
+                            region: 'tokyo',
+                            experience: 6,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥5,000-45,000',
+                            workshop: 'ZERO WASTE CRAFT STUDIO',
+                            heritage: '环保工艺先驱',
+                            specialtyDescription: '环保工艺创业者，专门利用废弃材料创作实用美观的生活用品。从废弃和服制作手袋、从海洋垃圾制作装饰品，引领可持续手工艺新潮流。',
+                            awards: [
+                                'サステナブルデザインアワード 金賞 (2023)',
+                                '神奈川県起業家支援賞 (2022)',
+                                'エコクラフト展 最優秀賞 (2023)'
+                            ],
+                            cooperationScore: 93,
+                            metrics: {
+                                salesPotential: 95,
+                                exposureNeed: 88,
+                                internationalReady: 92,
+                                productFit: 90
+                            },
+                            cooperationReasons: [
+                                '🌱 完美契合当前全球可持续发展趋势，产品具有强烈的时代价值',
+                                '📊 已建立完整的品牌故事和营销体系，具有成熟的商业模式',
+                                '🔄 创新的循环利用理念吸引年轻消费群体，市场接受度极高',
+                                '🌍 产品背后的环保理念易于形成国际传播话题'
+                            ]
+                        },
+                        {
+                            name: '田村健司 (Tamura Kenji)',
+                            craftType: 'tech-craft',
+                            craftTypeDisplay: '科技工艺 (テックキャブト)',
+                            location: '京都府京都市',
+                            locationDisplay: '京都府京都市 (Kyoto City)',
+                            region: 'kyoto',
+                            experience: 12,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥25,000-200,000',
+                            workshop: 'DIGITAL CRAFT LAB KYOTO',
+                            heritage: '数字工艺革新者',
+                            specialtyDescription: '前任科技公司工程师转型工艺创作者，专门开发智能化的传统工艺品。将IoT技术融入茶具、香炉等传统器具，创造现代科技与传统文化的完美融合。',
+                            awards: [
+                                'IoT Innovation Award 受賞 (2023)',
+                                '京都市ベンチャー企業支援賞 (2022)',
+                                'テクノロジークラフト展 グランプリ (2023)'
+                            ],
+                            cooperationScore: 91,
+                            metrics: {
+                                salesPotential: 90,
+                                exposureNeed: 85,
+                                internationalReady: 95,
+                                productFit: 88
+                            },
+                            cooperationReasons: [
+                                '🔌 智能化传统工艺品开辟全新市场类别，竞争对手稀少',
+                                '💻 技术背景确保产品质量稳定和持续创新能力',
+                                '🎯 目标客户群体明确（科技爱好者+传统文化爱好者），营销定位精准',
+                                '🌐 产品概念先进，容易获得国际科技和设计媒体关注'
+                            ]
+                        },
+                        {
+                            name: '川口英美 (Kawaguchi Hidemi)',
+                            craftType: 'lifestyle-brand',
+                            craftTypeDisplay: '生活方式品牌 (ライフスタイルブランド)',
+                            location: '大阪府大阪市',
+                            locationDisplay: '大阪府大阪市 (Osaka City)',
+                            region: 'osaka',
+                            experience: 5,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥8,000-80,000',
+                            workshop: 'MINIMALIST JAPAN LIVING',
+                            heritage: '现代生活美学家',
+                            specialtyDescription: '极简主义生活方式品牌创始人，专注开发符合现代极简生活理念的日式家居用品。产品线包括收纳用具、餐具、装饰品等，强调功能性与美观性并重。',
+                            awards: [
+                                'ライフスタイルブランドアワード 新人賞 (2023)',
+                                '大阪市起業支援プログラム 優秀賞 (2022)',
+                                'ミニマルデザイン展 特別賞 (2023)'
+                            ],
+                            cooperationScore: 88,
+                            metrics: {
+                                salesPotential: 92,
+                                exposureNeed: 85,
+                                internationalReady: 88,
+                                productFit: 85
+                            },
+                            cooperationReasons: [
+                                '🏠 极简主义生活方式在全球范围内持续升温，市场前景广阔',
+                                '📈 品牌定位清晰，目标客户群体明确，易于精准营销',
+                                '🎨 产品设计现代化程度高，完全符合海外年轻消费者审美',
+                                '💼 创始人具有商科背景，对品牌运营和市场推广有深入理解'
+                            ]
+                        },
+                        {
+                            name: '小林拓也 (Kobayashi Takuya)',
+                            craftType: 'food-craft',
+                            craftTypeDisplay: '食物工艺 (フードクラフト)',
+                            location: '静岡県静岡市',
+                            locationDisplay: '静岡県静岡市 (Shizuoka City)',
+                            region: 'shizuoka',
+                            experience: 7,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥3,000-30,000',
+                            workshop: 'ARTISAN FOOD TOOLS',
+                            heritage: '食品工艺创新者',
+                            specialtyDescription: '专门制作高品质食品制作工具的新兴工匠。从传统日式料理工具获得灵感，开发适合现代厨房的创新烹饪用具，产品兼具实用性和艺术性。',
+                            awards: [
+                                'キッチンツールデザイン賞 (2023)',
+                                '静岡県ものづくり振興賞 (2022)',
+                                'フードテック展 イノベーション賞 (2023)'
+                            ],
+                            cooperationScore: 87,
+                            metrics: {
+                                salesPotential: 88,
+                                exposureNeed: 90,
+                                internationalReady: 85,
+                                productFit: 88
+                            },
+                            cooperationReasons: [
+                                '🍳 烹饪工具市场需求稳定，回购率高，具有很强的商业可持续性',
+                                '🌍 日式料理文化在全球持续推广，相关工具需求不断增长',
+                                '⭐ 产品实用性强，用户满意度高，容易形成口碑传播',
+                                '📱 年轻创业者对社交媒体营销有天然优势，能快速建立品牌知名度'
+                            ]
+                        },
+                        {
+                            name: '森田亜希子 (Morita Akiko)',
+                            craftType: 'wellness-craft',
+                            craftTypeDisplay: '健康工艺 (ウェルネスクラフト)',
+                            location: '長野県松本市',
+                            locationDisplay: '長野県松本市 (Matsumoto, Nagano)',
+                            region: 'nagano',
+                            experience: 9,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥12,000-75,000',
+                            workshop: 'HEALING CRAFT STUDIO',
+                            heritage: '健康工艺先锋',
+                            specialtyDescription: '专注于制作促进身心健康的工艺品。结合芳香疗法、颜色心理学等理念，创作香薰用具、冥想辅助用品、健康饰品等，产品广受都市职场人士欢迎。',
+                            awards: [
+                                'ウェルネスプロダクトアワード (2023)',
+                                '長野県ヘルスケア産業振興賞 (2022)',
+                                'アロマテラピー展 最優秀デザイン賞 (2022)'
+                            ],
+                            cooperationScore: 89,
+                            metrics: {
+                                salesPotential: 90,
+                                exposureNeed: 88,
+                                internationalReady: 90,
+                                productFit: 88
+                            },
+                            cooperationReasons: [
+                                '💆‍♀️ 健康和自我护理市场在全球快速增长，特别是疫情后需求激增',
+                                '🧘‍♀️ 产品与当前流行的冥想、mindfulness文化高度契合',
+                                '💼 目标客户群体消费能力强，愿意为健康相关产品付费',
+                                '🌿 天然材料和健康理念符合现代消费者的价值观'
+                            ]
+                        },
+                        {
+                            name: '渡边翔太 (Watanabe Shota)',
+                            craftType: 'digital-traditional',
+                            craftTypeDisplay: '数字传统工艺 (デジタル伝統工芸)',
+                            location: '福岡県福岡市',
+                            locationDisplay: '福岡県福岡市 (Fukuoka City)',
+                            region: 'kyushu',
+                            experience: 4,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥15,000-100,000',
+                            workshop: 'DIGITAL HERITAGE CRAFT',
+                            heritage: '数字化传承者',
+                            specialtyDescription: '利用AR/VR技术保存和传播传统工艺的年轻创业者。开发数字化工艺学习系统，同时制作融合数字元素的现代工艺品，连接传统与未来。',
+                            awards: [
+                                'デジタルヘリテージ賞 (2023)',
+                                '福岡市スタートアップ支援賞 (2023)',
+                                'AR/VRアプリコンテスト 優秀賞 (2022)'
+                            ],
+                            cooperationScore: 85,
+                            metrics: {
+                                salesPotential: 85,
+                                exposureNeed: 95,
+                                internationalReady: 90,
+                                productFit: 78
+                            },
+                            cooperationReasons: [
+                                '🚀 概念前卫，容易获得媒体关注和病毒式传播',
+                                '📱 完全原生数字化，与Tatami平台的科技定位高度匹配',
+                                '🎓 产品兼具教育价值和收藏价值，市场定位独特',
+                                '🌏 数字化特性使产品易于跨境销售和全球推广'
+                            ]
+                        },
+                        // === 更多高评分传统工匠 ===
+                        {
+                            name: '石井正一 (Ishii Shoichi)',
+                            craftType: 'pottery',
+                            craftTypeDisplay: '陶瓷工艺 (陶芸)',
+                            location: '佐賀県有田町',
+                            locationDisplay: '佐賀県有田町 (Arita, Saga)',
+                            region: 'kyushu',
+                            experience: 31,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥12,000-45,000',
+                            workshop: '石井陶磁工房 (Ishii Ceramics)',
+                            heritage: '有田焼継承者',
+                            specialtyDescription: '有田焼の名門工房継承者，专精青花瓷和彩绘陶瓷。作品融合传统技法与现代设计，深受国内外收藏家喜爱。',
+                            awards: ['有田焼伝統工芸士認定 (2018)', '佐賀県知事賞 (2021)', '日本陶磁協会展 金賞 (2022)'],
+                            cooperationScore: 94,
+                            metrics: { salesPotential: 96, exposureNeed: 98, internationalReady: 90, productFit: 92 },
+                            cooperationReasons: ['🌏 有田焼享有400年历史，国际知名度极高', '💎 产品工艺精湛，符合高端定位', '📈 当前销售渠道单一，急需网络推广', '🎨 愿意为海外市场开发新设计']
+                        },
+                        {
+                            name: '今井花織 (Imai Kaori)',
+                            craftType: 'textile',
+                            craftTypeDisplay: '纺织工艺 (織物)',
+                            location: '山形県鶴岡市',
+                            locationDisplay: '山形県鶴岡市 (Tsuruoka, Yamagata)',
+                            region: 'tohoku',
+                            experience: 22,
+                            digitalStatus: 'medium',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥20,000-120,000',
+                            workshop: '今井絹織工房 (Imai Silk Studio)',
+                            heritage: '絹織物名人',
+                            specialtyDescription: '山形县传统丝织物工艺大师，专门制作高级丝巾、和服配件。结合传统染色技法与现代图案设计。',
+                            awards: ['山形県伝統工芸品展 最優秀賞 (2020)', '全国絹織物展 特別賞 (2021)', '東北工芸展 グランプリ (2022)'],
+                            cooperationScore: 91,
+                            metrics: { salesPotential: 88, exposureNeed: 94, internationalReady: 92, productFit: 90 },
+                            cooperationReasons: ['🧵 丝织品在国际奢侈品市场需求高', '🌸 传统染色工艺具有独特性', '💄 产品适合作为高端礼品', '📱 已有基础网络销售经验']
+                        },
+                        {
+                            name: '大橋秀男 (Ohashi Hideo)',
+                            craftType: 'woodwork',
+                            craftTypeDisplay: '木工艺 (木工)',
+                            location: '秋田県湯沢市',
+                            locationDisplay: '秋田県湯沢市 (Yuzawa, Akita)',
+                            region: 'tohoku',
+                            experience: 44,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'medium',
+                            priceRange: '¥5,000-28,000',
+                            workshop: '大橋木工房 (Ohashi Woodcraft)',
+                            heritage: '川連漆器職人',
+                            specialtyDescription: '川連漆器的木地職人，专门制作漆器的木制基底。掌握传统木材处理和成型技艺，作品坚固耐用。',
+                            awards: ['川連漆器協同組合 技能賞 (2017)', '秋田県伝統工芸展 優秀賞 (2019)', '全国漆器展 入選 (2020)'],
+                            cooperationScore: 86,
+                            metrics: { salesPotential: 89, exposureNeed: 92, internationalReady: 78, productFit: 85 },
+                            cooperationReasons: ['🌲 天然木材工艺符合环保趋势', '🔨 传统技法保证产品质量', '💰 价格亲民，市场接受度高', '🎯 木制品在欧美市场需求稳定']
+                        },
+                        {
+                            name: '三浦恵美 (Miura Emi)',
+                            craftType: 'lacquerware',
+                            craftTypeDisplay: '漆器工艺 (漆芸)',
+                            location: '福島県会津若松市',
+                            locationDisplay: '福島県会津若松市 (Aizu-Wakamatsu, Fukushima)',
+                            region: 'tohoku',
+                            experience: 19,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥18,000-85,000',
+                            workshop: '三浦漆芸工房 (Miura Urushi Studio)',
+                            heritage: '会津塗師',
+                            specialtyDescription: '会津漆器の女性職人，专精蒔絵技法。创作现代感强的漆器装饰品和实用器具，深受年轻消费者喜爱。',
+                            awards: ['会津漆器協同組合 新人賞 (2019)', '福島県美術展覧会 特別賞 (2021)', '現代漆芸展 優秀賞 (2022)'],
+                            cooperationScore: 93,
+                            metrics: { salesPotential: 91, exposureNeed: 89, internationalReady: 95, productFit: 97 },
+                            cooperationReasons: ['✨ 会津漆器历史悠久，品牌价值高', '🎨 现代设计理念吸引年轻客户', '🌐 数字化程度高，适应网络销售', '💝 漆器适合作为高端礼品']
+                        },
+                        {
+                            name: '小野寺健 (Onodera Takeshi)',
+                            craftType: 'metalwork',
+                            craftTypeDisplay: '金属工艺 (金工)',
+                            location: '岩手県奥州市',
+                            locationDisplay: '岩手県奥州市 (Oshu, Iwate)',
+                            region: 'tohoku',
+                            experience: 26,
+                            digitalStatus: 'medium',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥15,000-60,000',
+                            workshop: '小野寺鉄器工房 (Onodera Ironwork)',
+                            heritage: '南部鉄器職人',
+                            specialtyDescription: '南部鉄器传统工艺继承者，专门制作铁壶、茶具等。结合传统铸造技法与现代设计，作品实用性与艺术性并重。',
+                            awards: ['南部鉄器協同組合 優秀技能賞 (2020)', '岩手県伝統工芸品展 金賞 (2021)', '全国鋳物展 特別賞 (2022)'],
+                            cooperationScore: 90,
+                            metrics: { salesPotential: 92, exposureNeed: 90, internationalReady: 88, productFit: 90 },
+                            cooperationReasons: ['🫖 南部鉄器在茶文化爱好者中知名度高', '💪 产品坚固耐用，具有传家价值', '🌍 铁器在海外健康意识群体中受欢迎', '📈 目前主要靠传统渠道，网络销售空间大']
+                        },
+                        {
+                            name: '菅原文子 (Sugawara Fumiko)',
+                            craftType: 'papercraft',
+                            craftTypeDisplay: '和纸工艺 (紙漉き)',
+                            location: '福井県越前市',
+                            locationDisplay: '福井県越前市 (Echizen, Fukui)',
+                            region: 'hokuriku',
+                            experience: 37,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'medium',
+                            priceRange: '¥800-12,000',
+                            workshop: '菅原和紙工房 (Sugawara Washi Studio)',
+                            heritage: '越前和紙職人',
+                            specialtyDescription: '越前和纸传统技法保持者，制作高品质手工和纸。产品包括书画用纸、包装纸、文具等，质地优良。',
+                            awards: ['越前和紙協同組合 功労賞 (2018)', '福井県伝統工芸品展 優秀賞 (2020)', '全国和紙展 入選 (2021)'],
+                            cooperationScore: 82,
+                            metrics: { salesPotential: 84, exposureNeed: 88, internationalReady: 75, productFit: 80 },
+                            cooperationReasons: ['📜 越前和纸被指定为重要无形文化财', '🎨 适合开发多样化文具产品', '🌿 环保材料符合现代消费趋势', '💸 价格适中，适合大众市场']
+                        },
+                        {
+                            name: '長谷川透 (Hasegawa Toru)',
+                            craftType: 'glasswork',
+                            craftTypeDisplay: '玻璃工艺 (ガラス工芸)',
+                            location: '富山県富山市',
+                            locationDisplay: '富山県富山市 (Toyama City)',
+                            region: 'hokuriku',
+                            experience: 15,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥25,000-150,000',
+                            workshop: '長谷川硝子工房 (Hasegawa Glass Studio)',
+                            heritage: '現代硝子作家',
+                            specialtyDescription: '现代玻璃艺术创作者，融合传统吹制技法与当代设计理念。作品包括花瓶、照明器具、装饰品等。',
+                            awards: ['富山県美術展 大賞 (2021)', '現代ガラス展 優秀賞 (2022)', '北陸工芸展 特別賞 (2023)'],
+                            cooperationScore: 87,
+                            metrics: { salesPotential: 85, exposureNeed: 85, internationalReady: 92, productFit: 87 },
+                            cooperationReasons: ['💎 现代玻璃艺术在国际市场认知度高', '🌈 产品设计现代感强，吸引年轻消费者', '📱 数字化营销能力强', '🎯 定位高端艺术品市场']
+                        },
+                        // === 更多现代创新工匠 ===
+                        {
+                            name: '佐々木麻衣 (Sasaki Mai)',
+                            craftType: 'sustainable-craft',
+                            craftTypeDisplay: '可持续工艺 (サステナブルクラフト)',
+                            location: '北海道札幌市',
+                            locationDisplay: '北海道札幌市 (Sapporo, Hokkaido)',
+                            region: 'hokkaido',
+                            experience: 7,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥4,000-35,000',
+                            workshop: 'HOKKAIDO ECO CRAFT',
+                            heritage: '生态工艺先锋',
+                            specialtyDescription: '利用北海道当地废弃材料创作环保工艺品。从废弃渔网制作手袋，从木材边角料制作装饰品，推广零废弃理念。',
+                            awards: ['北海道エコデザイン賞 (2023)', 'サステナブルクラフト展 最優秀賞 (2022)', '札幌市環境賞 (2023)'],
+                            cooperationScore: 95,
+                            metrics: { salesPotential: 97, exposureNeed: 90, internationalReady: 95, productFit: 93 },
+                            cooperationReasons: ['🌍 环保概念在全球范围内持续升温', '📈 Z世代消费者对可持续产品需求高', '🎯 产品故事性强，容易形成病毒传播', '💚 符合企业ESG采购需求']
+                        },
+                        {
+                            name: '山本龍一 (Yamamoto Ryuichi)',
+                            craftType: 'tech-craft',
+                            craftTypeDisplay: '科技工艺 (テックキャブト)',
+                            location: '愛知県名古屋市',
+                            locationDisplay: '愛知県名古屋市 (Nagoya, Aichi)',
+                            region: 'chubu',
+                            experience: 9,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥35,000-250,000',
+                            workshop: 'SMART CRAFT LAB NAGOYA',
+                            heritage: '智能工艺创新者',
+                            specialtyDescription: '前汽车工程师转型工艺创作，专门开发智能化日用品。将传感器技术融入茶具、花瓶等，创造科技与传统的融合。',
+                            awards: ['愛知県イノベーション賞 (2023)', 'IoTクラフト展 グランプリ (2022)', '名古屋市ベンチャー支援賞 (2023)'],
+                            cooperationScore: 92,
+                            metrics: { salesPotential: 90, exposureNeed: 88, internationalReady: 98, productFit: 85 },
+                            cooperationReasons: ['🚗 汽车工业背景保证技术可靠性', '🔌 智能家居市场快速增长', '🌐 产品概念新颖，媒体关注度高', '💼 目标客户群体消费能力强']
+                        },
+                        {
+                            name: '田口真理 (Taguchi Mari)',
+                            craftType: 'wellness-craft',
+                            craftTypeDisplay: '健康工艺 (ウェルネスクラフト)',
+                            location: '沖縄県那覇市',
+                            locationDisplay: '沖縄県那覇市 (Naha, Okinawa)',
+                            region: 'okinawa',
+                            experience: 11,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥8,000-55,000',
+                            workshop: 'OKINAWA HEALING CRAFT',
+                            heritage: '健康工艺专家',
+                            specialtyDescription: '结合冲绳传统香草与现代芳疗理念，创作健康工艺品。产品包括香薰器具、按摩工具、冥想辅助品等。',
+                            awards: ['沖縄県ヘルスケア産業賞 (2022)', 'ウェルネス展 イノベーション賞 (2023)', '全国アロマテラピー展 特別賞 (2022)'],
+                            cooperationScore: 89,
+                            metrics: { salesPotential: 91, exposureNeed: 85, internationalReady: 90, productFit: 90 },
+                            cooperationReasons: ['🏝️ 冲绳健康长寿文化具有国际吸引力', '💆‍♀️ 健康养生市场持续增长', '🌺 天然植物材料符合消费趋势', '📱 社交媒体营销能力强']
+                        },
+                        {
+                            name: '西田浩司 (Nishida Koji)',
+                            craftType: 'food-craft',
+                            craftTypeDisplay: '食物工艺 (フードクラフト)',
+                            location: '香川県高松市',
+                            locationDisplay: '香川県高松市 (Takamatsu, Kagawa)',
+                            region: 'shikoku',
+                            experience: 13,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥6,000-40,000',
+                            workshop: 'SANUKI FOOD TOOLS',
+                            heritage: '料理工具革新者',
+                            specialtyDescription: '专门开发乌冬面制作工具和日式料理器具。结合香川县传统制面技艺与现代工业设计，产品实用性极强。',
+                            awards: ['香川県ものづくり大賞 (2022)', 'キッチンウェア展 最優秀デザイン賞 (2023)', '四国地区発明展 金賞 (2021)'],
+                            cooperationScore: 88,
+                            metrics: { salesPotential: 90, exposureNeed: 88, internationalReady: 85, productFit: 88 },
+                            cooperationReasons: ['🍜 日式料理文化在全球持续推广', '🔪 专业料理工具市场需求稳定', '⭐ 产品实用性强，用户满意度高', '📺 适合通过料理视频推广']
+                        },
+                        {
+                            name: '中島由紀 (Nakajima Yuki)',
+                            craftType: 'lifestyle-brand',
+                            craftTypeDisplay: '生活方式品牌 (ライフスタイルブランド)',
+                            location: '広島県広島市',
+                            locationDisplay: '広島県広島市 (Hiroshima City)',
+                            region: 'chugoku',
+                            experience: 6,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥12,000-90,000',
+                            workshop: 'HIROSHIMA MINIMAL LIVING',
+                            heritage: '极简生活倡导者',
+                            specialtyDescription: '推广极简生活方式的品牌创始人，开发功能性强的收纳用品和家居装饰。倡导"少而精"的生活理念。',
+                            awards: ['広島県起業家支援賞 (2023)', 'ライフスタイルデザイン展 優秀賞 (2022)', 'ミニマル展 特別賞 (2023)'],
+                            cooperationScore: 86,
+                            metrics: { salesPotential: 88, exposureNeed: 82, internationalReady: 90, productFit: 85 },
+                            cooperationReasons: ['🏠 极简主义在全球年轻人中流行', '📦 收纳用品市场需求持续增长', '🎨 产品设计简洁现代，国际化程度高', '💡 品牌理念清晰，容易传播']
+                        },
+                        {
+                            name: '岡田信也 (Okada Shinya)',
+                            craftType: 'digital-traditional',
+                            craftTypeDisplay: '数字传统工艺 (デジタル伝統工芸)',
+                            location: '奈良県奈良市',
+                            locationDisplay: '奈良県奈良市 (Nara City)',
+                            region: 'kansai',
+                            experience: 8,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥20,000-120,000',
+                            workshop: 'NARA DIGITAL HERITAGE',
+                            heritage: '文化遗产数字化专家',
+                            specialtyDescription: '专注于奈良文化遗产的数字化保存与现代化呈现。开发AR导览系统，同时制作融合数字元素的纪念品。',
+                            awards: ['奈良県文化財保護賞 (2023)', 'デジタルアーカイブ展 最優秀賞 (2022)', '関西イノベーション賞 (2023)'],
+                            cooperationScore: 84,
+                            metrics: { salesPotential: 82, exposureNeed: 92, internationalReady: 88, productFit: 75 },
+                            cooperationReasons: ['🏛️ 奈良作为古都具有强烈的文化吸引力', '📱 数字化技术符合现代消费习惯', '🎓 产品兼具教育和纪念价值', '🌏 国际游客对日本文化遗产兴趣高']
+                        },
+                        // === 继续添加更多传统工匠 ===
+                        {
+                            name: '片桐利明 (Katagiri Toshiaki)',
+                            craftType: 'pottery',
+                            craftTypeDisplay: '陶瓷工艺 (陶芸)',
+                            location: '岡山県備前市',
+                            locationDisplay: '岡山県備前市 (Bizen, Okayama)',
+                            region: 'chugoku',
+                            experience: 29,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥18,000-80,000',
+                            workshop: '片桐備前焼工房',
+                            heritage: '備前焼伝承者',
+                            specialtyDescription: '備前焼の伝統技法を継承，无釉烧成の独特風格を持つ。花器、茶器、酒器などを制作，土の自然な美しさを活かした作品で知られる。',
+                            awards: ['備前焼協同組合 優秀賞 (2021)', '岡山県伝統工芸展 金賞 (2020)', '日本六古窯展 特別賞 (2022)'],
+                            cooperationScore: 88,
+                            metrics: { salesPotential: 90, exposureNeed: 95, internationalReady: 82, productFit: 85 },
+                            cooperationReasons: ['🏺 備前焼是日本六古窯之一，具有极高的文化价值', '🔥 无釉烧制工艺独特，海外认知度高', '🍶 酒器类产品在国际市场需求旺盛', '📈 当前主要依赖本地销售，网络化空间巨大']
+                        },
+                        {
+                            name: '田所美和 (Tadokoro Miwa)',
+                            craftType: 'textile',
+                            craftTypeDisplay: '纺织工艺 (織物)',
+                            location: '愛媛県今治市',
+                            locationDisplay: '愛媛県今治市 (Imabari, Ehime)',
+                            region: 'shikoku',
+                            experience: 16,
+                            digitalStatus: 'medium',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥8,000-35,000',
+                            workshop: '田所タオル工房',
+                            heritage: '今治タオル職人',
+                            specialtyDescription: '今治毛巾的手工编织专家，专注于高品质毛巾和浴巾制作。使用传统编织技法，产品吸水性和触感俱佳。',
+                            awards: ['今治タオル組合 品質賞 (2022)', '愛媛県産業振興賞 (2021)', '四国タオル展 最優秀賞 (2023)'],
+                            cooperationScore: 83,
+                            metrics: { salesPotential: 88, exposureNeed: 85, internationalReady: 80, productFit: 78 },
+                            cooperationReasons: ['🏠 今治毛巾在全球享有盛誉', '💧 产品实用性强，日常使用频率高', '🎁 适合作为实用礼品', '🌏 海外对日本品质毛巾需求高']
+                        },
+                        {
+                            name: '吉田勇治 (Yoshida Yuji)',
+                            craftType: 'woodwork',
+                            craftTypeDisplay: '木工艺 (木工)',
+                            location: '鹿児島県薩摩川内市',
+                            locationDisplay: '鹿児島県薩摩川内市 (Satsumasendai, Kagoshima)',
+                            region: 'kyushu',
+                            experience: 33,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'medium',
+                            priceRange: '¥12,000-55,000',
+                            workshop: '吉田薩摩切子工房',
+                            heritage: '薩摩切子継承者',
+                            specialtyDescription: '薩摩切子の伝統技法を受け継ぐ，水晶玻璃切割工艺。制作精美的酒器、花瓶等，色彩層次豊富，工艺精湛。',
+                            awards: ['薩摩切子協会 名人認定 (2019)', '鹿児島県伝統工芸展 大賞 (2021)', '九州工芸展 特別賞 (2020)'],
+                            cooperationScore: 85,
+                            metrics: { salesPotential: 87, exposureNeed: 90, internationalReady: 78, productFit: 85 },
+                            cooperationReasons: ['💎 薩摩切子工艺复杂精美，具有高端定位', '🍶 酒器市场在海外日料文化推广中前景广阔', '🎨 色彩层次丰富，艺术价值高', '📊 目前销售渠道有限，数字化潜力大']
+                        },
+                        {
+                            name: '森川智子 (Morikawa Tomoko)',
+                            craftType: 'lacquerware',
+                            craftTypeDisplay: '漆器工艺 (漆芸)',
+                            location: '和歌山県海南市',
+                            locationDisplay: '和歌山県海南市 (Kainan, Wakayama)',
+                            region: 'kansai',
+                            experience: 21,
+                            digitalStatus: 'medium',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥25,000-120,000',
+                            workshop: '森川紀州漆器工房',
+                            heritage: '紀州漆器師',
+                            specialtyDescription: '紀州漆器の女性職人，専精蒔絵と螺鈿技法。制作高級装饰盒、文具、餐具等，作品华丽精美，深受收藏家喜爱。',
+                            awards: ['紀州漆器協同組合 技術賞 (2020)', '和歌山県美術展 特別賞 (2022)', '全国漆芸展 優秀賞 (2021)'],
+                            cooperationScore: 91,
+                            metrics: { salesPotential: 89, exposureNeed: 88, internationalReady: 95, productFit: 92 },
+                            cooperationReasons: ['✨ 紀州漆器历史悠久，工艺精湛', '🎁 高级装饰品适合礼品市场', '👩‍🎨 女性职人的细腻工艺广受好评', '💼 已有一定的网络销售基础']
+                        },
+                        {
+                            name: '永井哲也 (Nagai Tetsuya)',
+                            craftType: 'metalwork',
+                            craftTypeDisplay: '金属工艺 (金工)',
+                            location: '高知県高知市',
+                            locationDisplay: '高知県高知市 (Kochi City)',
+                            region: 'shikoku',
+                            experience: 24,
+                            digitalStatus: 'medium',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥20,000-90,000',
+                            workshop: '永井土佐打刃物工房',
+                            heritage: '土佐打刃物職人',
+                            specialtyDescription: '土佐打刃物の伝統技法继承者，专门制作高品质日式刀具。包括料理刀、园艺工具等，锋利耐用，深受专业人士推崇。',
+                            awards: ['土佐打刃物協同組合 優秀技能者賞 (2021)', '高知県ものづくり大賞 (2020)', '全国刃物展 金賞 (2022)'],
+                            cooperationScore: 87,
+                            metrics: { salesPotential: 92, exposureNeed: 88, internationalReady: 82, productFit: 85 },
+                            cooperationReasons: ['🔪 土佐打刃物在专业料理界享有盛誉', '👨‍🍳 海外日料师傅对高品质刀具需求高', '⚔️ 传统锻造工艺具有独特价值', '🌍 专业工具市场相对稳定']
+                        },
+                        {
+                            name: '水谷恵子 (Mizutani Keiko)',
+                            craftType: 'papercraft',
+                            craftTypeDisplay: '和纸工艺 (紙漉き)',
+                            location: '奈良県吉野郡',
+                            locationDisplay: '奈良県吉野郡 (Yoshino, Nara)',
+                            region: 'kansai',
+                            experience: 28,
+                            digitalStatus: 'low',
+                            cooperationWillingness: 'medium',
+                            priceRange: '¥1,200-18,000',
+                            workshop: '水谷吉野和紙工房',
+                            heritage: '吉野和紙職人',
+                            specialtyDescription: '吉野和纸传统制作技法保持者，使用当地山樱树皮制作高品质和纸。产品质地细腻，主要用于书法、绘画等艺术创作。',
+                            awards: ['吉野和紙保存会 功労賞 (2019)', '奈良県伝統工芸展 優秀賞 (2021)', '関西和紙展 特別賞 (2020)'],
+                            cooperationScore: 79,
+                            metrics: { salesPotential: 82, exposureNeed: 85, internationalReady: 70, productFit: 75 },
+                            cooperationReasons: ['🌸 吉野和纸使用山樱树皮，具有独特性', '🎨 适合书法、绘画爱好者市场', '📜 文化艺术价值高', '🌿 天然材料符合环保趋势']
+                        },
+                        {
+                            name: '加藤勝 (Kato Masaru)',
+                            craftType: 'glasswork',
+                            craftTypeDisplay: '玻璃工艺 (ガラス工芸)',
+                            location: '千葉県九十九里町',
+                            locationDisplay: '千葉県九十九里町 (Kujukuri, Chiba)',
+                            region: 'kanto',
+                            experience: 18,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥15,000-85,000',
+                            workshop: '加藤海浜硝子工房',
+                            heritage: '海浜硝子作家',
+                            specialtyDescription: '海滨玻璃艺术创作者，利用海滩砂制作独特的玻璃制品。作品融入海洋元素，色彩清透，深受现代消费者喜爱。',
+                            awards: ['千葉県美術展 優秀賞 (2022)', '関東ガラス工芸展 特別賞 (2021)', '海洋アート展 大賞 (2023)'],
+                            cooperationScore: 86,
+                            metrics: { salesPotential: 88, exposureNeed: 82, internationalReady: 90, productFit: 85 },
+                            cooperationReasons: ['🌊 海洋主题在国际市场具有广泛吸引力', '🏖️ 独特的材料来源形成差异化', '📱 数字化营销能力强', '🎯 现代设计风格符合年轻消费者喜好']
+                        },
+                        // === 更多现代创新创业者 ===
+                        {
+                            name: '宮本理恵 (Miyamoto Rie)',
+                            craftType: 'sustainable-craft',
+                            craftTypeDisplay: '可持续工艺 (サステナブルクラフト)',
+                            location: '熊本県熊本市',
+                            locationDisplay: '熊本県熊本市 (Kumamoto City)',
+                            region: 'kyushu',
+                            experience: 5,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥3,500-28,000',
+                            workshop: 'KUMAMOTO UPCYCLE STUDIO',
+                            heritage: '升级改造专家',
+                            specialtyDescription: '专门从事产品升级改造的环保创业者。将废弃家具、电器等改造成时尚家居用品，推广循环经济理念。',
+                            awards: ['熊本県循環型社会推進賞 (2023)', 'アップサイクル展 最優秀賞 (2022)', '九州エコデザイン賞 (2023)'],
+                            cooperationScore: 94,
+                            metrics: { salesPotential: 96, exposureNeed: 92, internationalReady: 88, productFit: 95 },
+                            cooperationReasons: ['♻️ 升级改造概念在全球环保趋势中备受关注', '💡 创意设计吸引追求个性的消费者', '📈 循环经济模式符合政策导向', '🎯 年轻消费群体接受度高']
+                        },
+                        {
+                            name: '石川裕介 (Ishikawa Yusuke)',
+                            craftType: 'tech-craft',
+                            craftTypeDisplay: '科技工艺 (テックキャブト)',
+                            location: '仙台市青葉区',
+                            locationDisplay: '仙台市青葉区 (Aoba-ku, Sendai)',
+                            region: 'tohoku',
+                            experience: 7,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥28,000-180,000',
+                            workshop: 'TOHOKU TECH CRAFT LAB',
+                            heritage: '东北科技工艺先锋',
+                            specialtyDescription: '结合东北传统工艺与现代科技的创新者。开发智能化传统乐器、互动式工艺品等，连接传统文化与数字时代。',
+                            awards: ['東北地区イノベーション賞 (2023)', 'テクノロジーアート展 グランプリ (2022)', '仙台市新事業創出賞 (2023)'],
+                            cooperationScore: 90,
+                            metrics: { salesPotential: 88, exposureNeed: 95, internationalReady: 92, productFit: 82 },
+                            cooperationReasons: ['🎵 传统乐器数字化在音乐教育市场有潜力', '🌐 科技与传统结合的概念国际认知度高', '📱 数字化特性便于远程销售', '🎯 目标市场清晰（音乐爱好者+科技控）']
+                        },
+                        {
+                            name: '橋本沙織 (Hashimoto Saori)',
+                            craftType: 'wellness-craft',
+                            craftTypeDisplay: '健康工艺 (ウェルネスクラフト)',
+                            location: '軽井沢町',
+                            locationDisplay: '軽井沢町 (Karuizawa)',
+                            region: 'kanto',
+                            experience: 8,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥15,000-95,000',
+                            workshop: 'KARUIZAWA WELLNESS CRAFT',
+                            heritage: '度假村健康工艺师',
+                            specialtyDescription: '专门为高端度假村开发健康工艺品的创业者。制作森林浴道具、冥想用品等，结合轻井泽的自然环境理念。',
+                            awards: ['長野県ウェルネス産業賞 (2022)', 'リゾート産業展 イノベーション賞 (2023)', '軽井沢町産業振興賞 (2022)'],
+                            cooperationScore: 88,
+                            metrics: { salesPotential: 90, exposureNeed: 85, internationalReady: 92, productFit: 88 },
+                            cooperationReasons: ['🏔️ 轻井泽品牌在高端消费群体中认知度高', '🌲 森林疗愈概念在国际市场受欢迎', '💼 高端定位与Tatami品牌调性匹配', '🧘‍♀️ 健康生活趋势持续增长']
+                        },
+                        {
+                            name: '村上健太 (Murakami Kenta)',
+                            craftType: 'food-craft',
+                            craftTypeDisplay: '食物工艺 (フードクラフト)',
+                            location: '新潟県佐渡市',
+                            locationDisplay: '新潟県佐渡市 (Sado, Niigata)',
+                            region: 'hokuriku',
+                            experience: 10,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥8,000-45,000',
+                            workshop: 'SADO FERMENTATION TOOLS',
+                            heritage: '发酵工艺专家',
+                            specialtyDescription: '专门开发传统发酵食品制作工具的创新者。结合佐渡岛的发酵文化，创造现代化的味噌、酱油、清酒制作器具。',
+                            awards: ['新潟県発酵産業賞 (2023)', 'フードテック展 優秀賞 (2022)', '佐渡市産業振興賞 (2023)'],
+                            cooperationScore: 87,
+                            metrics: { salesPotential: 89, exposureNeed: 88, internationalReady: 85, productFit: 87 },
+                            cooperationReasons: ['🍶 发酵食品在健康饮食趋势中备受关注', '🏝️ 佐渡岛独特的地理文化背景', '🥢 日式发酵工艺在海外认知度持续提升', '📺 适合通过料理教学视频推广']
+                        },
+                        {
+                            name: '藤田美咲 (Fujita Misaki)',
+                            craftType: 'lifestyle-brand',
+                            craftTypeDisplay: '生活方式品牌 (ライフスタイルブランド)',
+                            location: '金沢市',
+                            locationDisplay: '金沢市 (Kanazawa)',
+                            region: 'hokuriku',
+                            experience: 4,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥18,000-110,000',
+                            workshop: 'KANAZAWA LUXURY CRAFT',
+                            heritage: '金泽奢华生活品牌创始人',
+                            specialtyDescription: '金泽传统工艺现代化的年轻创业者。将金箔、漆器等传统元素融入现代奢侈品设计，创造高端生活方式品牌。',
+                            awards: ['石川県新産業創出賞 (2023)', 'ラグジュアリーブランド展 新人賞 (2022)', '金沢市クリエイター支援賞 (2023)'],
+                            cooperationScore: 89,
+                            metrics: { salesPotential: 92, exposureNeed: 85, internationalReady: 95, productFit: 88 },
+                            cooperationReasons: ['👑 金泽传统工艺具有奢华品牌价值', '✨ 金箔元素在国际奢侈品市场认知度高', '🎨 现代设计与传统工艺的完美结合', '💎 高端定位符合国际消费者期待']
+                        },
+                        {
+                            name: '清水隆司 (Shimizu Takashi)',
+                            craftType: 'digital-traditional',
+                            craftTypeDisplay: '数字传统工艺 (デジタル伝統工芸)',
+                            location: '松江市',
+                            locationDisplay: '松江市 (Matsue)',
+                            region: 'chugoku',
+                            experience: 6,
+                            digitalStatus: 'high',
+                            cooperationWillingness: 'high',
+                            priceRange: '¥25,000-150,000',
+                            workshop: 'MATSUE DIGITAL HERITAGE',
+                            heritage: '出云文化数字化专家',
+                            specialtyDescription: '专注于出云地区文化遗产数字化的创新创业者。开发VR神社体验、数字化茶道学习系统等，传播日本传统文化。',
+                            awards: ['島根県文化振興賞 (2023)', 'デジタルコンテンツ展 優秀賞 (2022)', '出云市イノベーション賞 (2023)'],
+                            cooperationScore: 83,
+                            metrics: { salesPotential: 80, exposureNeed: 95, internationalReady: 88, productFit: 72 },
+                            cooperationReasons: ['⛩️ 出云大社等文化资源具有国际吸引力', '🎮 VR体验符合现代娱乐消费趋势', '📚 文化教育产品在海外有稳定需求', '🌐 数字化产品便于全球销售']
+                        }
+                    ];
+                },
+
+                calculateStats() {
+                    const craftsmen = this.allCraftsmen;
+                    this.totalStats.craftsmen = craftsmen.length;
+                    this.totalStats.regions = new Set(craftsmen.map(c => c.region)).size;
+                    this.totalStats.craftTypes = new Set(craftsmen.map(c => c.craftType)).size;
+                    this.totalStats.avgExperience = Math.round(
+                        craftsmen.reduce((sum, c) => sum + c.experience, 0) / craftsmen.length
+                    );
+                    this.totalStats.cooperationReady = craftsmen.filter(c => 
+                        c.cooperationScore >= 85 && c.cooperationWillingness === 'high'
+                    ).length;
+
+                    // Calculate regional stats
+                    const regionMap = {};
+                    craftsmen.forEach(c => {
+                        if (!regionMap[c.region]) {
+                            regionMap[c.region] = { count: 0, name: this.getRegionName(c.region), code: c.region };
+                        }
+                        regionMap[c.region].count++;
+                    });
+                    this.regionStats = Object.values(regionMap).sort((a, b) => b.count - a.count);
+                },
+
+                applyFilters() {
+                    let filtered = [...this.allCraftsmen];
+
+                    if (this.filters.craftType) {
+                        filtered = filtered.filter(c => c.craftType === this.filters.craftType);
+                    }
+
+                    if (this.filters.experience) {
+                        filtered = filtered.filter(c => this.matchesExperience(c.experience, this.filters.experience));
+                    }
+
+                    if (this.filters.cooperationWillingness) {
+                        filtered = filtered.filter(c => c.cooperationWillingness === this.filters.cooperationWillingness);
+                    }
+
+                    if (this.filters.region) {
+                        filtered = filtered.filter(c => c.region === this.filters.region);
+                    }
+
+                    this.filteredCraftsmen = filtered;
+                    this.sortCraftsmen(this.sortBy);
+                },
+
+                matchesExperience(experience, filter) {
+                    switch(filter) {
+                        case '10-20': return experience >= 10 && experience <= 20;
+                        case '20-30': return experience >= 20 && experience <= 30;
+                        case '30-40': return experience >= 30 && experience <= 40;
+                        case '40+': return experience >= 40;
+                        default: return true;
+                    }
+                },
+
+                sortCraftsmen(criteria) {
+                    this.sortBy = criteria;
+                    switch(criteria) {
+                        case 'score':
+                            this.filteredCraftsmen.sort((a, b) => b.cooperationScore - a.cooperationScore);
+                            break;
+                        case 'experience':
+                            this.filteredCraftsmen.sort((a, b) => b.experience - a.experience);
+                            break;
+                        case 'location':
+                            this.filteredCraftsmen.sort((a, b) => a.location.localeCompare(b.location, 'ja'));
+                            break;
+                    }
+                },
+
+                filterByRegion(regionCode) {
+                    this.filters.region = this.filters.region === regionCode ? '' : regionCode;
+                    this.applyFilters();
+                },
+
+                getRegionName(code) {
+                    const regions = {
+                        'kyoto': '京都府',
+                        'gifu': '岐阜県', 
+                        'kanazawa': '石川県',
+                        'niigata': '新潟県',
+                        'tokyo': '東京都',
+                        'kyushu': '九州地区',
+                        'osaka': '大阪府',
+                        'shizuoka': '静岡県',
+                        'nagano': '長野県',
+                        'tohoku': '東北地区',
+                        'hokuriku': '北陸地区',
+                        'hokkaido': '北海道',
+                        'chubu': '中部地区',
+                        'okinawa': '沖縄県',
+                        'shikoku': '四国地区',
+                        'chugoku': '中国地区',
+                        'kansai': '関西地区',
+                        'kanto': '関東地区'
+                    };
+                    return regions[code] || code;
+                },
+
+                getDigitalStatusDisplay(status) {
+                    const displays = {
+                        'high': '高度デジタル化',
+                        'medium': '部分デジタル化',
+                        'low': '伝統的手法'
+                    };
+                    return displays[status] || status;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

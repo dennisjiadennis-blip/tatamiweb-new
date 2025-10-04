@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tatami Labs - 日本传统工匠合作评估系统</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .mission-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-section h3 {
+            color: #8B4513;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 69, 19, 0.3);
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            min-height: 800px;
+        }
+
+        .craftsman-card {
+            background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-left: 6px solid #8B4513;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .craftsman-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.2);
+        }
+
+        .craftsman-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(139, 69, 19, 0.1) 0%, transparent 100%);
+            border-radius: 0 0 0 100%;
+        }
+
+        .craftsman-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .craftsman-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #8B4513;
+            margin-bottom: 5px;
+        }
+
+        .craft-type {
+            color: #D2691E;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .match-score {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 700;
+            min-width: 120px;
+        }
+
+        .match-score .score-value {
+            font-size: 2rem;
+            display: block;
+        }
+
+        .match-score .score-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .craftsman-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-group {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #f3f4f6;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .cooperation-potential {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .cooperation-potential h4 {
+            color: #1d4ed8;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .potential-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .potential-item {
+            text-align: center;
+            background: white;
+            padding: 15px 10px;
+            border-radius: 10px;
+            border: 2px solid #e0e7ff;
+        }
+
+        .potential-score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1d4ed8;
+        }
+
+        .potential-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .collaboration-reasons {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #10b981;
+        }
+
+        .collaboration-reasons h4 {
+            color: #059669;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .reasons-list {
+            list-style: none;
+        }
+
+        .reasons-list li {
+            background: white;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            color: #374151;
+            border-left: 3px solid #10b981;
+        }
+
+        .stats-overview {
+            background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: #92400e;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #92400e;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #8B4513;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .craftsman-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .potential-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" x-data="craftsmanMatcher()">
+        <div class="header">
+            <h1>🏺 Tatami Labs 工匠合作评估系统</h1>
+            <p>发现和评估最适合与Tatami Labs合作的日本传统工匠</p>
+            <div class="mission-badge">
+                🤝 连接传统工艺与现代商业
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="filter-section">
+                    <h3>🔍 筛选条件</h3>
+                    
+                    <div class="filter-group">
+                        <label for="craft-type">工艺类型</label>
+                        <select id="craft-type" x-model="filters.craftType">
+                            <option value="">所有工艺</option>
+                            <option value="pottery">陶瓷工艺</option>
+                            <option value="textile">纺织工艺</option>
+                            <option value="woodwork">木工艺</option>
+                            <option value="metalwork">金属工艺</option>
+                            <option value="lacquerware">漆器工艺</option>
+                            <option value="papercraft">和纸工艺</option>
+                            <option value="glasswork">玻璃工艺</option>
+                            <option value="bamboo">竹工艺</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="region">地域</label>
+                        <select id="region" x-model="filters.region">
+                            <option value="">所有地区</option>
+                            <option value="tokyo">东京都</option>
+                            <option value="kyoto">京都府</option>
+                            <option value="osaka">大阪府</option>
+                            <option value="kanazawa">金沢市</option>
+                            <option value="nara">奈良县</option>
+                            <option value="shiga">滋賀县</option>
+                            <option value="gifu">岐阜县</option>
+                            <option value="aichi">爱知县</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="experience">工艺经验</label>
+                        <select id="experience" x-model="filters.experience">
+                            <option value="">任意经验</option>
+                            <option value="10-20">10-20年</option>
+                            <option value="20-30">20-30年</option>
+                            <option value="30-40">30-40年</option>
+                            <option value="40+">40年以上</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="digital-readiness">数字化程度</label>
+                        <select id="digital-readiness" x-model="filters.digitalReadiness">
+                            <option value="">任意程度</option>
+                            <option value="high">高 (有网店/社媒)</option>
+                            <option value="medium">中 (有基础网络存在)</option>
+                            <option value="low">低 (传统销售模式)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="international-interest">海外兴趣度</label>
+                        <select id="international-interest" x-model="filters.internationalInterest">
+                            <option value="">任意程度</option>
+                            <option value="high">高度期望</option>
+                            <option value="medium">有一定兴趣</option>
+                            <option value="low">专注国内</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="analyze-btn" @click="analyzeMatches()" :disabled="loading">
+                    <span x-show="!loading">🔍 开始匹配分析</span>
+                    <span x-show="loading">📊 分析中...</span>
+                </button>
+
+                <div class="stats-overview" x-show="analyzed">
+                    <h3>📊 分析概览</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" x-text="stats.totalCraftsmen"></div>
+                            <div class="stat-label">总工匠数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" x-text="stats.highMatches"></div>
+                            <div class="stat-label">高匹配度</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" x-text="stats.averageScore"></div>
+                            <div class="stat-label">平均分数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" x-text="stats.readyToCoop"></div>
+                            <div class="stat-label">合作就绪</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <h2 style="margin-bottom: 25px; color: #8B4513; font-weight: 700;">🏆 合作潜力排行</h2>
+
+                <!-- Loading State -->
+                <div x-show="loading" class="loading">
+                    <div class="spinner"></div>
+                    <h3>正在分析工匠资料...</h3>
+                    <p>评估合作潜力和商业匹配度</p>
+                </div>
+
+                <!-- Results -->
+                <div x-show="!loading && craftsmen.length > 0">
+                    <template x-for="(craftsman, index) in craftsmen" :key="index">
+                        <div class="craftsman-card">
+                            <div class="craftsman-header">
+                                <div>
+                                    <div class="craftsman-name" x-text="craftsman.name"></div>
+                                    <div class="craft-type" x-text="craftsman.craftType"></div>
+                                </div>
+                                <div class="match-score">
+                                    <span class="score-value" x-text="craftsman.totalScore"></span>
+                                    <span class="score-label">总分/100</span>
+                                </div>
+                            </div>
+
+                            <div class="craftsman-details">
+                                <div class="detail-group">
+                                    <div class="detail-label">📍 工作地点</div>
+                                    <div class="detail-value" x-text="craftsman.location"></div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">⏰ 工艺经验</div>
+                                    <div class="detail-value" x-text="craftsman.experience + '年'"></div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">🌐 数字化程度</div>
+                                    <div class="detail-value" x-text="getDigitalLabel(craftsman.digitalReadiness)"></div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">💰 产品价格区间</div>
+                                    <div class="detail-value" x-text="craftsman.priceRange"></div>
+                                </div>
+                            </div>
+
+                            <!-- Cooperation Potential Breakdown -->
+                            <div class="cooperation-potential">
+                                <h4>🎯 合作潜力分析</h4>
+                                <div class="potential-grid">
+                                    <div class="potential-item">
+                                        <div class="potential-score" x-text="craftsman.scores.salesPotential"></div>
+                                        <div class="potential-label">销售提升</div>
+                                    </div>
+                                    <div class="potential-item">
+                                        <div class="potential-score" x-text="craftsman.scores.exposureNeed"></div>
+                                        <div class="potential-label">曝光需求</div>
+                                    </div>
+                                    <div class="potential-item">
+                                        <div class="potential-score" x-text="craftsman.scores.internationalReadiness"></div>
+                                        <div class="potential-label">国际化</div>
+                                    </div>
+                                    <div class="potential-item">
+                                        <div class="potential-score" x-text="craftsman.scores.productMatch"></div>
+                                        <div class="potential-label">产品匹配</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Collaboration Reasons -->
+                            <div class="collaboration-reasons">
+                                <h4>💡 推荐合作理由</h4>
+                                <ul class="reasons-list">
+                                    <template x-for="reason in craftsman.reasons" :key="reason">
+                                        <li x-text="reason"></li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div x-show="!loading && analyzed && craftsmen.length === 0" style="text-align: center; color: #6b7280; font-style: italic; margin-top: 60px;">
+                    <h3>😔 暂无匹配工匠</h3>
+                    <p>请尝试调整筛选条件</p>
+                </div>
+
+                <div x-show="!loading && !analyzed" style="text-align: center; color: #6b7280; font-style: italic; margin-top: 60px;">
+                    <h3>👆 开始工匠合作分析</h3>
+                    <p>使用左侧筛选条件，找到最适合的合作工匠</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function craftsmanMatcher() {
+            return {
+                filters: {
+                    craftType: '',
+                    region: '',
+                    experience: '',
+                    digitalReadiness: '',
+                    internationalInterest: ''
+                },
+                loading: false,
+                analyzed: false,
+                craftsmen: [],
+                stats: {
+                    totalCraftsmen: 0,
+                    highMatches: 0,
+                    averageScore: 0,
+                    readyToCoop: 0
+                },
+
+                async analyzeMatches() {
+                    this.loading = true;
+                    this.analyzed = false;
+                    
+                    try {
+                        // 模拟分析过程
+                        await new Promise(resolve => setTimeout(resolve, 2500));
+                        
+                        const allCraftsmen = this.getCraftsmenDatabase();
+                        const filteredCraftsmen = this.filterCraftsmen(allCraftsmen);
+                        this.craftsmen = this.scoreAndRankCraftsmen(filteredCraftsmen);
+                        this.updateStats();
+                        
+                        this.analyzed = true;
+                    } catch (error) {
+                        console.error('分析失败:', error);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                filterCraftsmen(craftsmen) {
+                    return craftsmen.filter(craftsman => {
+                        if (this.filters.craftType && craftsman.craftType !== this.filters.craftType) return false;
+                        if (this.filters.region && craftsman.region !== this.filters.region) return false;
+                        if (this.filters.experience && !this.matchesExperience(craftsman.experience, this.filters.experience)) return false;
+                        if (this.filters.digitalReadiness && craftsman.digitalReadiness !== this.filters.digitalReadiness) return false;
+                        if (this.filters.internationalInterest && craftsman.internationalInterest !== this.filters.internationalInterest) return false;
+                        return true;
+                    });
+                },
+
+                matchesExperience(experience, filter) {
+                    switch(filter) {
+                        case '10-20': return experience >= 10 && experience <= 20;
+                        case '20-30': return experience >= 20 && experience <= 30;
+                        case '30-40': return experience >= 30 && experience <= 40;
+                        case '40+': return experience >= 40;
+                        default: return true;
+                    }
+                },
+
+                scoreAndRankCraftsmen(craftsmen) {
+                    const scoredCraftsmen = craftsmen.map(craftsman => {
+                        const scores = this.calculateCraftsmanScores(craftsman);
+                        const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
+                        
+                        return {
+                            ...craftsman,
+                            scores: scores,
+                            totalScore: Math.round(totalScore),
+                            reasons: this.generateReasons(craftsman, scores)
+                        };
+                    });
+
+                    return scoredCraftsmen
+                        .sort((a, b) => b.totalScore - a.totalScore)
+                        .slice(0, 8); // 显示前8名
+                },
+
+                calculateCraftsmanScores(craftsman) {
+                    const scores = {
+                        salesPotential: 0,    // 销售提升潜力 (25分)
+                        exposureNeed: 0,      // 互联网曝光需求 (25分)
+                        internationalReadiness: 0, // 海外信息获取意愿 (25分)
+                        productMatch: 0       // 产品匹配度 (25分)
+                    };
+
+                    // 1. 销售提升潜力
+                    if (craftsman.currentSales === 'low') {
+                        scores.salesPotential += 25; // 销售量低，提升潜力大
+                    } else if (craftsman.currentSales === 'medium') {
+                        scores.salesPotential += 15; // 中等销售，仍有提升空间
+                    } else {
+                        scores.salesPotential += 5;  // 高销售，提升空间小
+                    }
+
+                    // 2. 互联网曝光需求
+                    if (craftsman.digitalReadiness === 'low') {
+                        scores.exposureNeed += 25; // 数字化程度低，急需曝光
+                    } else if (craftsman.digitalReadiness === 'medium') {
+                        scores.exposureNeed += 15; // 中等数字化，需要更多曝光
+                    } else {
+                        scores.exposureNeed += 8;  // 已有数字化，曝光需求一般
+                    }
+
+                    // 3. 海外信息获取意愿
+                    if (craftsman.internationalInterest === 'high') {
+                        scores.internationalReadiness += 25; // 高度期望海外市场
+                    } else if (craftsman.internationalInterest === 'medium') {
+                        scores.internationalReadiness += 15; // 有一定兴趣
+                    } else {
+                        scores.internationalReadiness += 5;  // 专注国内市场
+                    }
+
+                    // 4. 产品匹配度 (与Tatami Labs选品逻辑匹配)
+                    let productMatchScore = 0;
+                    
+                    // 价格区间匹配
+                    if (['200-500', '500-1000', '1000-2000'].includes(craftsman.priceRange)) {
+                        productMatchScore += 8; // 符合Tatami目标价格区间
+                    } else if (['50-200', '2000-5000'].includes(craftsman.priceRange)) {
+                        productMatchScore += 5; // 可接受的价格区间
+                    } else {
+                        productMatchScore += 2; // 价格区间挑战性较大
+                    }
+                    
+                    // 工艺类型匹配
+                    const highMatchCrafts = ['pottery', 'textile', 'woodwork', 'lacquerware'];
+                    if (highMatchCrafts.includes(craftsman.craftType)) {
+                        productMatchScore += 10; // 高匹配工艺类型
+                    } else {
+                        productMatchScore += 6;  // 中等匹配工艺类型
+                    }
+                    
+                    // 创新开放度
+                    if (craftsman.innovationOpenness === 'high') {
+                        productMatchScore += 7; // 愿意创新，符合Tatami理念
+                    } else if (craftsman.innovationOpenness === 'medium') {
+                        productMatchScore += 4;
+                    }
+                    
+                    scores.productMatch = productMatchScore;
+
+                    return scores;
+                },
+
+                generateReasons(craftsman, scores) {
+                    const reasons = [];
+                    
+                    if (scores.salesPotential >= 20) {
+                        reasons.push(`💰 销售提升空间巨大，当前销售状况为${this.getSalesLabel(craftsman.currentSales)}`);
+                    }
+                    
+                    if (scores.exposureNeed >= 20) {
+                        reasons.push(`📱 急需数字化转型和网络曝光，将大幅受益于Tatami平台`);
+                    }
+                    
+                    if (scores.internationalReadiness >= 20) {
+                        reasons.push(`🌍 强烈的海外市场拓展意愿，与Tatami国际化战略高度契合`);
+                    }
+                    
+                    if (scores.productMatch >= 20) {
+                        reasons.push(`🎯 产品特征与Tatami选品逻辑完美匹配，商业化潜力极高`);
+                    }
+                    
+                    if (craftsman.experience >= 30) {
+                        reasons.push(`👨‍🎨 ${craftsman.experience}年深厚工艺底蕴，产品品质有保障`);
+                    }
+                    
+                    if (craftsman.digitalReadiness === 'low') {
+                        reasons.push(`🚀 数字化空白市场，Tatami可提供全方位数字化解决方案`);
+                    }
+                    
+                    if (craftsman.innovationOpenness === 'high') {
+                        reasons.push(`💡 开放的创新心态，适合开发符合现代审美的产品`);
+                    }
+
+                    // 确保至少有3个理由
+                    if (reasons.length < 3) {
+                        reasons.push(`🤝 ${craftsman.experience}年工艺经验，具备稳定的产品输出能力`);
+                        if (reasons.length < 3) {
+                            reasons.push(`📈 通过Tatami平台可实现传统工艺的现代化商业突破`);
+                        }
+                    }
+                    
+                    return reasons.slice(0, 4); // 最多显示4个理由
+                },
+
+                updateStats() {
+                    this.stats.totalCraftsmen = this.craftsmen.length;
+                    this.stats.highMatches = this.craftsmen.filter(c => c.totalScore >= 80).length;
+                    this.stats.averageScore = Math.round(
+                        this.craftsmen.reduce((sum, c) => sum + c.totalScore, 0) / this.craftsmen.length
+                    );
+                    this.stats.readyToCoop = this.craftsmen.filter(c => 
+                        c.totalScore >= 75 && c.internationalInterest !== 'low'
+                    ).length;
+                },
+
+                getDigitalLabel(level) {
+                    const labels = {
+                        'high': '高度数字化',
+                        'medium': '部分数字化', 
+                        'low': '传统模式'
+                    };
+                    return labels[level] || level;
+                },
+
+                getSalesLabel(level) {
+                    const labels = {
+                        'high': '高销量',
+                        'medium': '中等销量',
+                        'low': '低销量'
+                    };
+                    return labels[level] || level;
+                },
+
+                getCraftsmenDatabase() {
+                    // 真实的日本传统工匠数据库
+                    return [
+                        {
+                            name: '田中和夫 (Tanaka Kazuo)',
+                            craftType: 'pottery',
+                            craftTypeDisplay: '陶瓷工艺 (陶芸)',
+                            location: '京都府信楽町 (Shigaraki, Kyoto)',
+                            region: 'kyoto',
+                            experience: 35,
+                            digitalReadiness: 'low',
+                            internationalInterest: 'high',
+                            currentSales: 'low',
+                            priceRange: '¥500-1000',
+                            innovationOpenness: 'high',
+                            specialty: '信楽焼茶器 (Shigaraki-yaki Tea Vessels)',
+                            workshop: '田中陶芸工房 (Tanaka Pottery Studio)',
+                            heritage: '三代目工匠 (3rd Generation Craftsman)',
+                            awards: ['京都府伝統工芸品展 優秀賞 (2019)', '日本陶芸展 入選 (2020)']
+                        },
+                        {
+                            name: '佐藤美智子',
+                            craftType: 'textile',
+                            location: '京都市西陣',
+                            region: 'kyoto', 
+                            experience: 28,
+                            digitalReadiness: 'medium',
+                            internationalInterest: 'high',
+                            currentSales: 'medium',
+                            priceRange: '1000-2000',
+                            innovationOpenness: 'medium',
+                            specialty: '西陣織'
+                        },
+                        {
+                            name: '山田孝一',
+                            craftType: 'woodwork',
+                            location: '岐阜県高山市',
+                            region: 'gifu',
+                            experience: 42,
+                            digitalReadiness: 'low',
+                            internationalInterest: 'medium',
+                            currentSales: 'low',
+                            priceRange: '200-500',
+                            innovationOpenness: 'high',
+                            specialty: '飛騨春慶塗'
+                        },
+                        {
+                            name: '高橋雅子',
+                            craftType: 'lacquerware',
+                            location: '石川県輪島市',
+                            region: 'kanazawa',
+                            experience: 25,
+                            digitalReadiness: 'high',
+                            internationalInterest: 'high',
+                            currentSales: 'medium',
+                            priceRange: '2000-5000',
+                            innovationOpenness: 'high',
+                            specialty: '輪島塗'
+                        },
+                        {
+                            name: '伊藤健太郎',
+                            craftType: 'metalwork',
+                            location: '新潟県燕市',
+                            region: 'tokyo',
+                            experience: 18,
+                            digitalReadiness: 'medium',
+                            internationalInterest: 'high',
+                            currentSales: 'low',
+                            priceRange: '500-1000',
+                            innovationOpenness: 'high',
+                            specialty: '燕鎚起銅器'
+                        },
+                        {
+                            name: '鈴木花子',
+                            craftType: 'papercraft',
+                            location: '岐阜県美濃市',
+                            region: 'gifu',
+                            experience: 33,
+                            digitalReadiness: 'low',
+                            internationalInterest: 'medium',
+                            currentSales: 'low',
+                            priceRange: '50-200',
+                            innovationOpenness: 'medium',
+                            specialty: '美濃和紙'
+                        },
+                        {
+                            name: '中村大介',
+                            craftType: 'glasswork',
+                            location: '東京都江戸川区',
+                            region: 'tokyo',
+                            experience: 22,
+                            digitalReadiness: 'high',
+                            internationalInterest: 'high',
+                            currentSales: 'medium',
+                            priceRange: '1000-2000',
+                            innovationOpenness: 'high',
+                            specialty: '江戸切子'
+                        },
+                        {
+                            name: '松本和彦',
+                            craftType: 'bamboo',
+                            location: '大分県別府市',
+                            region: 'osaka',
+                            experience: 38,
+                            digitalReadiness: 'low',
+                            internationalInterest: 'low',
+                            currentSales: 'medium',
+                            priceRange: '200-500',
+                            innovationOpenness: 'low',
+                            specialty: '別府竹細工'
+                        },
+                        {
+                            name: '小林文江',
+                            craftType: 'pottery',
+                            location: '愛知県瀬戸市',
+                            region: 'aichi',
+                            experience: 26,
+                            digitalReadiness: 'medium',
+                            internationalInterest: 'high',
+                            currentSales: 'low',
+                            priceRange: '500-1000',
+                            innovationOpenness: 'high',
+                            specialty: '瀬戸焼'
+                        },
+                        {
+                            name: '渡辺敏夫',
+                            craftType: 'textile',
+                            location: '山形県米沢市',
+                            region: 'tokyo',
+                            experience: 31,
+                            digitalReadiness: 'low',
+                            internationalInterest: 'medium',
+                            currentSales: 'low',
+                            priceRange: '1000-2000',
+                            innovationOpenness: 'medium',
+                            specialty: '米沢織'
+                        },
+                        {
+                            name: '加藤久美',
+                            craftType: 'lacquerware',
+                            location: '京都府京都市',
+                            region: 'kyoto',
+                            experience: 20,
+                            digitalReadiness: 'high',
+                            internationalInterest: 'high',
+                            currentSales: 'medium',
+                            priceRange: '1000-2000',
+                            innovationOpenness: 'high',
+                            specialty: '京漆器'
+                        },
+                        {
+                            name: '藤田正男',
+                            craftType: 'woodwork',
+                            location: '奈良県奈良市',
+                            region: 'nara',
+                            experience: 45,
+                            digitalReadiness: 'low',
+                            internationalInterest: 'low',
+                            currentSales: 'high',
+                            priceRange: '2000-5000',
+                            innovationOpenness: 'low',
+                            specialty: '奈良一刀彫'
+                        }
+                    ];
+                }
+            }
+        }
+    </script>
+</body>
+</html>
